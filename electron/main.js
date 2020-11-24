@@ -4,13 +4,18 @@ const url = require("url");
 const sqlite3 = require("sqlite3");
 const { channels } = require("../src/shared/constants");
 
-// Set up Sqlite3
 const userData = app.getPath("userData");
 const dbFile = path.resolve(userData, "db.sqlite3");
 const db = new sqlite3.Database(dbFile, (err) => {
     if (err) console.error("Database opening error", err);
     console.log(`sqlite debug:`, { err, dbFile, userData });
 });
+
+// console.log(db);
+
+// db.all(`SELECT * FROM memberships`, (err, rows) => {
+//     console.log({ rows });
+// });
 
 let mainWindow;
 
@@ -50,8 +55,17 @@ app.on("activate", function () {
 });
 
 ipcMain.on(channels.APP_INFO, (event) => {
-    event.sender.send(channels.APP_INFO, {
-        appName: app.getName(),
-        appVersion: app.getVersion(),
+    db.all(`SELECT * FROM memberships`, (err, rows) => {
+        console.log({ rows });
+        event.sender.send(channels.APP_INFO, {
+            appName: app.getName(),
+            appVersion: app.getVersion(),
+            rows: rows,
+        });
     });
+
+    // event.sender.send(channels.APP_INFO, {
+    //     appName: app.getName(),
+    //     appVersion: app.getVersion(),
+    // });
 });
