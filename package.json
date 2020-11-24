@@ -1,7 +1,8 @@
 {
   "name": "electron-cra-example",
+  "author": "Hung Quach",
   "version": "0.1.0",
-  "productName": "Electron Create React App Example",
+  "productName": "Mckee Water POS ",
   "main": "electron/main.js",
   "private": true,
   "dependencies": {
@@ -35,8 +36,8 @@
     ],
     "publish": {
       "provider": "github",
-      "repo": "electron-cra-example",
-      "owner": "johndyer24"
+      "repo": "mckee-water-pos",
+      "owner": "python-quach"
     }
   },
   "eslintConfig": {
