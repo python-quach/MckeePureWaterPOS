@@ -1,7 +1,18 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
+
+// Set up Sqlite3
+const userData = app.getPath('userData');
+const dbFile = path.resolve(userData, 'db.sqlite3');
+const db = new sqlite3.Database(dbFile, (err) => {
+  if (err) console.error('Database opening error', err) 
+  console.log(`sqlite debug:`, {err, dbFile, userData})
+})
+
+console.log({db})
 
 let mainWindow;
 
