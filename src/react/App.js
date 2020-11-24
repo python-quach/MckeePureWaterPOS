@@ -10,22 +10,24 @@ class App extends Component {
     this.state = {
       appName: '',
       appVersion: '',
+      rows: '',
     }
     ipcRenderer.send(channels.APP_INFO);
     ipcRenderer.on(channels.APP_INFO, (event, arg) => {
       ipcRenderer.removeAllListeners(channels.APP_INFO);
-      const { appName, appVersion } = arg;
-      this.setState({ appName, appVersion });
+      const { appName, appVersion, rows } = arg;
+      this.setState({ appName, appVersion, rows });
     });
   }
 
   render() {
-    const { appName, appVersion } = this.state;
+    const { appName, appVersion, rows } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>{appName} version {appVersion}</p>
+          <pre>{JSON.stringify(rows, null, 2)}</pre>
         </header>
       </div>
     );

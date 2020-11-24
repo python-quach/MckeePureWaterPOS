@@ -12,7 +12,6 @@ const db = new sqlite3.Database(dbFile, (err) => {
   console.log(`sqlite debug:`, {err, dbFile, userData})
 })
 
-console.log({db})
 
 let mainWindow;
 
@@ -50,8 +49,14 @@ app.on('activate', function () {
 });
 
 ipcMain.on(channels.APP_INFO, (event) => {
-  event.sender.send(channels.APP_INFO, { 
-    appName: app.getName(),
-    appVersion: app.getVersion(),
-  });
+  console.log({db})
+  const sql = `SELECT * FROM memberships`
+  db.all(sql, (err, rows) => {
+    if(err) console.log({err})
+    event.sender.send(channels.APP_INFO, { 
+      appName: app.getName(),
+      appVersion: app.getVersion(),
+      rows: rows
+    });
+  })
 });
