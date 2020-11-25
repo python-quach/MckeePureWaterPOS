@@ -28,15 +28,28 @@ function createWindow() {
             slashes: true,
         });
     mainWindow = new BrowserWindow({
+        show: false,
         width: 800,
         height: 600,
+        darkTheme: true,
+        backgroundColor: '#060b22',
+        frame: true,
+        fullscreen: true,
+        maximizable: true,
+        transparent: false,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
+    // mainWindow.removeMenu();
+    mainWindow.setOpacity(1);
     mainWindow.loadURL(startUrl);
     mainWindow.on('closed', function () {
         mainWindow = null;
+    });
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
     });
 }
 
