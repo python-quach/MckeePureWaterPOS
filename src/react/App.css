@@ -39,6 +39,22 @@
     color: #fff;
 }
 
+/* Find Phone Number */
+.ui.fluid.left.icon.input input[type='tel'] {
+    background-color: rgb(87 194 226 / 20%);
+    font-weight: bold;
+    font-size: x-large;
+    color: #fff;
+}
+
+/* Find Membership Number */
+.ui.fluid.left.icon.input input[type='text'] {
+    background-color: rgb(87 194 226 / 20%);
+    font-weight: bold;
+    font-size: x-large;
+    color: #fff;
+}
+
 .ui.fluid.left.icon.input input[type='password'] {
     background-color: rgb(87 194 226 / 20%);
     font-weight: bold;
@@ -51,6 +67,19 @@
 }
 
 .lock.icon {
+    color: turquoise;
+}
+
+.phone.icon {
+    color: turquoise;
+    /* color: #2185d0; */
+}
+
+.address.card.icon {
+    color: turquoise;
+}
+
+.id.badge.icon {
     color: turquoise;
 }
 

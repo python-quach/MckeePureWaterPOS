@@ -11,12 +11,6 @@ const db = new sqlite3.Database(dbFile, (err) => {
     console.log(`sqlite debug:`, { err, dbFile, userData });
 });
 
-// console.log(db);
-
-// db.all(`SELECT * FROM memberships`, (err, rows) => {
-//     console.log({ rows });
-// });
-
 let mainWindow;
 
 function createWindow() {
@@ -67,9 +61,24 @@ app.on('activate', function () {
     }
 });
 
-ipcMain.on(channels.APP_INFO, (event) => {
-    db.all(`SELECT * FROM memberships`, (err, rows) => {
-        console.log({ rows });
-        event.sender.send(channels.APP_INFO, { rows });
+ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
+    console.log('verify login:', { username, password });
+
+    const sql = `SELECT * from Users WHERE username = ? AND password = ?`;
+
+    db.get(sql, [username, password], (err, row) => {
+        if (!row) {
+            event.sender.send(channels.APP_INFO, {
+                auth: false,
+                error: `Invalid Credential for User: ${username}`,
+            });
+        } else {
+            const { user_id, username } = row;
+            event.sender.send(channels.APP_INFO, {
+                user_id,
+                username,
+                auth: true,
+            });
+        }
     });
 });
