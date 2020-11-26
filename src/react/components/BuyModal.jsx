@@ -1,64 +1,54 @@
 import React from 'react';
-import { Modal, Form, Button } from 'semantic-ui-react';
+import { Modal, Button } from 'semantic-ui-react';
+import BuyForm from './BuyForm';
 
 const BuyModal = (props) => {
-    const [open, setOpen] = React.useState(false);
+    const { setOpen, open, hideMemberRow } = props;
+
+    const closeModal = () => {
+        setOpen(false);
+        hideMemberRow(false);
+    };
+
     return (
         <Modal
-            style={{ marginLeft: '30px' }}
-            basic
-            size='fullscreen'
-            dimmer='blurring'
-            // dimmer='inverted'
             closeOnDimmerClick={false}
             closeOnEscape={false}
+            basic
+            style={{ marginLeft: '40px' }}
+            size='fullscreen'
+            dimmer='blurring'
             onClose={() => setOpen(false)}
-            // onClose={() => setOpen(true)}
-            onOpen={() => {
-                setOpen(true);
-                // props.closeRow(false);
-            }}
-            open={open}
-            trigger={
-                <Form.Button
-                    size='massive'
-                    icon='search'
-                    // id='LoginButton'
-                    color='pink'
-                    labelPosition='right'
-                    content='Buy'
-                    onClick={(event, data) => {
-                        // props.closeRow(false);
-                        // document.getElementById('LoginButton').focus();
-                    }}
-                />
-            }>
-            <Modal.Header>Buy Gallon</Modal.Header>
-            <Modal.Content></Modal.Content>
+            onOpen={() => setOpen(true)}
+            open={open}>
+            <Modal.Header>Buy Water </Modal.Header>
+            <Modal.Content>
+                <BuyForm />
+            </Modal.Content>
             <Modal.Actions>
                 <Button
-                    content='Close'
-                    icon='close'
+                    circular
+                    size='huge'
+                    primary
+                    onClick={closeModal}
+                    content='Done'
                     labelPosition='right'
-                    color='red'
-                    onClick={() => setOpen(false)}
+                    icon='right chevron'
+                />
+                <Button
+                    circular
+                    size='huge'
+                    secondary
+                    onClick={closeModal}
+                    content='Cancel'
+                    labelPosition='right'
+                    icon='delete'
                 />
             </Modal.Actions>
         </Modal>
     );
 };
 
-// BuyModal.defaultProps = {
-//     props: {
-//         modal: {
-//             // style: { marginLeft: '30px' },
-//             basic: true,
-//             size: 'large',
-//             dimmer: 'blurring',
-//             closeOnDimmerClick: false,
-//             closeOnEscape: false,
-//         },
-//     },
-// };
+BuyModal.defaultProps = {};
 
 export default BuyModal;

@@ -121,6 +121,62 @@
     text-align: left;
 }
 
+/* BuyAccount */
+.two.wide.field.BuyAccount label {
+    color: #fff;
+}
+
+.two.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.two.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
+    color: #fff;
+}
+
+/* 3 BuyAccount */
+.three.wide.field.BuyAccount label {
+    color: #fff;
+}
+
+.three.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.three.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
+    color: #fff;
+}
+
+/* RecordAccount */
+.two.wide.field.BuyRecord label {
+    color: #fff;
+}
+
+.two.wide.field.BuyRecord div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.two.wide.field.BuyRecord div.ui.inverted.left.icon.input i {
+    color: #fff;
+}
+
+/* 3 RecordAccount */
+.three.wide.field.BuyRecord label {
+    color: #fff;
+}
+
+.three.wide.field.BuyRecord div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.three.wide.field.BuyRecord div.ui.inverted.left.icon.input i {
+    color: #fff;
+}
+
 .ui.page.modals.dimmer.transition.visible.active {
     /* background-color: #006cb575; */
     background-color: #002b487d;

@@ -138,7 +138,7 @@ const LoginForm = (props) => {
                     </Transition.Group>
                 </Form>
 
-                <Form.Group>
+                {/* <Form.Group>
                     <Divider hidden />
                     <Message>
                         <Message.Header>Form data:</Message.Header>
@@ -156,7 +156,7 @@ const LoginForm = (props) => {
                             )}
                         </pre>
                     </Message>
-                </Form.Group>
+                </Form.Group> */}
             </Grid.Column>
         </Grid>
     );

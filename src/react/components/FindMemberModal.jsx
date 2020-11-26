@@ -39,16 +39,7 @@ const FindMemberModal = (props) => {
                     ) : null}
 
                     <Modal.Content>
-                        <MembershipRow
-                            closeMemberRow={setOpen}
-                            hideModel={setHide}
-                            hide={hide}
-                        />
-                        <MembershipRow
-                            closeMemberRow={setOpen}
-                            hideModel={setHide}
-                            hide={hide}
-                        />
+                        <MembershipRow hideRow={setHide} hide={hide} />
                     </Modal.Content>
                     <Modal.Actions>
                         {!hide ? (

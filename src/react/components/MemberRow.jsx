@@ -1,147 +1,21 @@
 import React from 'react';
-import { List, Button, Modal, Icon, Form, Divider } from 'semantic-ui-react';
-import BuyModalButton from './BuyModal';
+import { List, Button, Modal, Icon } from 'semantic-ui-react';
+import BuyForm from './BuyForm';
+import BuyModal from './BuyModal';
 
 const MemberRow = (props) => {
-    const [firstOpen, setFirstOpen] = React.useState(false);
-    const [secondOpen, setSecondOpen] = React.useState(false);
+    const [open, openBuyModal] = React.useState(false);
 
     return (
-        // <List divided verticalAlign='middle' size='huge' inverted>
         <List verticalAlign='middle' size='huge' inverted>
             <List.Item>
                 <List.Content floated='right'>
-                    {/* <Button
-                        // focus
-                        size='large'
-                        color='pink'
-                        content='Buy'
-                        labelPosition='right'
-                        icon='plus cart'
-                        onClick={() => {
-                            setFirstOpen(true);
-                            props.hideModel(true);
-                        }}
-                    /> */}
-                    <Modal
-                        closeOnDimmerClick={false}
-                        closeOnEscape={false}
-                        basic
-                        style={{ marginLeft: '40px' }}
-                        size='fullscreen'
-                        dimmer='blurring'
-                        onClose={() => setFirstOpen(false)}
-                        onOpen={() => setFirstOpen(true)}
-                        open={firstOpen}>
-                        <Modal.Header>Buy Form Modal</Modal.Header>
-                        <Modal.Content>
-                            <Form>
-                                <Form.Group>
-                                    <Form.Input
-                                        inverted
-                                        transparent={true}
-                                        placeholder='First Name'
-                                        size='huge'
-                                        width={3}
-                                        defaultValue='Hung Quach'
-                                    />
-                                    <Form.Input
-                                        transparent={true}
-                                        placeholder='Last Name'
-                                        size='huge'
-                                        width={3}
-                                    />
-                                    <Form.Input
-                                        transparent={true}
-                                        placeholder='Member Since'
-                                        size='huge'
-                                        width={3}
-                                    />
-                                    <Form.Input
-                                        hidden
-                                        width={4}
-                                        transparent={true}></Form.Input>
-                                    <Form.Input
-                                        inverted
-                                        transparent={true}
-                                        iconPosition='left'
-                                        placeholder='account'
-                                        size='huge'
-                                        defaultValue='#12201'
-                                        width={2}
-                                    />
-                                    <Form.Input
-                                        inverted
-                                        // icon='user'
-                                        // inverted={true}
-                                        transparent={true}
-                                        iconPosition='left'
-                                        // inverted={true}
-                                        placeholder='record'
-                                        size='huge'
-                                        width={2}
-                                        defaultValue='#102390'
-                                    />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Input
-                                        type='hidden'
-                                        placeholder='2 Wide'
-                                        width={12}
-                                    />
-                                    <Form.Input
-                                        color='primary'
-                                        icon='cart'
-                                        position='left'
-                                        iconPosition='left'
-                                        placeholder='12 Wide'
-                                        size='huge'
-                                        // inverted
-                                        width={2}
-                                        // transparent={true}
-                                        defaultValue={20}
-                                    />
-                                    <Form.Input
-                                        icon='cart'
-                                        position='left'
-                                        iconPosition='left'
-                                        placeholder='12 Wide'
-                                        size='huge'
-                                        width={2}
-                                        defaultValue={20}
-                                    />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Input
-                                        placeholder='8 Wide'
-                                        width={8}
-                                    />
-                                    <Form.Input
-                                        placeholder='6 Wide'
-                                        width={6}
-                                    />
-                                    <Form.Input
-                                        placeholder='2 Wide'
-                                        width={2}
-                                    />
-                                </Form.Group>
-                            </Form>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Button onClick={() => setSecondOpen(true)} primary>
-                                Proceed <Icon name='right chevron' />
-                            </Button>
-                            <Button
-                                onClick={() => {
-                                    setFirstOpen(false);
-                                    props.hideModel(false);
-                                }}
-                                secondary>
-                                Done <Icon name='right chevron' />
-                            </Button>
-                        </Modal.Actions>
-                    </Modal>
-                    {/* <BuyModalButton closeRow={props.closeMemberRow} /> */}
+                    <BuyModal
+                        setOpen={openBuyModal}
+                        open={open}
+                        hideMemberRow={props.hideRow}
+                    />
+
                     {!props.hide ? (
                         <>
                             <Button
@@ -152,8 +26,8 @@ const MemberRow = (props) => {
                                 labelPosition='right'
                                 icon='plus cart'
                                 onClick={() => {
-                                    setFirstOpen(true);
-                                    props.hideModel(true);
+                                    openBuyModal(true);
+                                    props.hideRow(true);
                                 }}
                             />
                             <Button

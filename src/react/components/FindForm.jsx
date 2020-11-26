@@ -166,6 +166,7 @@ const FindForm = (props) => {
                         onFocus={() => setErrorMessage('')}
                     />
                     <MemberModalButton />
+                    {/* <BuyModalButton /> */}
                     <Form.Button
                         circular
                         fluid
