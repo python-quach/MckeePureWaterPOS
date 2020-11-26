@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Grid, Message, Divider, Icon } from 'semantic-ui-react';
+import { Form, Grid, Divider, Transition, Message } from 'semantic-ui-react';
 import { reset } from 'redux-form';
 import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
@@ -10,13 +10,23 @@ const { ipcRenderer } = window;
 const LoginForm = (props) => {
     const {
         handleSubmit,
-        userForm: { submitSucceeded },
+        submitSucceeded,
         username,
         password,
         clearForm,
         history,
+        usernameProps,
+        passwordProps,
     } = props;
-    const [errorMessage, setErrorMessage] = useState('');
+
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        if (errorMessage) {
+            setVisible((prevState) => !prevState);
+        }
+    }, [errorMessage, setErrorMessage]);
 
     useEffect(() => {
         if (submitSucceeded) {
@@ -39,15 +49,8 @@ const LoginForm = (props) => {
         }
     }, [submitSucceeded, password, username, clearForm, history]);
 
-    // useEffect(() => {
-    //     if (users.length !== 0) {
-    //         console.log({ users });
-    //     }
-    // }, [users]);
-
     const loginUser = (values) => {
         console.log('LoginForm was submitted', { values });
-        // clearForm();
     };
 
     return (
@@ -58,71 +61,134 @@ const LoginForm = (props) => {
             <Grid.Column style={{ maxWidth: 450 }}>
                 <Form onSubmit={handleSubmit(loginUser)} size='large'>
                     <Field
-                        component={Form.Input}
-                        name='username'
-                        placeholder='username'
-                        focus
-                        size='massive'
-                        type='text'
-                        fluid
-                        icon='user'
-                        iconPosition='left'
-                        transparent
-                        inverted
+                        className={
+                            visible ? 'RedIconUserName' : 'TealIconUserName'
+                        }
+                        {...usernameProps}
+                        // onMouseOver={() => {
+                        //     if (visible) {
+                        //         setErrorMessage(false);
+                        //         setVisible(false);
+                        //     }
+                        //     setErrorMessage(false);
+                        // }}
                         onFocus={() => {
-                            if (errorMessage) {
-                                setErrorMessage('');
+                            if (visible) {
+                                setErrorMessage(false);
+                                setVisible(false);
                             }
+                            setErrorMessage(false);
                         }}
                     />
                     <Field
-                        component={Form.Input}
-                        name='password'
-                        placeholder='password'
-                        focus
-                        size='massive'
-                        type='password'
-                        fluid
-                        icon='lock'
-                        iconPosition='left'
-                        transparent
-                        inverted
-                        onFocus={() => setErrorMessage('')}
-                    />
-                    <Form.Button
-                        // disabled={!username || !password}
-                        fluid
-                        size='massive'
-                        id='LoginButton'
-                        color='teal'
-                        content='Login'
-                        onClick={(event, data) => {
-                            document.getElementById('LoginButton').focus();
+                        className={
+                            visible ? 'RedIconPassword' : 'TealIconPassword'
+                        }
+                        {...passwordProps}
+                        onFocus={() => {
+                            if (visible) {
+                                setErrorMessage(false);
+                                setVisible(false);
+                            }
+                            setErrorMessage(false);
                         }}
                     />
+                    <Divider hidden />
+                    <Transition.Group>
+                        {!errorMessage ? (
+                            <Form.Button
+                                className='LoginButton'
+                                // basic
+                                circular
+                                // disabled={!username || !password}
+                                fluid
+                                size='massive'
+                                id='LoginButton'
+                                color='teal'
+                                icon='sign in'
+                                labelPosition='right'
+                                content='Login'
+                                onClick={(event, data) => {
+                                    document
+                                        .getElementById('LoginButton')
+                                        .focus();
+                                }}
+                            />
+                        ) : (
+                            <Transition
+                                visible={visible}
+                                animation='shake'
+                                duration={500}
+                                unmountOnHide={true}>
+                                <Form.Button
+                                    circular
+                                    fluid
+                                    size='massive'
+                                    id='LoginButton'
+                                    color='red'
+                                    icon='warning sign'
+                                    labelPosition='right'
+                                    content='Invalid Login'
+                                    onClick={(event, data) => {
+                                        event.preventDefault();
+                                    }}
+                                />
+                            </Transition>
+                        )}
+                    </Transition.Group>
                 </Form>
-                {errorMessage ? (
-                    <Message icon color='pink'>
-                        <Icon name='circle notched' loading />
-                        <Message.Header>{errorMessage}</Message.Header>
-                    </Message>
-                ) : null}
-                {/* <Form.Group>
+
+                <Form.Group>
                     <Divider hidden />
                     <Message>
                         <Message.Header>Form data:</Message.Header>
                         <pre>
                             {JSON.stringify(
-                                { username, password, submitSucceeded },
+                                {
+                                    username,
+                                    password,
+                                    submitSucceeded,
+                                    errorMessage,
+                                    visible,
+                                },
                                 null,
                                 2
                             )}
                         </pre>
                     </Message>
-                </Form.Group> */}
+                </Form.Group>
             </Grid.Column>
         </Grid>
     );
+};
+
+LoginForm.defaultProps = {
+    usernameProps: {
+        component: Form.Input,
+        name: 'username',
+        placeholder: 'username',
+        focus: true,
+        size: 'massive',
+        type: 'text',
+        fluid: true,
+        icon: 'user circle',
+        iconPosition: 'left',
+        transparent: true,
+        inverted: true,
+    },
+    passwordProps: {
+        component: Form.Input,
+        name: 'password',
+        placeholder: 'password',
+        focus: true,
+        size: 'massive',
+        type: 'password',
+        fluid: true,
+        icon: 'lock ',
+        iconPosition: 'left',
+        transparent: true,
+        inverted: true,
+    },
 };
 
 const mapStateToProps = (state) => {
@@ -130,12 +196,13 @@ const mapStateToProps = (state) => {
     return {
         username: selectFormData(state, 'username'),
         password: selectFormData(state, 'password'),
-        userForm: state.form.user
-            ? {
-                  values: state.form.user.values,
-                  submitSucceeded: state.form.user.submitSucceeded,
-              }
-            : {},
+        submitSucceeded: state.form.user ? state.form.user.submitSucceeded : {},
+        // userForm: state.form.user
+        //     ? {
+        //           values: state.form.user.values,
+        //           submitSucceeded: state.form.user.submitSucceeded,
+        //       }
+        //     : {},
     };
 };
 
