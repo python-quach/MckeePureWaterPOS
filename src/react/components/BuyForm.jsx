@@ -31,28 +31,34 @@ const BuyForm = (props) => {
                     config={{
                         className: 'BuyAccount',
                         label: 'Account',
-                        placeholder: 'xxxxxx',
+                        placeholder: '000000',
                         inverted: true,
                         icon: 'hashtag',
                         iconPosition: 'left',
+                        width: 2,
+                    }}
+                    normalize={(value, preValue) => {
+                        console.log(value);
+                        if (value.length < 5) {
+                            return value;
+                        } else {
+                            return preValue;
+                        }
+                    }}
+                />
+                <Field
+                    name='record'
+                    component={Input}
+                    config={{
+                        className: 'BuyRecord',
+                        label: 'Record',
+                        inverted: true,
+                        icon: 'hashtag',
+                        iconPosition: 'left',
+                        placeholder: '00000',
                         width: 2,
                     }}
                 />
-
-                {/* <Field
-                    name='account'
-                    component={BuyInput.Account}
-                    config={{
-                        className: 'BuyAccount',
-                        label: 'Account',
-                        placeholder: '12345',
-                        inverted: true,
-                        icon: 'hashtag',
-                        iconPosition: 'left',
-                        width: 2,
-                    }}
-                /> */}
-                <Field name='record' component={BuyInput.Record} />
             </Form.Group>
             <Form.Group>
                 <Form.Input type='hidden' placeholder='2 Wide' width={12} />
