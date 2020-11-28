@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { channels } from '../../shared/constants';
 const { ipcRenderer } = window;
 
-const LoginForm = (props) => {
+function LoginForm(props) {
     const {
         handleSubmit,
         submitSucceeded,
@@ -17,118 +17,87 @@ const LoginForm = (props) => {
         history,
         usernameProps,
         passwordProps,
+        loginButton,
+        errorButton,
+        transitionProps,
+        gridProps,
+        login,
     } = props;
 
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
+    const [userIconColor, setUserIconColor] = useState('TealIconUserName');
+    const [lockIconColor, setLockIconColor] = useState('TealIconPassword');
+
+    useEffect(() => {
+        if (!username && !password && !submitSucceeded)
+            console.log('Login Form:', { username, password, submitSucceeded });
+    }, [submitSucceeded, username, password]);
 
     useEffect(() => {
         if (errorMessage) {
-            setVisible((prevState) => !prevState);
+            setUserIconColor('RedIconUserName');
+            setLockIconColor('RedIconPassword');
+        } else {
+            setUserIconColor('TealIconUserName');
+            setLockIconColor('TealIconPassword');
         }
-    }, [errorMessage, setErrorMessage]);
+    }, [username, password, submitSucceeded, errorMessage]);
 
     useEffect(() => {
-        if (submitSucceeded) {
-            console.log(username, password);
-            ipcRenderer.send(channels.APP_INFO, { username, password });
-            ipcRenderer.on(channels.APP_INFO, (event, response) => {
-                ipcRenderer.removeAllListeners(channels.APP_INFO);
+        login(submitSucceeded, username, password, (error, data) => {
+            if (error) {
+                setErrorMessage(error);
+                clearForm();
+            }
 
-                const { auth } = response;
-                if (!auth) {
-                    console.log({ response });
-                    clearForm();
-                    setErrorMessage(response.error);
-                } else {
-                    console.log({ response });
-                    clearForm();
-                    history.push('/find');
-                }
-            });
+            if (data) {
+                history.push('/find');
+            }
+        });
+    }, [login, submitSucceeded, password, username, clearForm, history]);
+
+    const clearInvalidLoginButton = () => {
+        if (errorMessage) {
+            setErrorMessage(false);
+            // clearForm();
         }
-    }, [submitSucceeded, password, username, clearForm, history]);
-
-    const loginUser = (values) => {
-        console.log('LoginForm was submitted', { values });
     };
 
     return (
-        <Grid
-            textAlign='center'
-            style={{ height: '100vh' }}
-            verticalAlign='middle'>
+        <Grid {...gridProps}>
             <Grid.Column style={{ maxWidth: 450 }}>
-                <Form onSubmit={handleSubmit(loginUser)} size='large'>
+                <Form onSubmit={handleSubmit((values) => {})} size='large'>
                     <Field
-                        className={
-                            visible ? 'RedIconUserName' : 'TealIconUserName'
-                        }
                         {...usernameProps}
-                        // onMouseOver={() => {
-                        //     if (visible) {
-                        //         setErrorMessage(false);
-                        //         setVisible(false);
-                        //     }
-                        //     setErrorMessage(false);
-                        // }}
-                        onFocus={() => {
-                            if (visible) {
-                                setErrorMessage(false);
-                                setVisible(false);
-                            }
-                            setErrorMessage(false);
-                        }}
+                        className={userIconColor}
+                        onChange={clearInvalidLoginButton}
+                        // onFocus={() => console.log('username')}
                     />
                     <Field
-                        className={
-                            visible ? 'RedIconPassword' : 'TealIconPassword'
-                        }
                         {...passwordProps}
-                        onFocus={() => {
-                            if (visible) {
-                                setErrorMessage(false);
-                                setVisible(false);
-                            }
-                            setErrorMessage(false);
-                        }}
+                        className={lockIconColor}
+                        onChange={clearInvalidLoginButton}
+                        // onFocus={() => console.log('password')}
                     />
                     <Divider hidden />
                     <Transition.Group>
                         {!errorMessage ? (
                             <Form.Button
-                                className='LoginButton'
-                                // basic
-                                circular
-                                // disabled={!username || !password}
-                                fluid
-                                size='massive'
-                                id='LoginButton'
-                                color='teal'
-                                icon='sign in'
-                                labelPosition='right'
-                                content='Login'
-                                onClick={(event, data) => {
-                                    document
-                                        .getElementById('LoginButton')
-                                        .focus();
+                                {...loginButton}
+                                disabled={!username || !password}
+                                onClick={() => {
+                                    document.getElementById('username').focus();
                                 }}
+                                // onFocus={() => {
+                                //     console.log('login button');
+                                // }}
                             />
                         ) : (
                             <Transition
-                                visible={visible}
-                                animation='shake'
-                                duration={500}
-                                unmountOnHide={true}>
+                                {...transitionProps}
+                                visible={!submitSucceeded}>
                                 <Form.Button
-                                    circular
-                                    fluid
-                                    size='massive'
-                                    id='LoginButton'
-                                    color='red'
-                                    icon='warning sign'
-                                    labelPosition='right'
-                                    content='Invalid Login'
+                                    {...errorButton}
                                     onClick={(event, data) => {
                                         event.preventDefault();
                                     }}
@@ -138,7 +107,7 @@ const LoginForm = (props) => {
                     </Transition.Group>
                 </Form>
 
-                {/* <Form.Group>
+                <Form.Group>
                     <Divider hidden />
                     <Message>
                         <Message.Header>Form data:</Message.Header>
@@ -149,21 +118,21 @@ const LoginForm = (props) => {
                                     password,
                                     submitSucceeded,
                                     errorMessage,
-                                    visible,
                                 },
                                 null,
                                 2
                             )}
                         </pre>
                     </Message>
-                </Form.Group> */}
+                </Form.Group>
             </Grid.Column>
         </Grid>
     );
-};
+}
 
 LoginForm.defaultProps = {
     usernameProps: {
+        id: 'username',
         component: Form.Input,
         name: 'username',
         placeholder: 'username',
@@ -177,6 +146,7 @@ LoginForm.defaultProps = {
         inverted: true,
     },
     passwordProps: {
+        id: 'password',
         component: Form.Input,
         name: 'password',
         placeholder: 'password',
@@ -184,10 +154,41 @@ LoginForm.defaultProps = {
         size: 'massive',
         type: 'password',
         fluid: true,
-        icon: 'lock ',
+        icon: 'lock',
         iconPosition: 'left',
         transparent: true,
         inverted: true,
+    },
+    loginButton: {
+        className: 'LoginButton',
+        circular: true,
+        fluid: true,
+        size: 'massive',
+        id: 'LoginButton',
+        color: 'teal',
+        icon: 'sign in',
+        labelPosition: 'right',
+        content: 'Login',
+    },
+    errorButton: {
+        circular: true,
+        fluid: true,
+        size: 'massive',
+        id: 'LoginButton',
+        color: 'red',
+        icon: 'warning sign',
+        labelPosition: 'right',
+        content: 'Invalid Login',
+    },
+    transitionProps: {
+        animation: 'shake',
+        duration: 500,
+        unmountOnHide: true,
+    },
+    gridProps: {
+        textAlign: 'center',
+        style: { height: '100vh' },
+        verticalAlign: 'middle',
     },
 };
 
@@ -209,6 +210,34 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearForm: () => dispatch(reset('user')),
+        login: (submitSucceeded, username, password, callback) => {
+            if (submitSucceeded) {
+                console.log('LoginForm was submitted', { username, password });
+                ipcRenderer.send(channels.APP_INFO, { username, password });
+
+                ipcRenderer.on(
+                    channels.APP_INFO,
+                    (event, { error, user_id, username }) => {
+                        ipcRenderer.removeAllListeners(channels.APP_INFO);
+
+                        if (error) {
+                            console.log('response from server', { error });
+                            callback(error, null);
+                        } else {
+                            const data = {
+                                user_id,
+                                username,
+                            };
+                            callback(error, data);
+                            console.log('response from server:', {
+                                user_id,
+                                username,
+                            });
+                        }
+                    }
+                );
+            }
+        },
     };
 };
 

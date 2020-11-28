@@ -77,7 +77,8 @@
 }
 .field.RedIconUserName i.user.icon {
     /* color: #db2828; */
-    color: #006cb5;
+    /* color: #006cb5; */
+    color: white;
 }
 
 /* LOGIN PASSWORD FILED */
@@ -88,7 +89,8 @@
 }
 .field.RedIconPassword i.lock.icon {
     /* color: #db2828; */
-    color: #006cb5;
+    /* color: #006cb5; */
+    color: white;
 }
 
 /* .ui.massive.fluid.icon.right.labeled.button {
@@ -132,7 +134,41 @@
     background-color: #002b487d;
 }
 .two.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #2185d0; */
+    /* color: #fff; */
+}
+
+/* LastRenew*/
+.three.wide.field.LastRenew label {
     color: #fff;
+}
+
+.three.wide.field.LastRenew div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.three.wide.field.LastRenew div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #2185d0; */
+    /* color: #fff; */
+}
+
+/* LastRenew*/
+.two.wide.field.LastRenew label {
+    color: #fff;
+}
+
+.two.wide.field.LastRenew div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.two.wide.field.LastRenew div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #2185d0; */
+    /* color: #fff; */
 }
 
 /* 3 BuyAccount */
@@ -146,7 +182,8 @@
     background-color: #002b487d;
 }
 .three.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
-    color: #fff;
+    color: #00bcd4;
+    /* color: #fff; */
 }
 
 /* RecordAccount */
@@ -160,7 +197,36 @@
     background-color: #002b487d;
 }
 .two.wide.field.BuyRecord div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #fff; */
+}
+
+/* SinceAccount */
+.three.wide.field.BuySince label {
     color: #fff;
+}
+.three.wide.field.BuySince div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    /* color: black; */
+    background-color: #002b487d;
+}
+.three.wide.field.BuySince div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+}
+
+/* TodayDate Buy */
+.three.wide.field.TodayDate label {
+    color: #fff;
+}
+.three.wide.field.TodayDate div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.three.wide.field.three.wide.field.TodayDate div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #fff; */
 }
 
 /* 3 RecordAccount */

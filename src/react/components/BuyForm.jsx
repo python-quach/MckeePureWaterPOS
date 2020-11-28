@@ -7,24 +7,35 @@ const BuyForm = (props) => {
     return (
         <Form size='massive'>
             <Form.Group>
-                <Form.Input
-                    inverted
-                    transparent={true}
-                    placeholder='First Name'
-                    width={3}
-                    defaultValue='Hung Quach'
+                <Field
+                    name='memberSince'
+                    component={Input}
+                    type='date'
+                    config={{
+                        className: 'BuySince',
+                        label: 'Membership Since',
+                        placeholder: '10/22/2020',
+                        inverted: true,
+                        icon: 'calendar',
+                        iconPosition: 'left',
+                        width: 3,
+                    }}
                 />
-                <Form.Input
-                    transparent={true}
-                    placeholder='Last Name'
-                    width={3}
+                <Field
+                    name='todayDate'
+                    component={Input}
+                    type='date'
+                    config={{
+                        className: 'TodayDate',
+                        label: 'Today Date',
+                        placeholder: '10/23/2020',
+                        inverted: true,
+                        icon: 'calendar',
+                        iconPosition: 'left',
+                        width: 3,
+                    }}
                 />
-                <Form.Input
-                    transparent={true}
-                    placeholder='Member Since'
-                    width={3}
-                />
-                <Form.Input hidden width={3} transparent={true} />
+                <Form.Input hidden width={6} transparent={true} />
                 <Field
                     name='account'
                     component={Input}
@@ -58,11 +69,47 @@ const BuyForm = (props) => {
                         placeholder: '00000',
                         width: 2,
                     }}
+                    normalize={(value, preValue) => {
+                        console.log(value);
+                        if (value.length < 5) {
+                            return value;
+                        } else {
+                            return preValue;
+                        }
+                    }}
                 />
             </Form.Group>
             <Form.Group>
                 <Form.Input type='hidden' placeholder='2 Wide' width={12} />
-                <Form.Input
+                <Field
+                    name='lastRenew'
+                    component={Input}
+                    type='number'
+                    config={{
+                        className: 'LastRenew',
+                        label: 'Last Renew ',
+                        placeholder: '0',
+                        inverted: true,
+                        icon: 'cart',
+                        iconPosition: 'left',
+                        width: 2,
+                    }}
+                />
+                <Field
+                    name='totalGallon'
+                    component={Input}
+                    type='number'
+                    config={{
+                        className: 'LastRenew',
+                        label: 'Total',
+                        placeholder: '0',
+                        inverted: true,
+                        icon: 'cart',
+                        iconPosition: 'left',
+                        width: 2,
+                    }}
+                />
+                {/* <Form.Input
                     color='primary'
                     icon='cart'
                     position='left'
@@ -79,8 +126,8 @@ const BuyForm = (props) => {
                     placeholder={0}
                     // size='huge'
                     width={2}
-                    defaultValue={20}
-                />
+                    defaultValue={20} */}
+                {/* /> */}
             </Form.Group>
             <Form.Group>
                 <Form.Input placeholder='8 Wide' width={8} />
