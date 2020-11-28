@@ -5,9 +5,9 @@ import { reset } from 'redux-form';
 import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../shared/constants';
-import { LoginField } from './LoginField';
-import LoginButton from './LoginButton';
-import LoginDebug from './LoginDebug';
+import { LoginField } from '../Login/LoginField';
+import LoginButton from '../Login/LoginButton';
+import LoginDebug from '../Login/LoginDebug';
 const { ipcRenderer } = window;
 
 function LoginForm(props) {
