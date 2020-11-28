@@ -17,7 +17,6 @@ function LoginForm(props) {
     } = props;
     return (
         <>
-            {/* <Form onSubmit={handleSubmit((values) => {})} size='large'> */}
             <Form onSubmit={handleSubmit} size='large'>
                 <LoginField.Username
                     className={iconColor}
@@ -28,6 +27,7 @@ function LoginForm(props) {
                     onChange={clearInvalidLoginButton}
                 />
                 <Divider hidden />
+
                 <LoginButton
                     errorMessage={errorMessage}
                     username={username}
