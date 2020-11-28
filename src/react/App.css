@@ -62,40 +62,14 @@
     color: #fff;
 }
 
-/* .user.icon.TealIconUserName {
-    color: turquoise;
-}
-
-.user.icon.RedIconUsername {
-    color: red;
-} */
-
-/* LOGIN USERNAME FIELD */
-.field.TealIconUserName i.user.icon {
-    /* color: turquoise; */
-    color: #006cb5;
-}
-.field.RedIconUserName i.user.icon {
-    /* color: #db2828; */
-    /* color: #006cb5; */
+/* Login From Input Icon */
+.field.whiteIcon i.icon {
     color: white;
 }
 
-/* LOGIN PASSWORD FILED */
-.field.TealIconPassword i.lock.icon {
-    /* color: turquoise; */
-    /* color: #006cb575; */
+.field.blueIcon i.icon {
     color: #006cb5;
 }
-.field.RedIconPassword i.lock.icon {
-    /* color: #db2828; */
-    /* color: #006cb5; */
-    color: white;
-}
-
-/* .ui.massive.fluid.icon.right.labeled.button {
-    color: #b59a0094;
-} */
 
 /* LOGIN BUTTON */
 .field.fade.LoginButton.visible.transition button {

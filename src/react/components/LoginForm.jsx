@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { Form, Grid, Divider, Transition, Message } from 'semantic-ui-react';
 import { reset } from 'redux-form';
 import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../shared/constants';
+import { LoginField } from './LoginField';
+import LoginButton from './LoginButton';
 const { ipcRenderer } = window;
 
 function LoginForm(props) {
@@ -15,51 +17,43 @@ function LoginForm(props) {
         password,
         clearForm,
         history,
-        usernameProps,
-        passwordProps,
         loginButton,
         errorButton,
         transitionProps,
         gridProps,
         login,
+        focusInput,
     } = props;
 
-    const [errorMessage, setErrorMessage] = useState(false);
-    const [userIconColor, setUserIconColor] = useState('TealIconUserName');
-    const [lockIconColor, setLockIconColor] = useState('TealIconPassword');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [iconColor, setIconColor] = useState('blueIcon');
+
+    useEffect(() => {
+        errorMessage ? setIconColor('whiteIcon') : setIconColor('blueIcon');
+    }, [errorMessage]);
 
     useEffect(() => {
         if (!username && !password && !submitSucceeded)
             console.log('Login Form:', { username, password, submitSucceeded });
-    }, [submitSucceeded, username, password]);
 
-    useEffect(() => {
-        if (errorMessage) {
-            setUserIconColor('RedIconUserName');
-            setLockIconColor('RedIconPassword');
-        } else {
-            setUserIconColor('TealIconUserName');
-            setLockIconColor('TealIconPassword');
+        if (submitSucceeded) {
+            login(username, password, (error, data) => {
+                if (error) {
+                    setErrorMessage(error);
+                    clearForm();
+                }
+
+                if (data) {
+                    history.push('/find');
+                    console.log(`Redirect to ${history.location.pathname}`);
+                }
+            });
         }
-    }, [username, password, submitSucceeded, errorMessage]);
-
-    useEffect(() => {
-        login(submitSucceeded, username, password, (error, data) => {
-            if (error) {
-                setErrorMessage(error);
-                clearForm();
-            }
-
-            if (data) {
-                history.push('/find');
-            }
-        });
-    }, [login, submitSucceeded, password, username, clearForm, history]);
+    }, [submitSucceeded, username, password, clearForm, history, login]);
 
     const clearInvalidLoginButton = () => {
         if (errorMessage) {
-            setErrorMessage(false);
-            // clearForm();
+            setErrorMessage('');
         }
     };
 
@@ -67,30 +61,28 @@ function LoginForm(props) {
         <Grid {...gridProps}>
             <Grid.Column style={{ maxWidth: 450 }}>
                 <Form onSubmit={handleSubmit((values) => {})} size='large'>
-                    <Field
-                        {...usernameProps}
-                        className={userIconColor}
+                    <LoginField.Username
+                        className={iconColor}
                         onChange={clearInvalidLoginButton}
-                        // onFocus={() => console.log('username')}
                     />
-                    <Field
-                        {...passwordProps}
-                        className={lockIconColor}
+                    <LoginField.Password
+                        className={iconColor}
                         onChange={clearInvalidLoginButton}
-                        // onFocus={() => console.log('password')}
                     />
                     <Divider hidden />
-                    <Transition.Group>
+                    <LoginButton
+                        errorMessage={errorMessage}
+                        username={username || ''}
+                        password={password || ''}
+                        focusInput={focusInput}
+                        submitSucceeded={submitSucceeded}
+                    />
+                    {/* <Transition.Group>
                         {!errorMessage ? (
                             <Form.Button
                                 {...loginButton}
                                 disabled={!username || !password}
-                                onClick={() => {
-                                    document.getElementById('username').focus();
-                                }}
-                                // onFocus={() => {
-                                //     console.log('login button');
-                                // }}
+                                onClick={() => focusInput('username')}
                             />
                         ) : (
                             <Transition
@@ -98,15 +90,12 @@ function LoginForm(props) {
                                 visible={!submitSucceeded}>
                                 <Form.Button
                                     {...errorButton}
-                                    onClick={(event, data) => {
-                                        event.preventDefault();
-                                    }}
+                                    onClick={(event) => event.preventDefault()}
                                 />
                             </Transition>
                         )}
-                    </Transition.Group>
+                    </Transition.Group> */}
                 </Form>
-
                 <Form.Group>
                     <Divider hidden />
                     <Message>
@@ -131,34 +120,6 @@ function LoginForm(props) {
 }
 
 LoginForm.defaultProps = {
-    usernameProps: {
-        id: 'username',
-        component: Form.Input,
-        name: 'username',
-        placeholder: 'username',
-        focus: true,
-        size: 'massive',
-        type: 'text',
-        fluid: true,
-        icon: 'user circle',
-        iconPosition: 'left',
-        transparent: true,
-        inverted: true,
-    },
-    passwordProps: {
-        id: 'password',
-        component: Form.Input,
-        name: 'password',
-        placeholder: 'password',
-        focus: true,
-        size: 'massive',
-        type: 'password',
-        fluid: true,
-        icon: 'lock',
-        iconPosition: 'left',
-        transparent: true,
-        inverted: true,
-    },
     loginButton: {
         className: 'LoginButton',
         circular: true,
@@ -210,33 +171,31 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearForm: () => dispatch(reset('user')),
-        login: (submitSucceeded, username, password, callback) => {
-            if (submitSucceeded) {
-                console.log('LoginForm was submitted', { username, password });
-                ipcRenderer.send(channels.APP_INFO, { username, password });
+        focusInput: (name) => {
+            document.getElementById(name).focus();
+        },
+        login: (username, password, callback) => {
+            console.log('LoginForm was submitted', { username, password });
+            ipcRenderer.send(channels.APP_INFO, { username, password });
 
-                ipcRenderer.on(
-                    channels.APP_INFO,
-                    (event, { error, user_id, username }) => {
-                        ipcRenderer.removeAllListeners(channels.APP_INFO);
+            ipcRenderer.on(
+                channels.APP_INFO,
+                (event, { error, user_id, username }) => {
+                    ipcRenderer.removeAllListeners(channels.APP_INFO);
 
-                        if (error) {
-                            console.log('response from server', { error });
-                            callback(error, null);
-                        } else {
-                            const data = {
-                                user_id,
-                                username,
-                            };
-                            callback(error, data);
-                            console.log('response from server:', {
-                                user_id,
-                                username,
-                            });
-                        }
+                    if (error) {
+                        console.log('response from server', { error });
+                        callback(error, null);
+                    } else {
+                        // const data = { user_id, username };
+                        console.log('response from server:', {
+                            user_id,
+                            username,
+                        });
+                        callback(error, { user_id, username });
                     }
-                );
-            }
+                }
+            );
         },
     };
 };

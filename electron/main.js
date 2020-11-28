@@ -69,9 +69,7 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
     db.get(sql, [username, password], (err, row) => {
         if (!row) {
             event.sender.send(channels.APP_INFO, {
-                // auth: false,
                 username,
-                // password,
                 error: `Invalid Credential for User: ${username}`,
             });
         } else {
@@ -79,8 +77,6 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
             event.sender.send(channels.APP_INFO, {
                 user_id,
                 username,
-                // password,
-                // auth: true,
             });
         }
     });
