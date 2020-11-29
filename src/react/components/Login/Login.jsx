@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { reduxForm } from 'redux-form';
-import { Grid } from 'semantic-ui-react';
 import { reset } from 'redux-form';
 import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
 import LoginDebug from './LoginDebug';
 import LoginForm from './LoginForm';
+import LoginGrid from '../Grid/Grid';
 const { ipcRenderer } = window;
 
 function LoginContainer(props) {
@@ -16,7 +16,6 @@ function LoginContainer(props) {
         password,
         clearForm,
         history,
-        gridProps,
         login,
         focusInput,
         handleSubmit,
@@ -59,27 +58,25 @@ function LoginContainer(props) {
     };
 
     return (
-        <Grid {...gridProps}>
-            <Grid.Column style={{ maxWidth: 450 }}>
-                <LoginForm
-                    size='large'
-                    handleSubmit={handleSubmit((value) => {})}
-                    iconColor={iconColor}
-                    clearInvalidLoginButton={clearInvalidLoginButton}
-                    errorMessage={errorMessage}
-                    username={username}
-                    password={password}
-                    focusInput={focusInput}
-                    submitSucceeded={submitSucceeded}
-                />
-                <LoginDebug
-                    username={username}
-                    password={password}
-                    errorMessage={errorMessage}
-                    submitSucceeded={submitSucceeded}
-                />
-            </Grid.Column>
-        </Grid>
+        <LoginGrid>
+            <LoginForm
+                size='large'
+                handleSubmit={handleSubmit((value) => {})}
+                iconColor={iconColor}
+                clearInvalidLoginButton={clearInvalidLoginButton}
+                errorMessage={errorMessage}
+                username={username}
+                password={password}
+                focusInput={focusInput}
+                submitSucceeded={submitSucceeded}
+            />
+            <LoginDebug
+                username={username}
+                password={password}
+                errorMessage={errorMessage}
+                submitSucceeded={submitSucceeded}
+            />
+        </LoginGrid>
     );
 }
 
@@ -108,12 +105,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         login: (username, password, callback) => {
             console.log('LoginForm was submitted', { username, password });
-            ipcRenderer.send(channels.APP_INFO, { username, password });
+            ipcRenderer.send(channels.LOGIN_USER, { username, password });
 
             ipcRenderer.on(
-                channels.APP_INFO,
+                channels.LOGIN_USER,
                 (event, { error, user_id, username }) => {
-                    ipcRenderer.removeAllListeners(channels.APP_INFO);
+                    ipcRenderer.removeAllListeners(channels.LOGIN_USER);
 
                     if (error) {
                         console.log('response from server', { error });

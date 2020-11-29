@@ -83,4 +83,23 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
 });
 
 // LOGIN USER SQL
-ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {});
+ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
+    console.log(`verify login:`, { username, password });
+    const sql = `SELECT * from users WHERE username = ? AND password = ?`;
+
+    db.get(sql, [username, password], (err, row) => {
+        if (!row) {
+            event.sender.send(channels.LOGIN_USER, {
+                username,
+                error: `Invalid Credential`,
+            });
+        } else {
+            console.log('found user', row);
+            const { user_id, username } = row;
+            event.sender.send(channels.LOGIN_USER, {
+                user_id,
+                username,
+            });
+        }
+    });
+});
