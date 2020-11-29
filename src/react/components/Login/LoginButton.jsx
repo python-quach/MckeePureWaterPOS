@@ -1,10 +1,11 @@
 import React from 'react';
-import { Form, Transition } from 'semantic-ui-react';
+import { Form, Transition, Divider } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 const LoginButton = (props) => {
     return (
         <Transition.Group>
+            <Divider hidden />
             {!props.errorMessage ? (
                 <Form.Button
                     {...props.loginButton}

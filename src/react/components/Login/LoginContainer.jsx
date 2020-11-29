@@ -6,6 +6,7 @@ import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
 import LoginForm from './LoginForm';
+import LoginDebug from './LoginDebug';
 const { ipcRenderer } = window;
 
 function LoginFormContainer(props) {
@@ -18,6 +19,7 @@ function LoginFormContainer(props) {
         gridProps,
         login,
         focusInput,
+        handleSubmit,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -32,19 +34,21 @@ function LoginFormContainer(props) {
             console.log('Login Form:', { username, password, submitSucceeded });
     }, [submitSucceeded, username, password, clearForm, history, login]);
 
-    const handleLogin = (values) => {
-        login(username, password, (error, data) => {
-            if (error) {
-                setErrorMessage(error);
-                clearForm();
-            }
+    useEffect(() => {
+        if (submitSucceeded) {
+            login(username, password, (error, data) => {
+                if (error) {
+                    setErrorMessage(error);
+                    clearForm();
+                }
 
-            if (data) {
-                history.push('/find');
-                console.log(`Redirect to ${history.location.pathname}`);
-            }
-        });
-    };
+                if (data) {
+                    history.push('/find');
+                    console.log(`redirected to  ${history.location.pathname}`);
+                }
+            });
+        }
+    }, [login, submitSucceeded, password, username, clearForm, history]);
 
     const clearInvalidLoginButton = () => {
         if (errorMessage) {
@@ -56,13 +60,19 @@ function LoginFormContainer(props) {
         <Grid {...gridProps}>
             <Grid.Column style={{ maxWidth: 450 }}>
                 <LoginForm
-                    handleSubmit={handleLogin}
+                    handleSubmit={handleSubmit}
                     iconColor={iconColor}
                     clearInvalidLoginButton={clearInvalidLoginButton}
                     errorMessage={errorMessage}
                     username={username}
                     password={password}
                     focusInput={focusInput}
+                    submitSucceeded={submitSucceeded}
+                />
+                <LoginDebug
+                    username={username}
+                    password={password}
+                    errorMessage={errorMessage}
                     submitSucceeded={submitSucceeded}
                 />
             </Grid.Column>

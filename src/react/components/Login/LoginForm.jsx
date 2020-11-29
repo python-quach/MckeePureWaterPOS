@@ -1,7 +1,6 @@
 import React from 'react';
-import { Form, Divider } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
-import LoginDebug from './LoginDebug';
 import { LoginField } from './LoginField';
 
 function LoginForm(props) {
@@ -16,33 +15,23 @@ function LoginForm(props) {
         handleSubmit,
     } = props;
     return (
-        <>
-            <Form onSubmit={handleSubmit} size='large'>
-                <LoginField.Username
-                    className={iconColor}
-                    onChange={clearInvalidLoginButton}
-                />
-                <LoginField.Password
-                    className={iconColor}
-                    onChange={clearInvalidLoginButton}
-                />
-                <Divider hidden />
-
-                <LoginButton
-                    errorMessage={errorMessage}
-                    username={username}
-                    password={password}
-                    focusInput={focusInput}
-                    submitSucceeded={submitSucceeded}
-                />
-            </Form>
-            <LoginDebug
+        <Form onSubmit={handleSubmit((values) => {})} size='large'>
+            <LoginField.Username
+                className={iconColor}
+                onChange={clearInvalidLoginButton}
+            />
+            <LoginField.Password
+                className={iconColor}
+                onChange={clearInvalidLoginButton}
+            />
+            <LoginButton
+                errorMessage={errorMessage}
                 username={username}
                 password={password}
+                focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
-                errorMessage={errorMessage}
             />
-        </>
+        </Form>
     );
 }
 
