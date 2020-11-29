@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
-import { LoginField } from './LoginField';
+import Field from './LoginField';
+import { string } from 'prop-types';
 
 function LoginForm(props) {
     const {
@@ -13,14 +14,15 @@ function LoginForm(props) {
         focusInput,
         submitSucceeded,
         handleSubmit,
+        size,
     } = props;
     return (
-        <Form onSubmit={handleSubmit((values) => {})} size='large'>
-            <LoginField.Username
+        <Form onSubmit={handleSubmit} size={size}>
+            <Field.Username
                 className={iconColor}
                 onChange={clearInvalidLoginButton}
             />
-            <LoginField.Password
+            <Field.Password
                 className={iconColor}
                 onChange={clearInvalidLoginButton}
             />
@@ -34,5 +36,13 @@ function LoginForm(props) {
         </Form>
     );
 }
+
+LoginForm.propTypes = {
+    size: string.isRequired,
+};
+
+LoginForm.defaultProps = {
+    size: 'large',
+};
 
 export default LoginForm;

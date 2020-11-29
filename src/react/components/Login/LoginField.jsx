@@ -49,7 +49,14 @@ Password.defaultProps = {
     onChange: () => {},
 };
 
-export const LoginField = {
+const LoginField = {
     Username,
     Password,
 };
+
+export default LoginField;
+
+// export const LoginField = {
+//     Username,
+//     Password,
+// };

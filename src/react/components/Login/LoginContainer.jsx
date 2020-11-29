@@ -5,11 +5,11 @@ import { reset } from 'redux-form';
 import { formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
-import LoginForm from './LoginForm';
 import LoginDebug from './LoginDebug';
+import LoginForm from './LoginForm';
 const { ipcRenderer } = window;
 
-function LoginFormContainer(props) {
+function LoginContainer(props) {
     const {
         submitSucceeded,
         username,
@@ -35,17 +35,19 @@ function LoginFormContainer(props) {
     }, [submitSucceeded, username, password, clearForm, history, login]);
 
     useEffect(() => {
+        const showInvalidButton = (error) => {
+            setErrorMessage(error);
+            clearForm();
+        };
+
+        const redirectUserToFindPage = (data) => {
+            history.push('/find');
+            console.log(`redirected to  ${history.location.pathname}`, data);
+        };
+
         if (submitSucceeded) {
             login(username, password, (error, data) => {
-                if (error) {
-                    setErrorMessage(error);
-                    clearForm();
-                }
-
-                if (data) {
-                    history.push('/find');
-                    console.log(`redirected to  ${history.location.pathname}`);
-                }
+                error ? showInvalidButton(error) : redirectUserToFindPage(data);
             });
         }
     }, [login, submitSucceeded, password, username, clearForm, history]);
@@ -60,7 +62,8 @@ function LoginFormContainer(props) {
         <Grid {...gridProps}>
             <Grid.Column style={{ maxWidth: 450 }}>
                 <LoginForm
-                    handleSubmit={handleSubmit}
+                    size='large'
+                    handleSubmit={handleSubmit((value) => {})}
                     iconColor={iconColor}
                     clearInvalidLoginButton={clearInvalidLoginButton}
                     errorMessage={errorMessage}
@@ -80,7 +83,7 @@ function LoginFormContainer(props) {
     );
 }
 
-LoginFormContainer.defaultProps = {
+LoginContainer.defaultProps = {
     gridProps: {
         textAlign: 'center',
         style: { height: '100vh' },
@@ -128,7 +131,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(reduxForm({ form: 'user' })(LoginFormContainer));
+const ReduxLoginForm = reduxForm({ form: 'user' })(LoginContainer);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReduxLoginForm);
