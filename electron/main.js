@@ -81,3 +81,6 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
         }
     });
 });
+
+// LOGIN USER SQL
+ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {});
