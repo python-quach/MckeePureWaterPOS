@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Divider, Form } from 'semantic-ui-react';
 import Field from './FindField';
-import FindModal from './FindModal';
-// import FindMemberShipButton from './FindMembershipButton';
+import FindModalButton from './FindModal';
 
 function FindForm({
     clearForm,
@@ -13,7 +12,6 @@ function FindForm({
     closeMe,
 }) {
     const [hideField, setHideField] = useState(false);
-    // const [openMemberModal, setOpenMemberModal] = useState(false);
 
     return (
         <Form onSubmit={handleSubmit} size={size}>
@@ -43,9 +41,7 @@ function FindForm({
                 }}
             />
             <Divider hidden />
-            {/* <FindMemberShipButton setOpenModal={setOpenMemberModal} /> */}
-            <FindModal
-                // open={openMemberModal}
+            <FindModalButton
                 hideLogoutButton={hideLogoutButton}
                 hideField={setHideField}
                 clearForm={clearForm}
