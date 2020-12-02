@@ -8,9 +8,10 @@ const FindButton = (props) => {
             <Divider hidden />
             {!props.errorMessage ? (
                 <Form.Button
-                    {...props.loginButton}
-                    disabled={!props.username || !props.password}
-                    onClick={() => props.focusInput('username')}
+                    {...props.findButton}
+                    onClick={() => {
+                        console.log('Find Membership Button Click');
+                    }}
                 />
             ) : (
                 <Transition
@@ -28,24 +29,24 @@ const FindButton = (props) => {
 
 FindButton.propTypes = {
     errorMessage: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
+    phone: PropTypes.string.isRequired,
+    account: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
     focusInput: PropTypes.func.isRequired,
     submitSucceeded: PropTypes.bool.isRequired,
 };
 
 FindButton.defaultProps = {
-    loginButton: {
-        className: 'LoginButton',
+    findButton: {
+        className: 'LogoutButton',
         circular: true,
         fluid: true,
         size: 'massive',
-        id: 'LoginButton',
-        color: 'teal',
-        icon: 'sign in',
+        id: 'FindButton',
+        icon: 'search',
         labelPosition: 'right',
         content: 'Find Membership',
-        // content: 'Login',
     },
     errorButton: {
         circular: true,

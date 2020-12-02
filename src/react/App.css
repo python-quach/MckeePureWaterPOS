@@ -1,6 +1,6 @@
 .App {
     text-align: center;
-    background-color: blue;
+    background-color: #002b487d;
 }
 
 .App-logo {
@@ -68,12 +68,38 @@
 }
 
 .field.blueIcon i.icon {
-    color: #006cb5;
+    /* color: #006cb5; */
+    color: #40b2ff;
+}
+
+/* LOGIN FORM */
+.field.blueIcon div.input input[type='text']::-webkit-input-placeholder {
+    color: #fff;
+}
+.field.blueIcon div.input input[type='password']::-webkit-input-placeholder {
+    color: #fff;
+}
+
+/* FIND BUTTON */
+.field.FindButton button {
+    background-color: #006cb575;
+    color: #fff;
 }
 
 /* LOGIN BUTTON */
 .field.fade.LoginButton.visible.transition button {
     background-color: #006cb575;
+}
+
+/* LOGOUT BUTTON */
+.field.fade.LogoutButton.visible.transition button {
+    background-color: #006cb575;
+    color: #fff;
+}
+
+.ui.massive.circular.fluid.icon.right.labeled.button.LogoutButton {
+    background-color: #006cb575;
+    color: #fff;
 }
 
 .lock.icon {

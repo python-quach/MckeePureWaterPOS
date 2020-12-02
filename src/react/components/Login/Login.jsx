@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { reduxForm } from 'redux-form';
-import { reset } from 'redux-form';
-import { formValueSelector } from 'redux-form';
+import { reduxForm, reset, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
 import LoginDebug from './LoginDebug';
 import LoginForm from './LoginForm';
 import LoginGrid from '../Grid/Grid';
+import * as actionTypes from '../../../types';
 const { ipcRenderer } = window;
 
 function LoginContainer(props) {
@@ -93,7 +92,7 @@ const mapStateToProps = (state) => {
     return {
         username: selectFormData(state, 'username') || '',
         password: selectFormData(state, 'password') || '',
-        submitSucceeded: state.form.user ? state.form.user.submitSucceeded : {},
+        submitSucceeded: selectFormData(state, 'submitSucceeded'),
     };
 };
 
@@ -119,6 +118,10 @@ const mapDispatchToProps = (dispatch) => {
                         console.log('response from server:', {
                             user_id,
                             username,
+                        });
+                        dispatch({
+                            type: actionTypes.AUTHENTICATED,
+                            payload: user_id,
                         });
                         callback(error, { user_id, username });
                     }

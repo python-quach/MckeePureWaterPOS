@@ -48,78 +48,6 @@ const FindForm = (props) => {
             style={{ height: '100vh' }}
             verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-                {/* <Form.Group inline>
-                    <Input
-                        inverted
-                        action={{
-                            size: 'massive',
-                            color: 'blue',
-                            labelPosition: 'right',
-                            icon: 'search',
-                            content: 'Find',
-                        }}
-                        label={{
-                            pointing: 'right',
-                            color: 'white',
-                        }}
-                        size='massive'
-                        actionPosition='right'
-                        placeholder='Search...'
-                        // defaultValue='52.03'
-                    />
-                    <Input
-                        inverted
-                        action={{
-                            size: 'massive',
-                            color: 'blue',
-                            labelPosition: 'right',
-                            icon: 'search',
-                            content: 'Find',
-                        }}
-                        label={{
-                            pointing: 'right',
-                            color: 'white',
-                        }}
-                        size='massive'
-                        actionPosition='right'
-                        placeholder='Search...'
-                        // defaultValue='52.03'
-                    />
-                </Form.Group> */}
-
-                {/* <Button.Group size='massive'>
-                    <Button
-                        size='large'
-                        color='blue'
-                        content='Find'
-                        // icon='fork'
-                        icon='search'
-                        label={{
-                            // as: 'a',
-                            basic: true,
-                            color: 'blue',
-                            pointing: 'right',
-                            // content: '50',
-                        }}
-                    />
-                    <Button
-                        size='large'
-                        color='vk'
-                        content='Add'
-                        // icon='fork'
-                        icon='flask'
-                        label={{
-                            as: 'a',
-                            basic: true,
-                            color: 'blue',
-                            pointing: 'right',
-                            content: '50',
-                        }}
-                    />
-                    <Button>Two</Button>
-                    <Button.Or />
-                    <Button>Three</Button>
-                </Button.Group> */}
                 <Form onSubmit={handleSubmit(loginUser)} size='large'>
                     <Field {...phoneProps} onFocus={clearErrorMessage} />
                     <Field
@@ -166,7 +94,6 @@ const FindForm = (props) => {
                         onFocus={() => setErrorMessage('')}
                     />
                     <MemberModalButton />
-                    {/* <BuyModalButton /> */}
                     <Form.Button
                         circular
                         fluid
@@ -187,25 +114,6 @@ const FindForm = (props) => {
                         <Message.Header>{errorMessage}</Message.Header>
                     </Message>
                 ) : null}
-                {/* <Form.Group>
-                    <Divider hidden />
-                    <Message>
-                        <Message.Header>Form data:</Message.Header>
-                        <pre>
-                            {JSON.stringify(
-                                {
-                                    phone,
-                                    membership,
-                                    firstName,
-                                    lastName,
-                                    submitSucceeded,
-                                },
-                                null,
-                                2
-                            )}
-                        </pre>
-                    </Message>
-                </Form.Group> */}
             </Grid.Column>
         </Grid>
     );

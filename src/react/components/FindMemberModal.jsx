@@ -48,7 +48,10 @@ const FindMemberModal = (props) => {
                                 icon='close'
                                 labelPosition='right'
                                 color='red'
-                                onClick={() => setOpen(false)}
+                                onClick={() => {
+                                    setOpen(false);
+                                    props.hideField(true);
+                                }}
                             />
                         ) : null}
                     </Modal.Actions>
