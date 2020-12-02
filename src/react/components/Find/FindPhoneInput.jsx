@@ -6,9 +6,10 @@ const FindPhoneInput = ({ setting, hide, clearFields }) =>
     !hide ? (
         <Field
             {...setting}
-            onFocus={() => {
-                clearFields(true, false, 'account', 'firstName', 'lastName');
-            }}
+            onFocus={clearFields}
+            // onFocus={() => {
+            //     clearFields(true, false, 'account', 'firstName', 'lastName');
+            // }}
             normalize={(value, previousValue) => {
                 console.log({ value, previousValue });
                 if (value.match(/^\d+$/g) && value.length < 9) {

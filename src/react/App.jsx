@@ -4,6 +4,7 @@ import FindForm from './components/FindForm';
 import Find from './components/Find/Find';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login/Login';
+import Member from './components/Membership/Membership';
 import './App.css';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
                 <Route exact path='/' component={Login} />
                 {/* <Route exact path='/find' component={FindForm} /> */}
                 <Route exact path='/find' component={Find} />
+                <Route exact path='/member' component={Member} />
                 <Route exact path='/dashboard' component={Dashboard} />
             </Switch>
         </Router>

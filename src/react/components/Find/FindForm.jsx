@@ -10,12 +10,25 @@ function FindForm({
     size,
     clearFields,
     closeMe,
+    disableFindButton,
+    history,
 }) {
     const [hideField, setHideField] = useState(false);
 
     return (
         <Form onSubmit={handleSubmit} size={size}>
-            <Field.Phone hide={hideField} clearFields={clearFields} />
+            <Field.Phone
+                hide={hideField}
+                clearFields={() => {
+                    clearFields(
+                        true,
+                        false,
+                        'account',
+                        'firstName',
+                        'lastName'
+                    );
+                }}
+            />
             <Field.Account
                 hide={hideField}
                 clearFields={() => {
@@ -41,7 +54,15 @@ function FindForm({
                 }}
             />
             <Divider hidden />
+            {/* <Form.Button
+                content='member'
+                onClick={() => {
+                    history.push('/member');
+                }}
+            /> */}
             <FindModalButton
+                handleSubmit={handleSubmit}
+                disable={disableFindButton}
                 hideLogoutButton={hideLogoutButton}
                 hideField={setHideField}
                 clearForm={clearForm}

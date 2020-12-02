@@ -16,17 +16,15 @@ const FindNameInput = ({
             name={name}
             placeholder={placeholder}
             {...setting}
-            onFocus={clearFields}></Field>
+            onFocus={clearFields}
+        />
     ) : null;
 };
 
 FindNameInput.defaultProps = {
     setting: {
         className: 'blueIcon',
-        // id: 'firstName',
         component: Form.Input,
-        // name: 'firstName',
-        // placeholder: 'first name',
         focus: true,
         size: 'massive',
         type: 'text',

@@ -1,12 +1,18 @@
 import React from 'react';
 import { Modal, Button } from 'semantic-ui-react';
 import MembershipRow from '../MemberRow';
-import FindMembershipButton from './FindMembershipButton';
 import FindModalHeader from './FindModalHeader';
 import FindModalCloseButton from './FindModalCloseButton';
 
 const FindModal = (props) => {
-    const { hideField, clearForm, hideLogoutButton, closeMe } = props;
+    const {
+        hideField,
+        clearForm,
+        hideLogoutButton,
+        closeMe,
+        disable,
+        handleSubmit,
+    } = props;
     const [open, setOpen] = React.useState(false);
     const [hide, setHide] = React.useState(false);
     const [hideButton, setHideButton] = React.useState(false);
@@ -38,10 +44,11 @@ const FindModal = (props) => {
             onOpen={() => setOpen(true)}
             onUnmount={() => console.log('umount model')}
             open={open}
-            // open={props.open}
             trigger={
                 !hideButton ? (
                     <Button
+                        type='submit'
+                        disabled={disable}
                         circular
                         fluid
                         size='massive'
@@ -50,23 +57,15 @@ const FindModal = (props) => {
                         labelPosition='right'
                         icon='search'
                         content='Find Membership'
-                        onClick={() => {
+                        onClick={handleSubmit((values) => {
+                            console.log('submitting values', { values });
                             hideButtons();
-                        }}></Button>
+                        })}
+                    />
                 ) : null
             }>
             <FindModalHeader hide={hide} content='Select a Membership Modal' />
             <Modal.Content>
-                <MembershipRow
-                    hideField={hideField}
-                    hideRow={setHide}
-                    hide={hide}
-                />
-                <MembershipRow
-                    hideField={hideField}
-                    hideRow={setHide}
-                    hide={hide}
-                />
                 <MembershipRow
                     hideField={hideField}
                     hideRow={setHide}
