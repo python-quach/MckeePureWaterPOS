@@ -12,11 +12,14 @@ function FindForm({
     closeMe,
     disableFindButton,
     history,
+    find,
+    membership,
 }) {
     const [hideField, setHideField] = useState(false);
 
     return (
-        <Form onSubmit={handleSubmit} size={size}>
+        // <Form onSubmit={handleSubmit} size={size}>
+        <Form size={size}>
             <Field.Phone
                 hide={hideField}
                 clearFields={() => {
@@ -61,12 +64,15 @@ function FindForm({
                 }}
             /> */}
             <FindModalButton
+                history={history}
+                membership={membership}
                 handleSubmit={handleSubmit}
                 disable={disableFindButton}
                 hideLogoutButton={hideLogoutButton}
                 hideField={setHideField}
                 clearForm={clearForm}
                 closeMe={closeMe}
+                find={find}
             />
         </Form>
     );

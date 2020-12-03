@@ -7,21 +7,18 @@ const FindPhoneInput = ({ setting, hide, clearFields }) =>
         <Field
             {...setting}
             onFocus={clearFields}
-            // onFocus={() => {
-            //     clearFields(true, false, 'account', 'firstName', 'lastName');
-            // }}
             normalize={(value, previousValue) => {
-                console.log({ value, previousValue });
-                if (value.match(/^\d+$/g) && value.length < 9) {
-                    if (value.length === 7) {
+                if (value.match(/^\d+$/g) && value.length < 8) {
+                    if (value.length === 7)
                         return value.slice(0, 3) + '-' + value.slice(3, 7);
-                    }
+                    if (value.length === 0) return '';
+
                     return value;
-                } else {
-                    if (!previousValue || value.length === 0) return '';
-                    if (previousValue.length > value.length) return value;
-                    return previousValue;
                 }
+
+                if (previousValue && previousValue.length > value.length)
+                    return value;
+                return previousValue;
             }}
         />
     ) : null;

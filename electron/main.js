@@ -103,3 +103,36 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
         }
     });
 });
+
+ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
+    console.log('find membership', { args });
+    const { phone, account, firstName, lastName } = args;
+    const sql = `SELECT * FROM memberships 
+                    WHERE Phone like '___${
+                        phone ? phone.replace(/-/g, '') : ''
+                    }' 
+                    OR MemberAccount = '${account}' 
+                    OR FirstName = '${firstName}' 
+                    AND LastName = '${lastName}' `;
+    db.all(sql, (err, rows) => {
+        console.log(rows);
+        if (err) console.log({ err });
+        if (!rows.length) {
+            console.log('Unable to find User');
+            event.sender.send(channels.FIND_MEMBERSHIP, {
+                error: 'Unable to locate Membership',
+            });
+        } else {
+            console.log(rows.length);
+            if (rows.length === 1) {
+                event.sender.send(channels.FIND_MEMBERSHIP, {
+                    membership: rows,
+                });
+            } else {
+                event.sender.send(channels.FIND_MEMBERSHIP, {
+                    memberships: rows,
+                });
+            }
+        }
+    });
+});

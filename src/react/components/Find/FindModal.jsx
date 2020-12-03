@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Button } from 'semantic-ui-react';
 import MembershipRow from '../MemberRow';
 import FindModalHeader from './FindModalHeader';
 import FindModalCloseButton from './FindModalCloseButton';
+import DebugMessage from '../Debug/DebugMessage';
 
 const FindModal = (props) => {
     const {
@@ -12,6 +13,9 @@ const FindModal = (props) => {
         closeMe,
         disable,
         handleSubmit,
+        find,
+        membership,
+        history,
     } = props;
     const [open, setOpen] = React.useState(false);
     const [hide, setHide] = React.useState(false);
@@ -31,6 +35,16 @@ const FindModal = (props) => {
         setHideButton(false);
         hideLogoutButton(false);
     };
+
+    useEffect(() => {
+        if (membership.error) {
+            console.log(membership.error);
+            setOpen(false);
+            hideLogoutButton(false);
+            hideField(false);
+            setHideButton(false);
+        }
+    }, [membership, setOpen, hideLogoutButton, hideField, setHideButton]);
 
     return (
         <Modal
@@ -59,7 +73,25 @@ const FindModal = (props) => {
                         content='Find Membership'
                         onClick={handleSubmit((values) => {
                             console.log('submitting values', { values });
-                            hideButtons();
+
+                            // const {
+                            //     phone,
+                            //     account,
+                            //     firstName,
+                            //     lastName,
+                            // } = values;
+
+                            // console.log(values.phone.replace(/-/g, ''));
+                            find(values, (response) => {
+                                if (response.error) {
+                                    setOpen(false);
+                                    hideLogoutButton(false);
+                                    hideField(false);
+                                    setHideButton(false);
+                                    // hideButtons();
+                                }
+                            });
+                            // hideButtons();
                         })}
                     />
                 ) : null
@@ -71,6 +103,7 @@ const FindModal = (props) => {
                     hideRow={setHide}
                     hide={hide}
                 />
+                <DebugMessage membership={membership} />
             </Modal.Content>
             <Modal.Actions>
                 <FindModalCloseButton hide={hide} close={closeModal} />

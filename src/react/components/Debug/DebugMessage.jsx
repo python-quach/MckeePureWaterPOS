@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Message, Divider } from 'semantic-ui-react';
 
-export const DebugMessage = (props) => (
+const DebugMessage = (props) => (
     <Form.Group>
         <Divider hidden />
         <Message>
@@ -9,3 +9,5 @@ export const DebugMessage = (props) => (
         </Message>
     </Form.Group>
 );
+
+export default DebugMessage;

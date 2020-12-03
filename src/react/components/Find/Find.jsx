@@ -6,6 +6,10 @@ import { channels } from '../../../shared/constants';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
+import DebugMessage from '../Debug/DebugMessage';
+import * as actionTypes from '../../../types';
+import actions from 'redux-form/lib/actions';
+
 const { ipcRenderer } = window;
 
 function FindContainer(props) {
@@ -21,6 +25,7 @@ function FindContainer(props) {
         focusInput,
         handleSubmit,
         clearFields,
+        membership,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -83,6 +88,8 @@ function FindContainer(props) {
                 }}>
                 <FindGrid>
                     <FindForm
+                        membership={membership}
+                        find={find}
                         history={history}
                         disableFindButton={disableFindButton}
                         clearFields={clearFields}
@@ -109,8 +116,17 @@ function FindContainer(props) {
                         hide={hideLogoutButton}
                         hideField={setHideLogoutButton}
                         logout={() => {
+                            setOpen(false);
                             history.push('/');
                         }}
+                    />
+                    <DebugMessage
+                        membership={membership}
+                        phone={phone}
+                        account={account}
+                        firstName={firstName}
+                        lastName={lastName}
+                        submitSucceeded={submitSucceeded}
                     />
                 </FindGrid>
             </Segment>
@@ -124,6 +140,7 @@ FindContainer.propTypes = {};
 const mapStateToProps = (state) => {
     const selectFormData = formValueSelector('membership');
     return {
+        membership: state.membership,
         user_id: state.auth.user_id,
         phone: selectFormData(state, 'phone') || '',
         account: selectFormData(state, 'account') || '',
@@ -141,7 +158,7 @@ const mapDispatchToProps = (dispatch) => {
         focusInput: (name) => {
             document.getElementById(name).focus();
         },
-        find: ({ phone, account, firstName, lastName }) => {
+        find: ({ phone, account, firstName, lastName }, callback) => {
             console.log('FindForm was submitted', {
                 phone,
                 account,
@@ -153,6 +170,15 @@ const mapDispatchToProps = (dispatch) => {
                 account,
                 firstName,
                 lastName,
+            });
+            ipcRenderer.on(channels.FIND_MEMBERSHIP, (event, response) => {
+                ipcRenderer.removeAllListeners(channels.FIND_MEMBERSHIP);
+                console.log(response);
+                dispatch({
+                    type: actionTypes.FIND_MEMBERSHIP,
+                    payload: response,
+                });
+                callback(response);
             });
         },
     };
