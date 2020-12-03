@@ -96,6 +96,7 @@ const FindModal = (props) => {
                         hideField={hideField}
                         hideRow={setHide}
                         hide={hide}
+                        // history={history}
                     />
                 ) : null}
                 <DebugMessage membership={membership} />

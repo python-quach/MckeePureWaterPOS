@@ -11,6 +11,7 @@ import Field from './FindField';
 import FindModalButton from './FindModal';
 
 function FindForm({
+    setOpenFind,
     clearForm,
     hideLogoutButton,
     handleSubmit,
@@ -29,14 +30,14 @@ function FindForm({
         <Form
             size={size}
             onSubmit={handleSubmit((values) => {
-                console.log(values);
+                // console.log(values);
                 find(values, (data) => {
                     if (!data.error) {
                         // setOpenPortal(true);
                         // setHideField(true);
                         history.push('/portal');
                     }
-                    console.log({ data });
+                    // console.log({ data });
                 });
             })}>
             <Field.Phone
@@ -83,7 +84,7 @@ function FindForm({
                 }}
             /> */}
             <Form.Button
-                size='huge'
+                size='massive'
                 circular
                 content='Open Portal'
                 icon='facebook'
@@ -91,7 +92,7 @@ function FindForm({
                 labelPosition='right'
             />
 
-            <FindModalButton
+            {/* <FindModalButton
                 history={history}
                 membership={membership}
                 handleSubmit={handleSubmit}
@@ -101,7 +102,7 @@ function FindForm({
                 clearForm={clearForm}
                 closeMe={closeMe}
                 find={find}
-            />
+            /> */}
         </Form>
     );
 }

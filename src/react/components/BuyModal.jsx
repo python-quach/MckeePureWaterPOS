@@ -4,6 +4,9 @@ import BuyForm from './BuyForm';
 
 const BuyModal = (props) => {
     const { setOpen, open, hideMemberRow } = props;
+    // const { hideMemberRow } = props;
+
+    // const [open, setOpen] = React.useState(false);
 
     const closeModal = () => {
         setOpen(false);
@@ -14,6 +17,9 @@ const BuyModal = (props) => {
         <Modal
             closeOnDimmerClick={false}
             closeOnEscape={false}
+            closeOnDocumentClick={false}
+            closeOnPortalMouseLeave={false}
+            closeOnTriggerClick={false}
             basic
             style={{ marginLeft: '40px' }}
             size='fullscreen'

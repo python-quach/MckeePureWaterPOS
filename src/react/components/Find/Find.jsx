@@ -76,7 +76,15 @@ function FindContainer(props) {
         <TransitionablePortal
             open={open}
             transition={{ animation, duration }}
-            onStart={() => console.log('onStart', { open })}
+            onStart={() => {
+                console.log('onStart', { open });
+                // setOpen((prevState) => !prevState);
+            }}
+            onOpen={() => {
+                console.log('onOPen', { open });
+                // setOpen((prevState) => !prevState);
+            }}
+            onClose={() => console.log('onClose', { open })}
             onHide={() => console.log('closing trans', { open })}>
             <Segment
                 style={{
@@ -88,6 +96,7 @@ function FindContainer(props) {
                 }}>
                 <FindGrid>
                     <FindForm
+                        setOpenFind={setOpen}
                         membership={membership}
                         find={find}
                         history={history}

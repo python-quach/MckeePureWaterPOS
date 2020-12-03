@@ -42,7 +42,7 @@ const BuyForm = (props) => {
                     config={{
                         className: 'BuyAccount',
                         label: 'Account',
-                        placeholder: '000000',
+                        placeholder: '00000',
                         inverted: true,
                         icon: 'hashtag',
                         iconPosition: 'left',
@@ -50,7 +50,7 @@ const BuyForm = (props) => {
                     }}
                     normalize={(value, preValue) => {
                         console.log(value);
-                        if (value.length < 5) {
+                        if (value.length < 6) {
                             return value;
                         } else {
                             return preValue;
@@ -71,7 +71,7 @@ const BuyForm = (props) => {
                     }}
                     normalize={(value, preValue) => {
                         console.log(value);
-                        if (value.length < 5) {
+                        if (value.length < 6) {
                             return value;
                         } else {
                             return preValue;

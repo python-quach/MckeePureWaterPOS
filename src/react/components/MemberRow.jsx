@@ -1,28 +1,29 @@
 import React from 'react';
-import { List, Button, Modal, Icon } from 'semantic-ui-react';
-import BuyForm from './BuyForm';
+import { List, Button } from 'semantic-ui-react';
 import BuyModal from './BuyModal';
 
 const MemberRow = (props) => {
     const [open, openBuyModal] = React.useState(false);
+    const { close } = props;
 
     return (
-        <List verticalAlign='middle' size='huge' inverted>
+        <List verticalAlign='middle' size='large' inverted>
             <List.Item>
                 <List.Content floated='right'>
-                    <BuyModal
+                    {/* <BuyModal
                         setOpen={openBuyModal}
                         open={open}
+                        closeOnDimmerClick={false}
+                        closeOnEscape={false}
                         hideField={props.hideField}
                         hideMemberRow={props.hideRow}
-                    />
+                    /> */}
 
                     {!props.hide ? (
                         <>
                             <Button
-                                // focus
                                 circular
-                                size='huge'
+                                size='large'
                                 color='pink'
                                 content='Buy'
                                 labelPosition='right'
@@ -30,12 +31,12 @@ const MemberRow = (props) => {
                                 onClick={() => {
                                     openBuyModal(true);
                                     props.hideRow(true);
+                                    props.history.push('/buy');
                                 }}
                             />
                             <Button
                                 circular
-                                // focus
-                                size='huge'
+                                size='large'
                                 color='facebook'
                                 content='Renew'
                                 labelPosition='right'
@@ -43,8 +44,7 @@ const MemberRow = (props) => {
                             />
                             <Button
                                 circular
-                                // focus
-                                size='huge'
+                                size='large'
                                 color='twitter'
                                 content='Edit'
                                 labelPosition='right'
@@ -52,12 +52,20 @@ const MemberRow = (props) => {
                             />
                             <Button
                                 circular
-                                // focus
-                                size='huge'
+                                size='large'
                                 color='grey'
                                 content='Invoice'
                                 labelPosition='right'
                                 icon='sticky note'
+                            />
+                            <Button
+                                circular
+                                size='large'
+                                color='red'
+                                content='Done'
+                                labelPosition='right'
+                                icon='close'
+                                onClick={close}
                             />
                         </>
                     ) : null}
@@ -68,100 +76,34 @@ const MemberRow = (props) => {
                             <Button
                                 circular
                                 inverted
-                                // inverted
-                                // circular
-                                size='huge'
+                                size='large'
                                 color='grey'
-                                // color='blue'
                                 content='302039'
                                 icon='gg'
-                                // label={{
-                                // basic: false,
-                                // basic: true,
-                                // color: 'blue',
-                                // color: 'grey',
-                                // pointing: 'right',
-                                // }}
                             />
                             <Button
                                 inverted
                                 circular
                                 color='grey'
-                                // inverted
-                                // circular
-                                size='huge'
-                                // color='red'
-                                // color='blue'
-                                // color='grey'
+                                size='large'
                                 content='Hung Quach'
                                 icon='user'
-                                // label={{
-                                // basic: false,
-                                // basic: true,
-                                // color: 'red',
-                                // color: 'grey',
-                                // color: 'blue',
-                                // pointing: 'right',
-                                // content: '200',
-                                // }}
                             />
                             <Button
                                 circular
                                 inverted
-                                size='huge'
+                                size='large'
                                 color='grey'
                                 content='Gallon Remain'
-                                // icon='fork'
                                 icon='flask'
                                 label={{
-                                    // as: 'h1',
                                     basic: true,
                                     color: 'blue',
-                                    // pointing: 'right',
                                     content: '50',
                                 }}
                             />
                         </>
                     ) : null}
-                    {/* <Button
-                        size='large'
-                        color='grey'
-                        content='302039'
-                        icon='gg'
-                        label={{
-                            basic: false,
-                            color: 'grey',
-                            pointing: 'right',
-                            // corner: 'left',
-                            // content: '200',
-                        }}
-                    />
-                    <Button
-                        size='large'
-                        color='red'
-                        content='Hung Quach'
-                        icon='random'
-                        label={{
-                            basic: false,
-                            color: 'red',
-                            pointing: 'right',
-                            // content: '200',
-                        }}
-                    />
-                    <Button
-                        size='large'
-                        color='blue'
-                        content='Gallon Remaining'
-                        // icon='fork'
-                        icon='flask'
-                        label={{
-                            as: 'a',
-                            basic: true,
-                            color: 'blue',
-                            pointing: 'right',
-                            content: '50',
-                        }}
-                    /> */}
                 </List.Content>
             </List.Item>
         </List>
