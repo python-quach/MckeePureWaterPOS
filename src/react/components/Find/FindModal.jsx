@@ -73,36 +73,31 @@ const FindModal = (props) => {
                         content='Find Membership'
                         onClick={handleSubmit((values) => {
                             console.log('submitting values', { values });
-
-                            // const {
-                            //     phone,
-                            //     account,
-                            //     firstName,
-                            //     lastName,
-                            // } = values;
-
-                            // console.log(values.phone.replace(/-/g, ''));
                             find(values, (response) => {
                                 if (response.error) {
                                     setOpen(false);
                                     hideLogoutButton(false);
                                     hideField(false);
                                     setHideButton(false);
-                                    // hideButtons();
+                                    clearForm();
+                                } else {
+                                    hideButtons();
+                                    clearForm();
                                 }
                             });
-                            // hideButtons();
                         })}
                     />
                 ) : null
             }>
             <FindModalHeader hide={hide} content='Select a Membership Modal' />
             <Modal.Content>
-                <MembershipRow
-                    hideField={hideField}
-                    hideRow={setHide}
-                    hide={hide}
-                />
+                {!membership.error ? (
+                    <MembershipRow
+                        hideField={hideField}
+                        hideRow={setHide}
+                        hide={hide}
+                    />
+                ) : null}
                 <DebugMessage membership={membership} />
             </Modal.Content>
             <Modal.Actions>

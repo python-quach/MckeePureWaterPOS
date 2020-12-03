@@ -8,7 +8,6 @@ import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
 import DebugMessage from '../Debug/DebugMessage';
 import * as actionTypes from '../../../types';
-import actions from 'redux-form/lib/actions';
 
 const { ipcRenderer } = window;
 
@@ -26,6 +25,7 @@ function FindContainer(props) {
         handleSubmit,
         clearFields,
         membership,
+        clearMembership,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -117,6 +117,7 @@ function FindContainer(props) {
                         hideField={setHideLogoutButton}
                         logout={() => {
                             setOpen(false);
+                            clearMembership();
                             history.push('/');
                         }}
                     />
@@ -155,6 +156,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearForm: () => dispatch(reset('membership')),
+        clearMembership: () => dispatch({ type: actionTypes.CLEAR_MEMBERSHIP }),
         focusInput: (name) => {
             document.getElementById(name).focus();
         },

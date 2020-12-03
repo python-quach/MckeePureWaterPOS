@@ -32,6 +32,8 @@ export function membershipReducer(state = membershipInitialState, action) {
                     : null,
                 error: action.payload.error ? action.payload.error : null,
             };
+        case actionTypes.CLEAR_MEMBERSHIP:
+            return { ...state, members: null, member: null, error: null };
         default:
             return state;
     }
