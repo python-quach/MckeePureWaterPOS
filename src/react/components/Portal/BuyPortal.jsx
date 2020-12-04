@@ -14,7 +14,8 @@ const BuyPortal = (props) => {
         setOpenPortal(false);
         // clearMembership();
         // props.history.push('/find');
-        props.history.push('/portal');
+        // props.history.push('/portal');
+        props.history.push('/member');
     };
     return (
         <TransitionablePortal onClose={handleClose} open={open}>

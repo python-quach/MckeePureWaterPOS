@@ -26,7 +26,8 @@ function FindForm({
                     if (!data.error) {
                         // setOpenPortal(true);
                         // setHideField(true);
-                        history.push('/portal');
+                        // history.push('/portal');
+                        history.push('/member');
                     }
                     // console.log({ data });
                 });
@@ -77,18 +78,6 @@ function FindForm({
                 fluid
                 labelPosition='right'
             />
-
-            {/* <FindModalButton
-                history={history}
-                membership={membership}
-                handleSubmit={handleSubmit}
-                disable={disableFindButton}
-                hideLogoutButton={hideLogoutButton}
-                hideField={setHideField}
-                clearForm={clearForm}
-                closeMe={closeMe}
-                find={find}
-            /> */}
         </Form>
     );
 }

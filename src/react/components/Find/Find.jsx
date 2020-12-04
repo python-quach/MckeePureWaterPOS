@@ -76,14 +76,8 @@ function FindContainer(props) {
         <TransitionablePortal
             open={open}
             transition={{ animation, duration }}
-            onStart={() => {
-                console.log('onStart', { open });
-                // setOpen((prevState) => !prevState);
-            }}
-            onOpen={() => {
-                console.log('onOPen', { open });
-                // setOpen((prevState) => !prevState);
-            }}
+            onStart={() => console.log('onStart', { open })}
+            onOpen={() => console.log('onOPen', { open })}
             onClose={() => console.log('onClose', { open })}
             onHide={() => console.log('closing trans', { open })}>
             <Segment
@@ -113,9 +107,7 @@ function FindContainer(props) {
                         account={account}
                         firstName={firstName}
                         lastName={lastName}
-                        logout={() => {
-                            history.push('/');
-                        }}
+                        logout={() => history.push('/')}
                         focusInput={focusInput}
                         submitSucceeded={submitSucceeded}
                         setOpen={setOpen}
