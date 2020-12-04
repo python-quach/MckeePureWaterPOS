@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { reduxForm, reset, formValueSelector } from 'redux-form';
+import { Header, Icon, Divider } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
 import LoginDebug from './LoginDebug';
@@ -58,6 +59,15 @@ function LoginContainer(props) {
 
     return (
         <LoginGrid>
+            <Header as='h1' inverted size='huge' textAlign='left'>
+                <Icon name='braille' color='blue' />
+                <Header.Content>
+                    Mckee Pure Water
+                    <Header.Subheader>Version 1.0</Header.Subheader>
+                </Header.Content>
+            </Header>
+            <Divider />
+            <Divider hidden />
             <LoginForm
                 size='large'
                 handleSubmit={handleSubmit((value) => {})}
@@ -69,12 +79,12 @@ function LoginContainer(props) {
                 focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
             />
-            <LoginDebug
+            {/* <LoginDebug
                 username={username}
                 password={password}
                 errorMessage={errorMessage}
                 submitSucceeded={submitSucceeded}
-            />
+            /> */}
         </LoginGrid>
     );
 }

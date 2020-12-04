@@ -1,0 +1,39 @@
+/* FORM BUY: First Name */
+.three.wide.field.FirstName label {
+    color: #fff;
+    /* color: #03a9f4; */
+    margin-bottom: 10px;
+}
+.three.wide.field.FirstName div.ui.inverted.input input {
+    color: white;
+    /* border-radius: 50px; */
+    background-color: #002b487d;
+
+    /* background-color: #2482c147; */
+}
+
+.three.wide.field.FirstName
+    div.ui.inverted.input
+    input[type='text']::-webkit-input-placeholder {
+    /* color: #fff; */
+    /* font-weight: bold; */
+}
+
+/* FORM BUY: Last Name */
+.three.wide.field.LastName label {
+    color: #fff;
+    /* color: #03a9f4; */
+    margin-bottom: 10px;
+}
+.three.wide.field.LastName div.ui.inverted.input input {
+    color: white;
+    /* border-radius: 50px; */
+    /* background-color: #2482c147; */
+    background-color: #002b487d;
+}
+.three.wide.field.LastName
+    div.ui.inverted.input
+    input[type='text']::-webkit-input-placeholder {
+    /* color: #fff; */
+    /* font-weight: bold; */
+}

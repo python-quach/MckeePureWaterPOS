@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Divider,
-    Form,
-    Button,
-    TransitionablePortal,
-    Segment,
-    Header,
-} from 'semantic-ui-react';
+import { Divider, Form } from 'semantic-ui-react';
 import Field from './FindField';
 import FindModalButton from './FindModal';
 
@@ -26,11 +19,9 @@ function FindForm({
     const [hideField, setHideField] = useState(false);
 
     return (
-        // <Form onSubmit={handleSubmit} size={size}>
         <Form
             size={size}
             onSubmit={handleSubmit((values) => {
-                // console.log(values);
                 find(values, (data) => {
                     if (!data.error) {
                         // setOpenPortal(true);
@@ -77,17 +68,12 @@ function FindForm({
                 }}
             />
             <Divider hidden />
-            {/* <Form.Button
-                content='member'
-                onClick={() => {
-                    history.push('/member');
-                }}
-            /> */}
             <Form.Button
+                color='blue'
                 size='massive'
                 circular
-                content='Open Portal'
-                icon='facebook'
+                content='Find Membership'
+                icon='search'
                 fluid
                 labelPosition='right'
             />

@@ -126,6 +126,7 @@
 /* BuyAccount */
 .two.wide.field.BuyAccount label {
     color: #fff;
+    margin-bottom: 10px;
 }
 
 .two.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
@@ -136,6 +137,22 @@
 .two.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
     color: #00bcd4;
     /* color: #2185d0; */
+    /* color: #fff; */
+}
+
+/* RecordAccount */
+.two.wide.field.BuyRecord label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.two.wide.field.BuyRecord div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    background-color: #002b487d;
+}
+.two.wide.field.BuyRecord div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
     /* color: #fff; */
 }
 
@@ -158,12 +175,14 @@
 /* LastRenew*/
 .two.wide.field.LastRenew label {
     color: #fff;
+    margin-bottom: 10px;
 }
 
 .two.wide.field.LastRenew div.ui.inverted.left.icon.input input {
     /* background-color: black; */
     color: white;
-    background-color: #002b487d;
+    /* background-color: #002b487d; */
+    background-color: #2482c147;
 }
 .two.wide.field.LastRenew div.ui.inverted.left.icon.input i {
     color: #00bcd4;
@@ -171,9 +190,52 @@
     /* color: #fff; */
 }
 
+/* BUY FORM:  OverGallon*/
+.two.wide.field.OverGallon label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.two.wide.field.OverGallon div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #8a17179a;
+}
+.two.wide.field.OverGallon div.ui.inverted.left.icon.input i {
+    /* color: #00bcd4; */
+    /* color: #2185d0; */
+    color: #fff;
+}
+
+/* BUY FORM: GallonBuy */
+.two.wide.field.GallonBuy label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.two.wide.field.GallonBuy div.ui.inverted.left.icon.input input {
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #2482c147;
+}
+.two.wide.field.GallonBuy div.ui.inverted.left.icon.input i {
+    color: rgb(255, 255, 255);
+}
+.two.wide.field.GallonBuy
+    div.ui.inverted.left.icon.input
+    input[type='text']::-webkit-input-placeholder {
+    color: #fff;
+    font-weight: bold;
+}
+
+/* .ui.inverted.left.icon.input input[type='text']::-webkit-input-placeholder {
+    color: #fff;
+} */
+
 /* 3 BuyAccount */
 .three.wide.field.BuyAccount label {
-    color: #fff;
+    /* color: rgba(24, 35, 94, 0.644); */
+    color: red;
 }
 
 .three.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
@@ -186,24 +248,10 @@
     /* color: #fff; */
 }
 
-/* RecordAccount */
-.two.wide.field.BuyRecord label {
-    color: #fff;
-}
-
-.two.wide.field.BuyRecord div.ui.inverted.left.icon.input input {
-    /* background-color: black; */
-    color: white;
-    background-color: #002b487d;
-}
-.two.wide.field.BuyRecord div.ui.inverted.left.icon.input i {
-    color: #00bcd4;
-    /* color: #fff; */
-}
-
 /* SinceAccount */
 .three.wide.field.BuySince label {
     color: #fff;
+    margin-bottom: 10px;
 }
 .three.wide.field.BuySince div.ui.inverted.left.icon.input input {
     /* background-color: black; */
@@ -218,6 +266,7 @@
 /* TodayDate Buy */
 .three.wide.field.TodayDate label {
     color: #fff;
+    margin-bottom: 10px;
 }
 .three.wide.field.TodayDate div.ui.inverted.left.icon.input input {
     /* background-color: black; */
@@ -228,6 +277,41 @@
     color: #00bcd4;
     /* color: #fff; */
 }
+
+/* FORM BUY: First Name */
+/* .three.wide.field.FirstName label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.three.wide.field.FirstName div.ui.inverted.input input {
+    color: white;
+    border-radius: 50px;
+    background-color: #2482c147;
+}
+
+.three.wide.field.FirstName
+    div.ui.inverted.input
+    input[type='text']::-webkit-input-placeholder {
+    color: #fff;
+    font-weight: bold;
+} */
+
+/* FORM BUY: Last Name */
+/* .three.wide.field.LastName label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.three.wide.field.LastName div.ui.inverted.input input {
+    color: white;
+    border-radius: 50px;
+    background-color: #2482c147;
+}
+.three.wide.field.LastName
+    div.ui.inverted.input
+    input[type='text']::-webkit-input-placeholder {
+    color: #fff;
+    font-weight: bold;
+} */
 
 /* 3 RecordAccount */
 .three.wide.field.BuyRecord label {

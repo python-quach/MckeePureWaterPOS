@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Divider } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
 import Field from './LoginField';
 import { string } from 'prop-types';

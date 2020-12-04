@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import {
     TransitionablePortal,
     Segment,
-    Header,
-    Button,
     Grid,
-    Image,
-    Form,
     Message,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
@@ -26,7 +22,6 @@ const PortalMembership = (props) => {
     };
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
-            {/* <TransitionablePortal onClose={handleClose} open={open}> */}
             <Segment
                 style={{
                     width: '100%',
@@ -45,14 +40,13 @@ const PortalMembership = (props) => {
                             close={handleClose}
                             history={props.history}
                         />
-                        {/* {!hide ? (
-                            <Button
-                                content='close'
-                                onClick={handleClose}></Button>
-                        ) : null} */}
+                        <Message>
+                            <Message.Content>
+                                <pre>{JSON.stringify(membership, null, 2)}</pre>
+                            </Message.Content>
+                        </Message>
                     </Grid.Column>
                 </Grid>
-                <pre>{JSON.stringify(membership, null, 2)}</pre>
             </Segment>
         </TransitionablePortal>
     );

@@ -28,7 +28,7 @@ export function membershipReducer(state = membershipInitialState, action) {
                     ? action.payload.memberships
                     : null,
                 member: action.payload.membership
-                    ? action.payload.membership
+                    ? action.payload.membership[0]
                     : null,
                 error: action.payload.error ? action.payload.error : null,
             };
