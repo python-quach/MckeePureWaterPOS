@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { reduxForm, reset, formValueSelector } from 'redux-form';
-import { TransitionablePortal, Segment, Divider } from 'semantic-ui-react';
+import {
+    TransitionablePortal,
+    Segment,
+    Divider,
+    Header,
+    Icon,
+} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
 import FindGrid from '../Grid/Grid';
@@ -32,7 +38,7 @@ function FindContainer(props) {
     const [iconColor, setIconColor] = useState('blueIcon');
     const [open, setOpen] = useState(props.user_id ? true : false);
     const [animation, setAnimation] = useState('vertical flip');
-    const [duration, setDuration] = useState(800);
+    const [duration, setDuration] = useState(500);
     const [closeMe, setCloseMe] = useState(false);
     const [hideLogoutButton, setHideLogoutButton] = React.useState(false);
     const [disableFindButton, setDisableFindButton] = useState(false);
@@ -72,6 +78,12 @@ function FindContainer(props) {
         setDisableFindButton,
     ]);
 
+    useEffect(() => {
+        if (membership.error) {
+            clearForm();
+        }
+    }, [clearForm, membership.error]);
+
     return (
         <TransitionablePortal
             open={open}
@@ -89,8 +101,17 @@ function FindContainer(props) {
                     backgroundColor: '#002b487d',
                 }}>
                 <FindGrid>
+                    <Header as='h1' inverted size='huge' textAlign='left'>
+                        <Icon name='braille' color='blue' />
+                        <Header.Content>
+                            Mckee Pure Water
+                            <Header.Subheader>Version 1.0</Header.Subheader>
+                        </Header.Content>
+                    </Header>
+                    <Divider />
                     <FindForm
                         setOpenFind={setOpen}
+                        clearMembership={clearMembership}
                         membership={membership}
                         find={find}
                         history={history}
@@ -177,10 +198,18 @@ const mapDispatchToProps = (dispatch) => {
             ipcRenderer.on(channels.FIND_MEMBERSHIP, (event, response) => {
                 ipcRenderer.removeAllListeners(channels.FIND_MEMBERSHIP);
                 console.log(response);
-                dispatch({
-                    type: actionTypes.FIND_MEMBERSHIP,
-                    payload: response,
-                });
+                if (response.error) {
+                    dispatch({
+                        type: actionTypes.FIND_ERROR,
+                        payload: response,
+                    });
+                } else {
+                    dispatch({
+                        type: actionTypes.FIND_MEMBERSHIP,
+                        payload: response,
+                    });
+                }
+
                 callback(response);
             });
         },

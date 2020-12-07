@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
@@ -104,23 +104,73 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
     });
 });
 
+// GET CURRENT GALLON FOR MEMBER
+ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
+    console.log('current gallon', args);
+    const sql = `SELECT account, firstName, lastName, fullname,  areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, overGallon, lastRenewGallon, renewFee, renewGallon, record_id, invoiceDate, invoiceTime FROM mckee WHERE account = '${args}' ORDER BY record_id DESC LIMIT 1;
+`;
+
+    db.get(sql, (err, row) => {
+        event.sender.send(channels.GET_CURRENT_GALLON, row);
+    });
+});
+
+// FIND MEMBERSHIP
 ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
-    const sql = `SELECT * FROM memberships 
-                    WHERE Phone like '___${
-                        phone ? phone.replace(/-/g, '') : ''
-                    }' 
-                    OR MemberAccount = '${account}' 
-                    OR FirstName = '${firstName}' 
-                    AND LastName = '${lastName}' `;
-    db.all(sql, (err, rows) => {
+
+    let selection;
+
+    if (phone) {
+        selection = 'phone';
+    }
+    if (account) {
+        selection = 'account';
+    }
+    if (firstName) {
+        selection = 'firstName';
+    }
+
+    if (lastName) {
+        selection = 'lastName';
+    }
+
+    const query = `SELECT 
+                    DISTINCT 
+                        firstName, 
+                        lastName, 
+                        fullname, 
+                        account, 
+                        areaCode, 
+                        phone,
+                        memberSince 
+                    FROM mckee 
+                    WHERE phone like '${phone}'`;
+
+    // const sql = `SELECT * FROM memberships
+    //                 WHERE Phone like '___${
+    //                     phone ? phone.replace(/-/g, '') : ''
+    //                 }'
+    //                 OR MemberAccount = '${account}'
+    //                 OR FirstName = '${firstName}'
+    //                 AND LastName = '${lastName}' `;
+    // db.all(sql, (err, rows) => {
+    db.all(query, (err, rows) => {
         console.log(rows);
         if (err) console.log({ err });
         if (!rows.length) {
             console.log('Unable to find User');
+
+            // event.sender.send(channels.FIND_MEMBERSHIP, {
+            //     error: `Unable to locate Membership: ${selection} `,
+            // });
+
             event.sender.send(channels.FIND_MEMBERSHIP, {
-                error: 'Unable to locate Membership',
+                error: {
+                    message: `Unable to locate Membership: ${selection} `,
+                    field: selection,
+                },
             });
         } else {
             console.log(rows.length);

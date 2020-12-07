@@ -17,6 +17,8 @@ const membershipInitialState = {
     members: null,
     member: null,
     error: null,
+    field: null,
+    data: null,
 };
 
 export function membershipReducer(state = membershipInitialState, action) {
@@ -32,8 +34,29 @@ export function membershipReducer(state = membershipInitialState, action) {
                     : null,
                 error: action.payload.error ? action.payload.error : null,
             };
+        case actionTypes.FIND_ERROR: {
+            return {
+                ...state,
+                error: action.payload.error
+                    ? action.payload.error.message
+                    : null,
+                field: action.payload.error ? action.payload.error.field : null,
+            };
+        }
+        case actionTypes.GET_CURRENT_GALLON: {
+            return {
+                ...state,
+                data: action.payload,
+            };
+        }
         case actionTypes.CLEAR_MEMBERSHIP:
-            return { ...state, members: null, member: null, error: null };
+            return {
+                ...state,
+                members: null,
+                member: null,
+                error: null,
+                field: null,
+            };
         default:
             return state;
     }

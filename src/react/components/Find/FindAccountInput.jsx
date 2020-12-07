@@ -2,9 +2,20 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
 
-const FindAccountInput = ({ setting, hide, clearFields }) =>
+const FindAccountInput = ({
+    setting,
+    hide,
+    clearFields,
+    error,
+    clearMembership,
+}) =>
     !hide ? (
         <Field
+            onChange={() => {
+                if (error) {
+                    clearMembership();
+                }
+            }}
             onFocus={clearFields}
             {...setting}
             normalize={(value, preValue) => {
@@ -35,7 +46,6 @@ FindAccountInput.defaultProps = {
         iconPosition: 'left',
         transparent: true,
         inverted: true,
-        onChange: () => {},
     },
 };
 

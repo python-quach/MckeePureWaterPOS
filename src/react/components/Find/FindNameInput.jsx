@@ -9,9 +9,16 @@ const FindNameInput = ({
     id,
     name,
     placeholder,
+    error,
+    clearMembership,
 }) => {
     return !hide ? (
         <Field
+            onChange={() => {
+                if (error) {
+                    clearMembership();
+                }
+            }}
             id={id}
             name={name}
             placeholder={placeholder}
@@ -56,7 +63,7 @@ FindNameInput.defaultProps = {
         iconPosition: 'left',
         transparent: true,
         inverted: true,
-        onChange: () => {},
+        // onChange: () => {},
     },
 };
 

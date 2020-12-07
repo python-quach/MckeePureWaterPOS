@@ -2,14 +2,25 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
 
-const FindPhoneInput = ({ setting, hide, clearFields }) =>
+const FindPhoneInput = ({
+    setting,
+    hide,
+    clearFields,
+    clearMembership,
+    error,
+}) =>
     !hide ? (
         <Field
             {...setting}
+            onChange={() => {
+                if (error) {
+                    clearMembership();
+                }
+            }}
             onFocus={clearFields}
             normalize={(value, previousValue) => {
                 console.log(value, previousValue, value.length);
-                if (value.match(/^\d+$/g) && value.length < 8) {
+                if (value.match(/^\d+$/g) && value.length <= 7) {
                     if (
                         value.length === 7 &&
                         value.length > previousValue.length
@@ -19,6 +30,8 @@ const FindPhoneInput = ({ setting, hide, clearFields }) =>
 
                     return value;
                 }
+
+                console.log('current value', { value }, value.length);
 
                 if (
                     previousValue &&
@@ -53,7 +66,7 @@ FindPhoneInput.defaultProps = {
         icon: 'whatsapp',
         iconPosition: 'left',
         transparent: true,
-        onChange: () => {},
+        // onChange: () => {},
     },
 };
 export default FindPhoneInput;
