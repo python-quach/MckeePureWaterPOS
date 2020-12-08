@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../types';
+import { render } from 'react-dom';
 
 const PortalMembership = (props) => {
     const { membership, clearMembership } = props;
@@ -15,11 +16,65 @@ const PortalMembership = (props) => {
     const [hideField, setHideField] = useState(false);
     const [hide, setHide] = React.useState(false);
 
+    // Pagination State
+    const [limit, setLimit] = useState(10);
+    const [offset, setOffset] = useState(0);
+    const [activePage, setActivePage] = useState(1);
+
     const handleClose = () => {
         setOpenPortal(false);
         clearMembership();
         props.history.push('/find');
     };
+
+    const Row = ({ account, firstName, lastName, fullname, phone }, index) => (
+        <Table.Row
+            key={index}
+            onClick={() => {
+                console.log('value send account', account);
+                props.history.push('/account');
+            }}
+            onMouseOver={() => {
+                console.log('mouse over');
+            }}
+            style={{
+                cursor: 'pointer',
+            }}>
+            <Table.Cell>{account}</Table.Cell>
+            <Table.Cell>{firstName}</Table.Cell>
+            <Table.Cell>{lastName}</Table.Cell>
+            <Table.Cell>{fullname}</Table.Cell>
+            <Table.Cell>{phone}</Table.Cell>
+        </Table.Row>
+    );
+
+    const renderRows = () =>
+        membership.members
+            ? membership.members.map((member, index) => {
+                  return <Row {...member} index={index} />;
+                  //   return (
+                  //       <Table.Row
+                  //           key={index}
+                  //           onClick={() => {
+                  //               console.log('value send account', member.account);
+                  //               props.history.push('/account');
+                  //           }}
+                  //           onMouseOver={() => {
+                  //               console.log('mouse over');
+                  //           }}
+                  //           style={{
+                  //               cursor: 'pointer',
+                  //           }}>
+                  //           <Table.Cell>{member.account}</Table.Cell>
+                  //           <Table.Cell>{member.firstName}</Table.Cell>
+                  //           <Table.Cell>{member.lastName}</Table.Cell>
+                  //           <Table.Cell>{member.fullname}</Table.Cell>
+                  //           <Table.Cell>{member.phone}</Table.Cell>
+                  //       </Table.Row>
+                  //   );
+              })
+            : null;
+
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
             <Segment
@@ -49,52 +104,7 @@ const PortalMembership = (props) => {
                                     <Table.HeaderCell>Phone</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
-                            <Table.Body>
-                                {membership.members
-                                    ? membership.members.map(
-                                          (member, index) => {
-                                              return (
-                                                  <Table.Row
-                                                      key={index}
-                                                      onClick={() => {
-                                                          console.log(
-                                                              'value send account',
-                                                              member.account
-                                                          );
-                                                          //   We will need to dispatch selected user info account page
-                                                          props.history.push(
-                                                              '/account'
-                                                          );
-                                                      }}
-                                                      onMouseOver={() => {
-                                                          console.log(
-                                                              'mouse over'
-                                                          );
-                                                      }}
-                                                      style={{
-                                                          cursor: 'pointer',
-                                                      }}>
-                                                      <Table.Cell>
-                                                          {member.account}
-                                                      </Table.Cell>
-                                                      <Table.Cell>
-                                                          {member.firstName}
-                                                      </Table.Cell>
-                                                      <Table.Cell>
-                                                          {member.lastName}
-                                                      </Table.Cell>
-                                                      <Table.Cell>
-                                                          {member.fullname}
-                                                      </Table.Cell>
-                                                      <Table.Cell>
-                                                          {member.phone}
-                                                      </Table.Cell>
-                                                  </Table.Row>
-                                              );
-                                          }
-                                      )
-                                    : null}
-                            </Table.Body>
+                            <Table.Body>{renderRows()}</Table.Body>
                         </Table>
                         <Message>
                             <Message.Content>
