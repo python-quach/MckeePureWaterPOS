@@ -63,9 +63,11 @@ const PortalMembership = (props) => {
 
                         <Table celled selectable inverted>
                             <Table.Header>
-                                <Table.HeaderCell>Account</Table.HeaderCell>
-                                <Table.HeaderCell>Name</Table.HeaderCell>
-                                <Table.HeaderCell>Phone</Table.HeaderCell>
+                                <Table.Row>
+                                    <Table.HeaderCell>Account</Table.HeaderCell>
+                                    <Table.HeaderCell>Name</Table.HeaderCell>
+                                    <Table.HeaderCell>Phone</Table.HeaderCell>
+                                </Table.Row>
                             </Table.Header>
                             <Table.Body>
                                 {membership.members
