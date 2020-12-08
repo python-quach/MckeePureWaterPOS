@@ -11,7 +11,7 @@ import * as actionTypes from '../../../types';
 import { render } from 'react-dom';
 
 const PortalMembership = (props) => {
-    const { membership, clearMembership } = props;
+    const { membership, clearMembership, members } = props;
     const [open, setOpenPortal] = useState(true);
     const [hideField, setHideField] = useState(false);
     const [hide, setHide] = React.useState(false);
@@ -49,30 +49,8 @@ const PortalMembership = (props) => {
     );
 
     const renderRows = () =>
-        membership.members
-            ? membership.members.map((member, index) => {
-                  return <Row {...member} index={index} />;
-                  //   return (
-                  //       <Table.Row
-                  //           key={index}
-                  //           onClick={() => {
-                  //               console.log('value send account', member.account);
-                  //               props.history.push('/account');
-                  //           }}
-                  //           onMouseOver={() => {
-                  //               console.log('mouse over');
-                  //           }}
-                  //           style={{
-                  //               cursor: 'pointer',
-                  //           }}>
-                  //           <Table.Cell>{member.account}</Table.Cell>
-                  //           <Table.Cell>{member.firstName}</Table.Cell>
-                  //           <Table.Cell>{member.lastName}</Table.Cell>
-                  //           <Table.Cell>{member.fullname}</Table.Cell>
-                  //           <Table.Cell>{member.phone}</Table.Cell>
-                  //       </Table.Row>
-                  //   );
-              })
+        members
+            ? members.map((member, index) => <Row {...member} index={index} />)
             : null;
 
     return (
@@ -121,6 +99,7 @@ const PortalMembership = (props) => {
 const mapStateToProps = (state) => {
     return {
         membership: state.membership,
+        members: state.membership.members,
     };
 };
 
