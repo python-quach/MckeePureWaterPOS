@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     TransitionablePortal,
     Segment,
@@ -8,32 +8,12 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../types';
-import MembershipRow from '../MemberRow';
-
-// const renderBodyRow = ({ account, fullname, phone }, index) => {
-//     return {
-//         key: account || `row-${index}`,
-//         cells: [
-//             account || 'no account',
-//             fullname || 'no name',
-//             phone || 'no phone',
-//         ],
-//     };
-// };
-
-const headerRow = ['Account', 'Name', 'Phone Number', 'Actions'];
 
 const PortalMembership = (props) => {
     const { membership, clearMembership } = props;
     const [open, setOpenPortal] = useState(true);
     const [hideField, setHideField] = useState(false);
     const [hide, setHide] = React.useState(false);
-
-    // useEffect(() => {
-    //     if (membership.members) {
-    //         props.history.push('/account');
-    //     }
-    // }, [membership, props.history]);
 
     const handleClose = () => {
         setOpenPortal(false);
@@ -53,14 +33,6 @@ const PortalMembership = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        {/* <MembershipRow
-                            hideField={setHideField}
-                            hideRow={setHide}
-                            hide={hide}
-                            close={handleClose}
-                            history={props.history}
-                        /> */}
-
                         <Table celled selectable inverted>
                             <Table.Header>
                                 <Table.Row>
@@ -145,7 +117,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearMembership: () => dispatch({ type: actionTypes.CLEAR_MEMBERSHIP }),
-        // getMemberDetail: () => dispatch({ type: actionTypes.MEMBER_DETAIL }),
     };
 };
 
