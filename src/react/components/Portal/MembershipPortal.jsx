@@ -27,24 +27,20 @@ const PortalMembership = (props) => {
         props.history.push('/find');
     };
 
+    const Cell = ({ data }) =>
+        data.map((value) => <Table.Cell content={value} />);
+
     const Row = ({ account, firstName, lastName, fullname, phone }, index) => (
         <Table.Row
             key={index}
-            onClick={() => {
-                console.log('value send account', account);
-                props.history.push('/account');
-            }}
-            onMouseOver={() => {
-                console.log('mouse over');
-            }}
-            style={{
-                cursor: 'pointer',
-            }}>
-            <Table.Cell>{account}</Table.Cell>
+            onClick={() => props.history.push('/account')}
+            style={{ cursor: 'pointer' }}>
+            <Cell data={[account, firstName, lastName, fullname, phone]} />
+            {/* <Table.Cell>{account}</Table.Cell>
             <Table.Cell>{firstName}</Table.Cell>
             <Table.Cell>{lastName}</Table.Cell>
             <Table.Cell>{fullname}</Table.Cell>
-            <Table.Cell>{phone}</Table.Cell>
+            <Table.Cell>{phone}</Table.Cell> */}
         </Table.Row>
     );
 
