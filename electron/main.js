@@ -136,7 +136,22 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
         selection = 'lastName';
     }
 
-    const query = `SELECT 
+    // const query = `SELECT
+    //                 DISTINCT
+    //                     firstName,
+    //                     lastName,
+    //                     fullname,
+    //                     account,
+    //                     areaCode,
+    //                     phone,
+    //                     memberSince
+    //                 FROM mckee
+    //                 WHERE phone = ?
+    //                 OR account = ?
+    //                 OR firstName = ?
+    //                 OR lastName = ?
+    // `;
+    let query = `SELECT 
                     DISTINCT 
                         firstName, 
                         lastName, 
@@ -146,7 +161,73 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
                         phone,
                         memberSince 
                     FROM mckee 
-                    WHERE phone like '${phone}'`;
+                    WHERE phone = ?
+                    OR account = ?
+                    OR fullname = ?`;
+    let fullname;
+
+    if (firstName && lastName) {
+        fullname = firstName + ' ' + lastName;
+        query = `SELECT 
+                    DISTINCT 
+                        firstName, 
+                        lastName, 
+                        fullname, 
+                        account, 
+                        areaCode, 
+                        phone,
+                        memberSince 
+                    FROM mckee 
+                    WHERE phone = ?
+                    OR account = ?
+                    OR fullname = ?`;
+    } else if (firstName && !lastName) {
+        fullname = firstName;
+        query = `SELECT
+                    DISTINCT
+                        firstName,
+                        lastName,
+                        fullname,
+                        account,
+                        areaCode,
+                        phone,
+                        memberSince
+                    FROM mckee
+                    WHERE phone = ?
+                    OR account = ?
+                    OR firstName = ?`;
+    } else if (lastName && !firstName) {
+        fullname = lastName;
+        query = `SELECT
+                    DISTINCT
+                        firstName,
+                        lastName,
+                        fullname,
+                        account,
+                        areaCode,
+                        phone,
+                        memberSince
+                    FROM mckee
+                    WHERE phone = ?
+                    OR account = ?
+                    OR lastName = ?`;
+    }
+    // if (firstName || lastName) {
+    //     fullname = firstName || '%' + lastName || '%';
+    //     query = `SELECT
+    //                 DISTINCT
+    //                     firstName,
+    //                     lastName,
+    //                     fullname,
+    //                     account,
+    //                     areaCode,
+    //                     phone,
+    //                     memberSince
+    //                 FROM mckee
+    //                 WHERE phone = ?
+    //                 OR account = ?
+    //                 OR fullname like ?`;
+    // }
 
     // const sql = `SELECT * FROM memberships
     //                 WHERE Phone like '___${
@@ -156,33 +237,45 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     //                 OR FirstName = '${firstName}'
     //                 AND LastName = '${lastName}' `;
     // db.all(sql, (err, rows) => {
-    db.all(query, (err, rows) => {
-        console.log(rows);
-        if (err) console.log({ err });
-        if (!rows.length) {
-            console.log('Unable to find User');
+    db.all(
+        query,
+        // [phone, account, firstName, lastName],
+        // [phone, account, firstName || '%' + lastName || '%'],
+        [phone, account, fullname],
+        // [
+        //     phone,
+        //     account,
+        //     firstName || firstName.toUpperCase(),
+        //     lastName || lastName.toUpperCase(),
+        // ],
+        (err, rows) => {
+            console.log(rows);
+            if (err) console.log({ err });
+            if (!rows.length) {
+                console.log('Unable to find User');
 
-            // event.sender.send(channels.FIND_MEMBERSHIP, {
-            //     error: `Unable to locate Membership: ${selection} `,
-            // });
+                // event.sender.send(channels.FIND_MEMBERSHIP, {
+                //     error: `Unable to locate Membership: ${selection} `,
+                // });
 
-            event.sender.send(channels.FIND_MEMBERSHIP, {
-                error: {
-                    message: `Unable to locate Membership: ${selection} `,
-                    field: selection,
-                },
-            });
-        } else {
-            console.log(rows.length);
-            if (rows.length === 1) {
                 event.sender.send(channels.FIND_MEMBERSHIP, {
-                    membership: rows,
+                    error: {
+                        message: `Unable to locate Membership: ${selection} `,
+                        field: selection,
+                    },
                 });
             } else {
-                event.sender.send(channels.FIND_MEMBERSHIP, {
-                    memberships: rows,
-                });
+                console.log(rows.length);
+                if (rows.length === 1) {
+                    event.sender.send(channels.FIND_MEMBERSHIP, {
+                        membership: rows,
+                    });
+                } else {
+                    event.sender.send(channels.FIND_MEMBERSHIP, {
+                        memberships: rows,
+                    });
+                }
             }
         }
-    });
+    );
 });

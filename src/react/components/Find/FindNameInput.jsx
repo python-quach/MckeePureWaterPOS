@@ -35,12 +35,14 @@ const FindNameInput = ({
 
                 if (value.match(wordPattern) && value.length > 0) {
                     return (
-                        value.charAt(0).toUpperCase() +
-                        value.slice(1).replace(/\s/g, '').toLowerCase()
+                        // value.charAt(0).toUpperCase() +
+                        // value.slice(1).replace(/\s/g, '').toLowerCase()
+                        value.toUpperCase()
                     );
                 } else {
                     if (value.length > 1) {
-                        return previousValue;
+                        return previousValue.toUpperCase();
+                        // return previousValue;
                     } else {
                         return '';
                     }

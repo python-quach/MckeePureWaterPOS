@@ -65,7 +65,15 @@ const PortalMembership = (props) => {
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Account</Table.HeaderCell>
-                                    <Table.HeaderCell>Name</Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        First Name
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Last Name
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Full Name
+                                    </Table.HeaderCell>
                                     <Table.HeaderCell>Phone</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
@@ -81,6 +89,10 @@ const PortalMembership = (props) => {
                                                               'value send account',
                                                               member.account
                                                           );
+                                                          //   We will need to dispatch selected user info account page
+                                                          props.history.push(
+                                                              '/account'
+                                                          );
                                                       }}
                                                       onMouseOver={() => {
                                                           console.log(
@@ -92,6 +104,12 @@ const PortalMembership = (props) => {
                                                       }}>
                                                       <Table.Cell>
                                                           {member.account}
+                                                      </Table.Cell>
+                                                      <Table.Cell>
+                                                          {member.firstName}
+                                                      </Table.Cell>
+                                                      <Table.Cell>
+                                                          {member.lastName}
                                                       </Table.Cell>
                                                       <Table.Cell>
                                                           {member.fullname}
@@ -127,6 +145,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearMembership: () => dispatch({ type: actionTypes.CLEAR_MEMBERSHIP }),
+        // getMemberDetail: () => dispatch({ type: actionTypes.MEMBER_DETAIL }),
     };
 };
 
