@@ -8,13 +8,11 @@ const AccountPortal = (props) => {
             Account Portal
             <Button
                 onClick={() => {
-                    // props.history.push('/find');
                     if (props.membership.members) {
                         props.history.push('/member');
                     } else {
                         props.history.push('find');
                     }
-                    // props.history.push('/member');
                 }}>
                 Back
             </Button>
