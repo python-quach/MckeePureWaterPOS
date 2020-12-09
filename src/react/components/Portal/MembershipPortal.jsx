@@ -9,33 +9,19 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../types';
-import { render } from 'react-dom';
 
 const PortalMembership = (props) => {
     const { membership, clearMembership, members } = props;
-
     const [open, setOpenPortal] = useState(true);
-    const [hideField, setHideField] = useState(false);
-    const [hide, setHide] = React.useState(false);
-
-    // Pagination State
-    const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     const [activePage, setActivePage] = useState(1);
     const [account, setAccount] = useState(null);
 
-    // const [accounts, setAccounts] = useState(members.length < 10 ? members : members.slice(offset, members.length - offset) );
-
     const onChange = (e, pageInfo) => {
-        console.log('on page change', pageInfo.activePage);
         setActivePage(pageInfo.activePage);
-        // setOffset(pageInfo.activePage * 10 - 10);
-        // setAccount(members.slice((activePage - 1) * offset, activePage * 10));
     };
 
     useEffect(() => {
-        // setOffset(activePage * 10 - 10);
-        // setOffset(activePage * 10);
         setAccount(
             members
                 ? members.slice((activePage - 1) * 10, activePage * 10)
@@ -60,11 +46,6 @@ const PortalMembership = (props) => {
             <Table.Cell content={phone} />
         </Table.Row>
     );
-
-    // const renderRows = () =>
-    //     members
-    //         ? members.map((member, index) => <Row key={index} {...member} />)
-    //         : null;
 
     const renderRows = () =>
         account
