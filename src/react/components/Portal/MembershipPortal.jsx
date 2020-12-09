@@ -65,7 +65,12 @@ const PortalMembership = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        <Table celled selectable inverted>
+                        <Table
+                            celled
+                            selectable
+                            color='blue'
+                            inverted
+                            className='MemberTable'>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell content='Account' />
@@ -84,11 +89,11 @@ const PortalMembership = (props) => {
                                 members ? Math.ceil(members.length / 10) : 0
                             }
                         />
-                        <Message>
+                        {/* <Message>
                             <Message.Content>
                                 <pre>{JSON.stringify(membership, null, 2)}</pre>
                             </Message.Content>
-                        </Message>
+                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>

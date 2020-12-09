@@ -32,6 +32,10 @@
     }
 }
 
+.ui.inverted.blue.table.MemberTable {
+    background-color: #2185d008 !important;
+}
+
 .ui.fluid.left.icon.input input[type='text'] {
     background-color: rgb(87 194 226 / 20%);
     font-weight: bold;
