@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    Message,
-    Form,
-    Segment,
-    Container,
-    Divider,
-} from 'semantic-ui-react';
+import { Button, Message, Form, Container, Divider } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import * as actionTypes from '../../../types';
@@ -19,6 +12,8 @@ const AccountPortal = (props) => {
     const { getAccountInvoices, account, detail } = props;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    // BUY DATA
     const [overLimit, setOverLimit] = useState(
         parseInt(detail.overGallon) === parseInt(detail.gallonRemain)
             ? 0
@@ -26,12 +21,10 @@ const AccountPortal = (props) => {
     );
     const [buyGallon, setBuyGallon] = useState(0);
     const [gallonLeft, setGallonLeft] = useState(detail.gallonRemain);
-    // const [gallonLeft, setGallonLeft] = useState(64);
 
-    // useEffect(() => {
-    //     setGallonLeft((prev) => detail.gallonRemain - buyGallon);
-    //     setGallonLeft(detail.gallonRemain - buyGallon);
-    // }, [buyGallon, detail.gallonRemain]);
+    useEffect(() => {
+        console.log(`Buy Data`, { buyGallon, gallonLeft, overLimit });
+    }, [buyGallon, gallonLeft, overLimit]);
 
     return (
         <Container style={{ width: '1400px' }}>
@@ -78,29 +71,45 @@ const AccountPortal = (props) => {
                     type='number'
                     name='buy'
                     width={2}
-                    value={buyGallon}
+                    value={buyGallon ? buyGallon.toString() : buyGallon}
                     label='Buy Gallon'
                     onChange={(e, { value }) => {
-                        // setBuyGallon(value);
-
-                        if (value > detail.gallonRemain) {
-                            setOverLimit(detail.gallonRemain - value);
-                            setBuyGallon(value);
+                        console.log(value);
+                        if (isNaN(parseInt(value))) {
+                            setBuyGallon('');
+                            setOverLimit(0);
+                        }
+                        const buyValue = parseInt(value, 10);
+                        // console.log({
+                        //     value: buyValue,
+                        //     remain: detail.gallonRemain,
+                        //     overLimit,
+                        // });
+                        if (buyValue > detail.gallonRemain) {
+                            setOverLimit(detail.gallonRemain - buyValue);
+                            setBuyGallon(buyValue);
                         } else {
-                            if (value < detail.gallonRemain) {
+                            if (
+                                buyValue < detail.gallonRemain ||
+                                buyValue === 0
+                            ) {
                                 setOverLimit(0);
                             }
-
-                            if (value >= 0) {
-                                setBuyGallon(value);
-                                setGallonLeft(detail.gallonRemain - value);
+                            if (
+                                buyValue >= 0 &&
+                                buyValue <= detail.gallonRemain
+                            ) {
+                                setBuyGallon((prev) => {
+                                    if (buyValue === 0 || buyValue === '') {
+                                        setGallonLeft(detail.gallonRemain);
+                                    } else {
+                                        setGallonLeft(
+                                            buyValue - detail.gallonRemain
+                                        );
+                                    }
+                                    setBuyGallon(parseInt(value));
+                                });
                             }
-                            // setBuyGallon(value);
-                            // setGallonLeft(detail.gallonRemain - value);
-                            // setGallonLeft(gallonLeft - value);
-                            // setGallonLeft((total) => {
-                            //     return total - value;
-                            // });
                         }
                     }}
                 />
@@ -115,20 +124,21 @@ const AccountPortal = (props) => {
                 <Form.Input
                     readOnly
                     error={overLimit < 0 ? true : false}
-                    // nameB='overGallon'
                     name='over'
                     width={2}
-                    // component={Form.Input}
                     value={overLimit}
-                    // defaultValue={overLimit}
                     label='Over Gallon'
                     onChange={(e, { value }) => {
                         setOverLimit(value);
                     }}
-                    // onChange={(value) => {
-                    //     return value;
-                    // }}
                 />
+                {/* <Field
+                    name='total'
+                    readOnly
+                    label='Total Gallon'
+                    component={Form.Input}
+                    width={2}
+                /> */}
             </Form>
             <Divider />
             <Button
@@ -221,6 +231,8 @@ const mapStateToProps = (state) => {
             record_id,
             renew,
             renewFee,
+            // total: gallonRemain,
+            // totalGallon: 10,
         },
         membership: state.membership,
         account: state.account.account,

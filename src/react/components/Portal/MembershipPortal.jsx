@@ -129,7 +129,7 @@ const mapDispatchToProps = (dispatch) => {
 
             ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
                 ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
-                console.log(response);
+                // console.log(response);
                 dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
                 callback();
             });

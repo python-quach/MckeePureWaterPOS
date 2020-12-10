@@ -28,10 +28,10 @@ function LoginContainer(props) {
         errorMessage ? setIconColor('whiteIcon') : setIconColor('blueIcon');
     }, [errorMessage]);
 
-    useEffect(() => {
-        if (!username && !password && !submitSucceeded)
-            console.log('Login Form:', { username, password, submitSucceeded });
-    }, [submitSucceeded, username, password, clearForm, history, login]);
+    // useEffect(() => {
+    //     if (!username && !password && !submitSucceeded)
+    //         console.log('Login Form:', { username, password, submitSucceeded });
+    // }, [submitSucceeded, username, password, clearForm, history, login]);
 
     useEffect(() => {
         const showInvalidButton = (error) => {
@@ -41,7 +41,7 @@ function LoginContainer(props) {
 
         const redirectUserToFindPage = (data) => {
             history.push('/find');
-            console.log(`redirected to  ${history.location.pathname}`, data);
+            // console.log(`redirected to  ${history.location.pathname}`, data);
         };
 
         if (submitSucceeded) {
@@ -113,7 +113,7 @@ const mapDispatchToProps = (dispatch) => {
             document.getElementById(name).focus();
         },
         login: (username, password, callback) => {
-            console.log('LoginForm was submitted', { username, password });
+            // console.log('LoginForm was submitted', { username, password });
             ipcRenderer.send(channels.LOGIN_USER, { username, password });
 
             ipcRenderer.on(
@@ -122,13 +122,13 @@ const mapDispatchToProps = (dispatch) => {
                     ipcRenderer.removeAllListeners(channels.LOGIN_USER);
 
                     if (error) {
-                        console.log('response from server', { error });
+                        // console.log('response from server', { error });
                         callback(error, null);
                     } else {
-                        console.log('response from server:', {
-                            user_id,
-                            username,
-                        });
+                        // console.log('response from server:', {
+                        //     user_id,
+                        //     username,
+                        // });
                         dispatch({
                             type: actionTypes.AUTHENTICATED,
                             payload: user_id,

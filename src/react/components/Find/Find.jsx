@@ -43,9 +43,9 @@ function FindContainer(props) {
     const [hideLogoutButton, setHideLogoutButton] = React.useState(false);
     const [disableFindButton, setDisableFindButton] = useState(false);
 
-    useEffect(() => {
-        console.log('FindContainer', { props });
-    });
+    // useEffect(() => {
+    //     console.log('FindContainer', { props });
+    // });
 
     useEffect(() => {
         if (!props.user_id) {
@@ -88,8 +88,8 @@ function FindContainer(props) {
         <TransitionablePortal
             open={open}
             transition={{ animation, duration }}
-            onStart={() => console.log('onStart', { open })}
-            onOpen={() => console.log('onOPen', { open })}
+            // onStart={() => console.log('onStart', { open })}
+            // onOpen={() => console.log('onOPen', { open })}
             onClose={() => console.log('onClose', { open })}
             onHide={() => console.log('closing trans', { open })}>
             <Segment
@@ -183,12 +183,12 @@ const mapDispatchToProps = (dispatch) => {
             document.getElementById(name).focus();
         },
         find: ({ phone, account, firstName, lastName }, callback) => {
-            console.log('FindForm was submitted', {
-                phone,
-                account,
-                firstName,
-                lastName,
-            });
+            // console.log('FindForm was submitted', {
+            //     phone,
+            //     account,
+            //     firstName,
+            //     lastName,
+            // });
             ipcRenderer.send(channels.FIND_MEMBERSHIP, {
                 phone,
                 account,
@@ -197,7 +197,7 @@ const mapDispatchToProps = (dispatch) => {
             });
             ipcRenderer.on(channels.FIND_MEMBERSHIP, (event, response) => {
                 ipcRenderer.removeAllListeners(channels.FIND_MEMBERSHIP);
-                console.log(response);
+                // console.log(response);
                 if (response.error) {
                     dispatch({
                         type: actionTypes.FIND_ERROR,
