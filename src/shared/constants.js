@@ -4,5 +4,8 @@ module.exports = {
         LOGIN_USER: 'login_user',
         FIND_MEMBERSHIP: 'find_membership',
         GET_CURRENT_GALLON: 'get_current_gallon',
+        GET_ACCOUNT: 'get_account',
+        GET_MEMBER_INVOICES: 'GET_MEMBER_INVOICES',
+        CLEAR_ACCOUNT: 'CLEAR_ACCOUNT',
     },
 };

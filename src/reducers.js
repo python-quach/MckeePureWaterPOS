@@ -4,6 +4,34 @@ const initialState = {
     user_id: null,
 };
 
+const membershipInitialState = {
+    members: null,
+    member: null,
+    error: null,
+    field: null,
+    data: null,
+};
+
+const accountInitialState = {
+    account: null,
+    invoices: null,
+};
+
+export function accountReducer(state = accountInitialState, action) {
+    switch (action.type) {
+        case actionTypes.GET_ACCOUNT:
+            // return { ...state, account: action.payload };
+            return action.payload;
+        case actionTypes.GET_MEMBER_INVOICES:
+            return {
+                ...state,
+                invoices: action.payload,
+            };
+        default:
+            return state;
+    }
+}
+
 export function authReducer(state = initialState, action) {
     switch (action.type) {
         case actionTypes.AUTHENTICATED:
@@ -12,14 +40,6 @@ export function authReducer(state = initialState, action) {
             return state;
     }
 }
-
-const membershipInitialState = {
-    members: null,
-    member: null,
-    error: null,
-    field: null,
-    data: null,
-};
 
 export function membershipReducer(state = membershipInitialState, action) {
     switch (action.type) {
