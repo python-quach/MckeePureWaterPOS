@@ -85,7 +85,8 @@ const AccountPortal = (props) => {
                 />
                 <Field
                     name='phone'
-                    width={2}
+                    type='phone'
+                    width={3}
                     component={Form.Input}
                     label='Phone Number'
                 />
