@@ -4,9 +4,30 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import * as actionTypes from '../../../types';
 import { channels } from '../../../shared/constants';
-import BuyForm from '../BuyForm';
 
 const { ipcRenderer } = window;
+
+const getCurrentTime = () => {
+    const time = new Date();
+    return time.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+    });
+};
+
+const currentDate = () => {
+    const currentdate = new Date();
+    const datetime =
+        currentdate.getMonth() +
+        1 +
+        '/' +
+        currentdate.getDate() +
+        '/' +
+        currentdate.getFullYear();
+
+    return datetime;
+};
 
 const AccountPortal = (props) => {
     const { getAccountInvoices, account, detail } = props;
@@ -24,11 +45,32 @@ const AccountPortal = (props) => {
 
     useEffect(() => {
         console.log(`Buy Data`, { buyGallon, gallonLeft, overLimit });
-    }, [buyGallon, gallonLeft, overLimit]);
+        if (overLimit < 0) {
+            setGallonLeft(0);
+        }
+        if (buyGallon === '') {
+            setGallonLeft(detail.gallonRemain);
+        }
+        if (buyGallon === detail.gallonRemain) {
+            setOverLimit(0);
+        }
+    }, [buyGallon, gallonLeft, overLimit, detail]);
 
     return (
         <Container style={{ width: '1400px' }}>
             <Form size='huge'>
+                <Field
+                    name='todayDate'
+                    component={Form.Input}
+                    width={3}
+                    label='Today Date'
+                />
+                <Field
+                    name='todayTime'
+                    component={Form.Input}
+                    width={3}
+                    label='Time'
+                />
                 <Field
                     name='account'
                     width={2}
@@ -74,17 +116,13 @@ const AccountPortal = (props) => {
                     value={buyGallon ? buyGallon.toString() : buyGallon}
                     label='Buy Gallon'
                     onChange={(e, { value }) => {
-                        console.log(value);
+                        // console.log(value);
+                        // const buyValue = parseInt(value, 10);
                         if (isNaN(parseInt(value))) {
                             setBuyGallon('');
                             setOverLimit(0);
                         }
                         const buyValue = parseInt(value, 10);
-                        // console.log({
-                        //     value: buyValue,
-                        //     remain: detail.gallonRemain,
-                        //     overLimit,
-                        // });
                         if (buyValue > detail.gallonRemain) {
                             setOverLimit(detail.gallonRemain - buyValue);
                             setBuyGallon(buyValue);
@@ -132,13 +170,6 @@ const AccountPortal = (props) => {
                         setOverLimit(value);
                     }}
                 />
-                {/* <Field
-                    name='total'
-                    readOnly
-                    label='Total Gallon'
-                    component={Form.Input}
-                    width={2}
-                /> */}
             </Form>
             <Divider />
             <Button
@@ -177,9 +208,15 @@ const AccountPortal = (props) => {
                 }}>
                 Renew Membership
             </Button>
+            <Button
+                content='Buy'
+                onClick={() => {
+                    console.log({ buyGallon, gallonLeft, overLimit });
+                }}
+            />
             <Message>
                 <Message.Content>
-                    {/* <pre>{JSON.stringify(account || [], null, 2)}</pre> */}
+                    <pre>{JSON.stringify(account || [], null, 2)}</pre>
                     <pre>{JSON.stringify(detail || [], null, 2)}</pre>
                     <pre>{JSON.stringify(invoices || [], null, 2)}</pre>
                 </Message.Content>
@@ -231,8 +268,8 @@ const mapStateToProps = (state) => {
             record_id,
             renew,
             renewFee,
-            // total: gallonRemain,
-            // totalGallon: 10,
+            todayDate: currentDate(),
+            todayTime: getCurrentTime(),
         },
         membership: state.membership,
         account: state.account.account,
@@ -260,6 +297,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const ReduxForm = reduxForm({ form: 'buy' })(AccountPortal);
-
-// export default connect(mapStateToProps, mapDispatchToProps)(AccountPortal);
 export default connect(mapStateToProps, mapDispatchToProps)(ReduxForm);
