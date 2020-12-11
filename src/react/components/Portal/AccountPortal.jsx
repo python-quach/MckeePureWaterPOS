@@ -119,11 +119,6 @@ const AccountPortal = (props) => {
                     onChange={(e, { value }) => {
                         console.log(value, e);
 
-                        // if (value === '' || value.match(/^\d+$/)) {
-                        //     setBuyGallon(value);
-                        // }
-
-                        // const buyValue = parseInt(value, 10);
                         if (isNaN(parseInt(value))) {
                             console.log(value);
                             setBuyGallon('');
