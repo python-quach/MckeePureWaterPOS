@@ -110,15 +110,22 @@ const AccountPortal = (props) => {
                 />
 
                 <Form.Input
-                    type='number'
+                    // type='number'
+                    min='0'
                     name='buy'
                     width={2}
                     value={buyGallon ? buyGallon.toString() : buyGallon}
                     label='Buy Gallon'
                     onChange={(e, { value }) => {
-                        // console.log(value);
+                        console.log(value, e);
+
+                        // if (value === '' || value.match(/^\d+$/)) {
+                        //     setBuyGallon(value);
+                        // }
+
                         // const buyValue = parseInt(value, 10);
                         if (isNaN(parseInt(value))) {
+                            console.log(value);
                             setBuyGallon('');
                             setOverLimit(0);
                         }
