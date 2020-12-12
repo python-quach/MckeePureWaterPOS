@@ -7,5 +7,6 @@ module.exports = {
         GET_ACCOUNT: 'get_account',
         GET_MEMBER_INVOICES: 'GET_MEMBER_INVOICES',
         CLEAR_ACCOUNT: 'CLEAR_ACCOUNT',
+        PRINT_RECEIPT: 'PRINT_RECEIPT',
     },
 };

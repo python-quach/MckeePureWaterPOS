@@ -12,6 +12,7 @@ const getCurrentTime = () => {
     return time.toLocaleString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
+        second: 'numeric',
         hour12: true,
     });
 };
@@ -30,31 +31,50 @@ const currentDate = () => {
 };
 
 const AccountPortal = (props) => {
-    const { getAccountInvoices, account, detail } = props;
+    const { getAccountInvoices, account, detail, printReceipt } = props;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
 
     // BUY DATA
     const [overLimit, setOverLimit] = useState(
-        parseInt(detail.overGallon) === parseInt(detail.gallonRemain)
-            ? 0
-            : detail.overGallon
+        // parseInt(detail.overGallon) === parseInt(detail.gallonRemain)
+        parseInt(detail.afterBuyGallonTotal) > 0 ? 0 : detail.overGallon
     );
     const [buyGallon, setBuyGallon] = useState(0);
-    const [gallonLeft, setGallonLeft] = useState(detail.gallonRemain);
+    // const [gallonLeft, setGallonLeft] = useState(detail.gallonRemain);
+    const [gallonLeft, setGallonLeft] = useState(detail.afterBuyGallonTotal);
+    // Remember to setReceipt after we udatebuy
+    const [receipt, setReceipt] = useState({
+        // prevGallon: detail.gallonRemain,
+        prevGallon: detail.afterBuyGallonTotal,
+        buyGallon: buyGallon,
+        gallonLeft: gallonLeft,
+    });
+    const [print, setPrint] = useState(false);
 
     useEffect(() => {
         console.log(`Buy Data`, { buyGallon, gallonLeft, overLimit });
+        // console.log(`Receipt`, { receipt });
         if (overLimit < 0) {
             setGallonLeft(0);
         }
         if (buyGallon === '') {
-            setGallonLeft(detail.gallonRemain);
+            setGallonLeft(detail.afterBuyGallonTotal);
+            // setGallonLeft(detail.gallonRemain);
         }
-        if (buyGallon === detail.gallonRemain) {
+        if (parseInt(buyGallon) === parseInt(detail.afterBuyGallonTotal)) {
+            // if (buyGallon === detail.gallonRemain) {
             setOverLimit(0);
+            setGallonLeft(0);
         }
-    }, [buyGallon, gallonLeft, overLimit, detail]);
+    }, [buyGallon, gallonLeft, overLimit, detail, receipt]);
+
+    // useEffect(() => {
+    //     if (print) {
+    //         console.log(`Receipt`, { receipt });
+    //         setPrint(false);
+    //     }
+    // }, [receipt, print]);
 
     return (
         <Container style={{ width: '1400px' }}>
@@ -126,27 +146,61 @@ const AccountPortal = (props) => {
                             setOverLimit(0);
                         }
                         const buyValue = parseInt(value, 10);
-                        if (buyValue > detail.gallonRemain) {
-                            setOverLimit(detail.gallonRemain - buyValue);
+                        // if (buyValue > detail.gallonRemain) {
+                        if (buyValue > detail.afterBuyGallonTotal) {
+                            setOverLimit(detail.afterBuyGallonTotal - buyValue);
+                            // setOverLimit(detail.gallonRemain - buyValue);
                             setBuyGallon(buyValue);
                         } else {
                             if (
-                                buyValue < detail.gallonRemain ||
+                                // buyValue < detail.gallonRemain ||
+                                buyValue < detail.afterBuyGallonTotal ||
                                 buyValue === 0
                             ) {
                                 setOverLimit(0);
                             }
                             if (
                                 buyValue >= 0 &&
-                                buyValue <= detail.gallonRemain
+                                // buyValue <= detail.gallonRemain
+                                buyValue <= detail.afterBuyGallonTotal
                             ) {
                                 setBuyGallon((prev) => {
                                     if (buyValue === 0 || buyValue === '') {
-                                        setGallonLeft(detail.gallonRemain);
-                                    } else {
+                                        // setGallonLeft(detail.gallonRemain);
                                         setGallonLeft(
-                                            buyValue - detail.gallonRemain
+                                            detail.afterBuyGallonTotal
                                         );
+                                    } else {
+                                        // if (buyValue < detail.gallonRemain)
+                                        if (
+                                            buyValue <
+                                            detail.afterBuyGallonTotal
+                                        )
+                                            setGallonLeft(
+                                                // buyValue - detail.gallonRemain
+                                                // buyValue - detail.gallonRemain
+                                                // detail.gallonRemain - buyValue
+                                                detail.afterBuyGallonTotal -
+                                                    buyValue
+                                            );
+                                        // if (buyValue > detail.gallonRemain)
+                                        if (
+                                            buyValue >
+                                            detail.afterBuyGallonTotal
+                                        )
+                                            setGallonLeft(
+                                                // buyValue - detail.gallonRemain
+                                                buyValue -
+                                                    detail.afterBuyGallonTotal
+                                            );
+
+                                        // if (buyValue === detail.gallonRemain) {
+                                        if (
+                                            buyValue ===
+                                            detail.afterBuyGallonTotal
+                                        ) {
+                                            setGallonLeft(0);
+                                        }
                                     }
                                     setBuyGallon(parseInt(value));
                                 });
@@ -214,7 +268,25 @@ const AccountPortal = (props) => {
             <Button
                 content='Buy'
                 onClick={() => {
-                    console.log({ buyGallon, gallonLeft, overLimit });
+                    // We print here after the buy
+                    // console.log('receipt', {
+                    //     buyGallon,
+                    //     gallonLeft,
+                    //     overLimit,
+                    //     account,
+                    //     detail,
+                    // });
+                    const receipt = {
+                        prevGallon: detail.gallonRemain,
+                        buyGallon,
+                        gallonLeft,
+                        overLimit,
+                        account,
+                        detail,
+                        timestamp: currentDate() + '-' + getCurrentTime(),
+                    };
+
+                    printReceipt(receipt);
                 }}
             />
             <Message>
@@ -247,6 +319,7 @@ const mapStateToProps = (state) => {
         record_id,
         renew,
         renewFee,
+        afterBuyGallonTotal,
     } = state.account;
     return {
         initialValues: {
@@ -263,11 +336,18 @@ const mapStateToProps = (state) => {
             lastName,
             lastRenewGallon,
             memberSince,
-            prevGallon: parseInt(gallonRemain) || 0,
+
+            // prevGallon: parseInt(gallonRemain) || 0,
+            prevGallon: parseInt(afterBuyGallonTotal) || 0,
+            // overGallon:
+            //     parseInt(overGallon) === parseInt(gallonRemain)
+            //         ? 0
+            //         : overGallon,
             overGallon:
-                parseInt(overGallon) === parseInt(gallonRemain)
+                parseInt(overGallon) === parseInt(afterBuyGallonTotal)
                     ? 0
                     : overGallon,
+
             record_id,
             renew,
             renewFee,
@@ -282,6 +362,15 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        printReceipt: (receipt, callback) => {
+            ipcRenderer.send(channels.PRINT_RECEIPT, { receipt });
+
+            ipcRenderer.on(channels.PRINT_RECEIPT, (event, args) => {
+                // const { done } = args;
+                ipcRenderer.removeAllListeners(channels.PRINT_RECEIPT);
+                // callback(done);
+            });
+        },
         getAccountInvoices: (account, callback) => {
             ipcRenderer.send(channels.GET_MEMBER_INVOICES, {
                 account,

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
@@ -10,6 +10,18 @@ const db = new sqlite3.Database(dbFile, (err) => {
     if (err) console.error('Database opening error', err);
     console.log(`sqlite debug:`, { err, dbFile, userData });
 });
+
+const escpos = require('escpos');
+escpos.USB = require('escpos-usb');
+// escpos.USB.findPrinter();
+// const usbDevice = new escpos.USB(0x01, 0xff);
+
+const device = new escpos.USB();
+// const options = { encoding: 'GB18030' /* default */ };
+const options = { encoding: 'GB18030' /* default */ };
+// const options = { encoding: 'GB18030' /* default */, includeParity: false };
+// const options = { encoding: 'UTF-16BE', height: 25 /* default */ };
+const printer = new escpos.Printer(device, options);
 
 let mainWindow;
 
@@ -109,7 +121,7 @@ ipcMain.on(channels.GET_ACCOUNT, (event, { account }) => {
     console.log(`account detail`, { account });
     // const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone memberSince, gallonRemain, gallonBuy, afterBuyGallonTotal, overGallon, lastRenewGallon  FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
     const sql_invoices = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone memberSince, gallonCurrent, gallonBuy, gallonRemain, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id `;
-    const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
+    const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, afterBuyGallonTotal, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
 
     db.get(sql, (err, row) => {
         event.sender.send(channels.GET_ACCOUNT, row);
@@ -129,10 +141,58 @@ ipcMain.on(channels.GET_MEMBER_INVOICES, (event, args) => {
     });
 });
 
+// Print Receipt
+ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
+    const { receipt } = args;
+    console.log('print receipt', receipt);
+
+    const fullname = `${
+        receipt.detail.fullname
+    } --- ${receipt.detail.phone.slice(4, 8)} `;
+    const account = `[Account #: ${receipt.account}]`;
+    // const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
+    const prevGallon = `Gallon Prev: ${receipt.detail.afterBuyGallonTotal}`;
+    const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
+    const remainGallon = `Gallon Left: ${receipt.gallonLeft}`;
+    const gallonOver = `Gallon Over: ${receipt.overLimit}`;
+    const timestamp = `${receipt.timestamp}`;
+    const blank = ` `;
+    const record_id = receipt.detail.record_id;
+    device.open(function (error) {
+        printer
+            .font('a')
+            // .font('b')
+            .align('lt')
+            // .style('bu')
+            .text(fullname)
+            .text(account)
+            .text(prevGallon)
+            .text(buyGallon)
+            .text(remainGallon)
+            .text(gallonOver)
+            .text(timestamp)
+            .text('Thank You')
+            .text('Mckee Pure Water')
+            // .barcode('1234567', 'EAN8')
+            .barcode(record_id.toString(), 'EAN8', { includeParity: false })
+            // .barcode(record_id.toString(), 'EAN13')
+            .text(blank)
+            .text(blank)
+            .cut()
+            .close();
+        event.sender.send(channels.PRINT_RECEIPT, { done: true });
+        // .qrimage('https://github.com/song940/node-escpos', function (err) {
+        //     event.sender.send(channels.PRINT_RECEIPT, { done: true });
+        //     this.cut();
+        //     this.close();
+        // });
+    });
+});
+
 // GET CURRENT GALLON FOR MEMBER
 ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
     console.log('current gallon', args);
-    const sql = `SELECT account, firstName, lastName, fullname,  areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, overGallon, lastRenewGallon, renewFee, renewGallon, record_id, invoiceDate, invoiceTime FROM mckee WHERE account = '${args}' ORDER BY record_id DESC LIMIT 1;
+    const sql = `SELECT account, firstName, lastName, fullname,  areaCode, phone, memberSince, gallonCurrent, gallonBuy, afterBuyGallonTotal, gallonRemain, overGallon, lastRenewGallon, renewFee, renewGallon, record_id, invoiceDate, invoiceTime FROM mckee WHERE account = '${args}' ORDER BY record_id DESC LIMIT 1;
 `;
 
     db.get(sql, (err, row) => {
@@ -187,8 +247,9 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
                         memberSince 
                     FROM mckee 
                     WHERE phone = ?
-                    OR account = ?
+                    OR account = ? AND areaCode is NOT NULL
                     OR fullname = ?`;
+
     let fullname;
 
     if (firstName && lastName) {
