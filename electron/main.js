@@ -150,11 +150,17 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
         receipt.detail.fullname
     } --- ${receipt.detail.phone.slice(4, 8)} `;
     const account = `[Account #: ${receipt.account}]`;
-    // const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
-    const prevGallon = `Gallon Prev: ${receipt.detail.afterBuyGallonTotal}`;
+    const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
+    // const prevGallon = `Gallon Prev: ${receipt.detail.afterBuyGallonTotal}`;
     const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
-    const remainGallon = `Gallon Left: ${receipt.gallonLeft}`;
-    const gallonOver = `Gallon Over: ${receipt.overLimit}`;
+    const renew1 =
+        receipt.gallonLeft <= 0 && receipt.overLimit === 0
+            ? ` => [Please Renew Membership!!!]`
+            : '';
+    const renew2 =
+        receipt.overLimit < 0 ? `=> [Please Renew Membership!!!]` : '';
+    const remainGallon = `Gallon Left: ${receipt.gallonLeft} ${renew1}`;
+    const gallonOver = `Gallon Over: ${receipt.overLimit} ${renew2}`;
     const timestamp = `${receipt.timestamp}`;
     const blank = ` `;
     const record_id = receipt.detail.record_id;
