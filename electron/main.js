@@ -197,6 +197,22 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
 
+    let selection;
+
+    if (phone) {
+        selection = 'phone';
+    }
+    if (account) {
+        selection = 'account';
+    }
+    if (firstName) {
+        selection = 'firstName';
+    }
+
+    if (lastName) {
+        selection = 'lastName';
+    }
+
     let query = `SELECT 
                     DISTINCT 
                         firstName, 
@@ -265,7 +281,8 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
             console.log('Unable to find User');
             event.sender.send(channels.FIND_MEMBERSHIP, {
                 error: {
-                    message: `Unable to locate Membership: `,
+                    message: `Unable to locate Membership: ${selection} `,
+                    field: selection,
                 },
             });
         } else {
