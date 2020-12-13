@@ -11,17 +11,12 @@ const db = new sqlite3.Database(dbFile, (err) => {
     console.log(`sqlite debug:`, { err, dbFile, userData });
 });
 
-const escpos = require('escpos');
-escpos.USB = require('escpos-usb');
-// escpos.USB.findPrinter();
-// const usbDevice = new escpos.USB(0x01, 0xff);
-
-const device = new escpos.USB();
+// ESC-POS PRINTER SETUP
+// const escpos = require('escpos');
+// escpos.USB = require('escpos-usb');
+// const device = new escpos.USB();
 // const options = { encoding: 'GB18030' /* default */ };
-const options = { encoding: 'GB18030' /* default */ };
-// const options = { encoding: 'GB18030' /* default */, includeParity: false };
-// const options = { encoding: 'UTF-16BE', height: 25 /* default */ };
-const printer = new escpos.Printer(device, options);
+// const printer = new escpos.Printer(device, options);
 
 let mainWindow;
 
@@ -164,26 +159,26 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     const timestamp = `${receipt.timestamp}`;
     const blank = ` `;
     const record_id = receipt.detail.record_id;
-    device.open(function (error) {
-        printer
-            .font('a')
-            .align('lt')
-            .text(fullname)
-            .text(account)
-            .text(prevGallon)
-            .text(buyGallon)
-            .text(remainGallon)
-            .text(gallonOver)
-            .text(timestamp)
-            .text('Thank You')
-            .text('Mckee Pure Water')
-            .barcode(record_id.toString(), 'EAN8', { includeParity: false })
-            .text(blank)
-            .text(blank)
-            .cut()
-            .close();
-        event.sender.send(channels.PRINT_RECEIPT, { done: true });
-    });
+    // device.open(function (error) {
+    //     printer
+    //         .font('a')
+    //         .align('lt')
+    //         .text(fullname)
+    //         .text(account)
+    //         .text(prevGallon)
+    //         .text(buyGallon)
+    //         .text(remainGallon)
+    //         .text(gallonOver)
+    //         .text(timestamp)
+    //         .text('Thank You')
+    //         .text('Mckee Pure Water')
+    //         .barcode(record_id.toString(), 'EAN8', { includeParity: false })
+    //         .text(blank)
+    //         .text(blank)
+    //         .cut()
+    //         .close();
+    //     event.sender.send(channels.PRINT_RECEIPT, { done: true });
+    // });
 });
 
 // GET CURRENT GALLON FOR MEMBER

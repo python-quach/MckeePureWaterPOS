@@ -17,6 +17,10 @@ function FindForm({
     const [hideField, setHideField] = useState(false);
 
     useEffect(() => {
+        document.getElementById('phone').focus();
+    }, []);
+
+    useEffect(() => {
         if (membership.error) {
             console.log(membership.field);
             // if (membership.field) {

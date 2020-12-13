@@ -14,6 +14,7 @@ const FindPhoneInput = ({
             {...setting}
             onChange={() => {
                 if (error) {
+                    console.log(error);
                     clearMembership();
                 }
             }}
@@ -27,24 +28,14 @@ const FindPhoneInput = ({
                     )
                         return value.slice(0, 3) + '-' + value.slice(3, 7);
                     if (value.length === 0) return '';
-                    console.log('value if match', value);
                     return value;
                 }
-
-                // console.log(
-                //     'current value',
-                //     { value },
-                //     value.length,
-                //     previousValue,
-                //     previousValue.length
-                // );
 
                 if (
                     previousValue &&
                     previousValue.length > value.length &&
                     value.length < 9
                 ) {
-                    console.log('match first if', value);
                     return value;
                 }
 
@@ -57,11 +48,9 @@ const FindPhoneInput = ({
                     if (value.match(/^\d+$/g) || value.charAt(3) === '-') {
                         return value;
                     }
-                    // return value;
                     return previousValue;
                 }
 
-                console.log('we return previousValue', previousValue);
                 return previousValue;
             }}
         />
@@ -81,7 +70,6 @@ FindPhoneInput.defaultProps = {
         icon: 'whatsapp',
         iconPosition: 'left',
         transparent: true,
-        // onChange: () => {},
     },
 };
 export default FindPhoneInput;
