@@ -167,9 +167,7 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     device.open(function (error) {
         printer
             .font('a')
-            // .font('b')
             .align('lt')
-            // .style('bu')
             .text(fullname)
             .text(account)
             .text(prevGallon)
@@ -179,19 +177,12 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
             .text(timestamp)
             .text('Thank You')
             .text('Mckee Pure Water')
-            // .barcode('1234567', 'EAN8')
             .barcode(record_id.toString(), 'EAN8', { includeParity: false })
-            // .barcode(record_id.toString(), 'EAN13')
             .text(blank)
             .text(blank)
             .cut()
             .close();
         event.sender.send(channels.PRINT_RECEIPT, { done: true });
-        // .qrimage('https://github.com/song940/node-escpos', function (err) {
-        //     event.sender.send(channels.PRINT_RECEIPT, { done: true });
-        //     this.cut();
-        //     this.close();
-        // });
     });
 });
 
@@ -211,49 +202,17 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
 
-    let selection;
-
-    if (phone) {
-        selection = 'phone';
-    }
-    if (account) {
-        selection = 'account';
-    }
-    if (firstName) {
-        selection = 'firstName';
-    }
-
-    if (lastName) {
-        selection = 'lastName';
-    }
-
-    // const query = `SELECT
-    //                 DISTINCT
-    //                     firstName,
-    //                     lastName,
-    //                     fullname,
-    //                     account,
-    //                     areaCode,
-    //                     phone,
-    //                     memberSince
-    //                 FROM mckee
-    //                 WHERE phone = ?
-    //                 OR account = ?
-    //                 OR firstName = ?
-    //                 OR lastName = ?
-    // `;
     let query = `SELECT 
                     DISTINCT 
                         firstName, 
                         lastName, 
                         fullname, 
                         account, 
-                        areaCode, 
                         phone,
                         memberSince 
                     FROM mckee 
                     WHERE phone = ?
-                    OR account = ? AND areaCode is NOT NULL
+                    OR account = ? 
                     OR fullname = ?`;
 
     let fullname;
@@ -304,70 +263,27 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
                     OR account = ?
                     OR lastName = ?`;
     }
-    // if (firstName || lastName) {
-    //     fullname = firstName || '%' + lastName || '%';
-    //     query = `SELECT
-    //                 DISTINCT
-    //                     firstName,
-    //                     lastName,
-    //                     fullname,
-    //                     account,
-    //                     areaCode,
-    //                     phone,
-    //                     memberSince
-    //                 FROM mckee
-    //                 WHERE phone = ?
-    //                 OR account = ?
-    //                 OR fullname like ?`;
-    // }
-
-    // const sql = `SELECT * FROM memberships
-    //                 WHERE Phone like '___${
-    //                     phone ? phone.replace(/-/g, '') : ''
-    //                 }'
-    //                 OR MemberAccount = '${account}'
-    //                 OR FirstName = '${firstName}'
-    //                 AND LastName = '${lastName}' `;
-    // db.all(sql, (err, rows) => {
-    db.all(
-        query,
-        // [phone, account, firstName, lastName],
-        // [phone, account, firstName || '%' + lastName || '%'],
-        [phone, account, fullname],
-        // [
-        //     phone,
-        //     account,
-        //     firstName || firstName.toUpperCase(),
-        //     lastName || lastName.toUpperCase(),
-        // ],
-        (err, rows) => {
-            console.log(rows);
-            if (err) console.log({ err });
-            if (!rows.length) {
-                console.log('Unable to find User');
-
-                // event.sender.send(channels.FIND_MEMBERSHIP, {
-                //     error: `Unable to locate Membership: ${selection} `,
-                // });
-
+    db.all(query, [phone, account, fullname], (err, rows) => {
+        console.log(rows);
+        if (err) console.log({ err });
+        if (!rows.length) {
+            console.log('Unable to find User');
+            event.sender.send(channels.FIND_MEMBERSHIP, {
+                error: {
+                    message: `Unable to locate Membership: `,
+                },
+            });
+        } else {
+            console.log(rows.length);
+            if (rows.length === 1) {
                 event.sender.send(channels.FIND_MEMBERSHIP, {
-                    error: {
-                        message: `Unable to locate Membership: ${selection} `,
-                        field: selection,
-                    },
+                    membership: rows,
                 });
             } else {
-                console.log(rows.length);
-                if (rows.length === 1) {
-                    event.sender.send(channels.FIND_MEMBERSHIP, {
-                        membership: rows,
-                    });
-                } else {
-                    event.sender.send(channels.FIND_MEMBERSHIP, {
-                        memberships: rows,
-                    });
-                }
+                event.sender.send(channels.FIND_MEMBERSHIP, {
+                    memberships: rows,
+                });
             }
         }
-    );
+    });
 });

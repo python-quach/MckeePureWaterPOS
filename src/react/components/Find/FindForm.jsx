@@ -12,6 +12,7 @@ function FindForm({
     membership,
     clearMembership,
     submitSucceeded,
+    getAccount,
 }) {
     const [hideField, setHideField] = useState(false);
 
@@ -35,7 +36,12 @@ function FindForm({
                 find(values, (data) => {
                     // if (!data.error) history.push('/member');
                     if (data.memberships) history.push('/member');
-                    if (data.membership) history.push('/account');
+                    if (data.membership) {
+                        console.log(data.membership);
+                        getAccount(data.membership[0].account, () => {
+                            history.push('/account');
+                        });
+                    }
                     // if (!data.error && data.memberships)
                     //     history.push('/member');
                     // if (!data.error && data.membership)

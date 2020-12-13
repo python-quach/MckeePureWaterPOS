@@ -108,6 +108,12 @@ const AccountPortal = (props) => {
                     label='Last Name'
                 />
                 <Field
+                    name='fullname'
+                    width={2}
+                    component={Form.Input}
+                    label='FullName'
+                />
+                <Field
                     readOnly
                     name='prevGallon'
                     width={2}
