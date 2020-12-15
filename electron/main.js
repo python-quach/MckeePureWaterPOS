@@ -12,11 +12,11 @@ const db = new sqlite3.Database(dbFile, (err) => {
 });
 
 // ESC-POS PRINTER SETUP
-// const escpos = require('escpos');
-// escpos.USB = require('escpos-usb');
-// const device = new escpos.USB();
-// const options = { encoding: 'GB18030' /* default */ };
-// const printer = new escpos.Printer(device, options);
+const escpos = require('escpos');
+escpos.USB = require('escpos-usb');
+const device = new escpos.USB();
+const options = { encoding: 'GB18030' /* default */ };
+const printer = new escpos.Printer(device, options);
 
 let mainWindow;
 
@@ -159,29 +159,30 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     const timestamp = `${receipt.timestamp}`;
     const blank = ` `;
     const record_id = receipt.detail.record_id;
-    // device.open(function (error) {
-    //     printer
-    //         .font('a')
-    //         .align('lt')
-    //         .text(fullname)
-    //         .text(account)
-    //         .text(prevGallon)
-    //         .text(buyGallon)
-    //         .text(remainGallon)
-    //         .text(gallonOver)
-    //         .text(timestamp)
-    //         .text('Thank You')
-    //         .text('Mckee Pure Water')
-    //         .barcode(record_id.toString(), 'EAN8', { includeParity: false })
-    //         .text(blank)
-    //         .text(blank)
-    //         .cut()
-    //         .close();
-    //     event.sender.send(channels.PRINT_RECEIPT, { done: true });
-    // });
+    device.open(function (error) {
+        printer
+            .font('a')
+            .align('lt')
+            .text(fullname)
+            .text(account)
+            .text(prevGallon)
+            .text(buyGallon)
+            .text(remainGallon)
+            .text(gallonOver)
+            .text(timestamp)
+            .text('Thank You')
+            .text('Mckee Pure Water')
+            .barcode(record_id.toString(), 'EAN8', { includeParity: false })
+            .text(blank)
+            .text(blank)
+            .cut()
+            .close();
+        event.sender.send(channels.PRINT_RECEIPT, { done: true });
+    });
 });
 
 // GET CURRENT GALLON FOR MEMBER
+// WEE NEED TO TAKE IN ACCOUNT
 ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
     console.log('current gallon', args);
     const sql = `SELECT account, firstName, lastName, fullname,  areaCode, phone, memberSince, gallonCurrent, gallonBuy, afterBuyGallonTotal, gallonRemain, overGallon, lastRenewGallon, renewFee, renewGallon, record_id, invoiceDate, invoiceTime FROM mckee WHERE account = '${args}' ORDER BY record_id DESC LIMIT 1;
@@ -196,21 +197,6 @@ ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
 ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
-
-    // const master_sql = `SELECT
-    // DISTINCT
-    // 	account,
-    // 	firstName,
-    // 	lastName,
-    // 	fullname,
-    // 	phone
-    // FROM mckee
-    // WHERE
-    // 	phone = ?
-    //     OR account = ?
-    //     OR fullname like ?
-    // 	ORDER BY
-    //         fullname`;
 
     const master_sql = `SELECT * FROM 
 	( SELECT 
@@ -227,14 +213,14 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
 			OR fullname like ? 
 			ORDER BY 
 			fullname
-	) WHERE account IS NOT NUll `;
+	) WHERE account IS NOT NULL AND phone IS NOT NULL`;
 
     const first = firstName || '';
     const last = lastName || '';
 
-    const test = phone || account ? '' : first + '%' + last;
+    const fullname = phone || account ? '' : first + '%' + last;
 
-    const values = [phone, account, test];
+    const values = [phone, account, fullname];
 
     let selection;
 
@@ -252,68 +238,6 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
         selection = 'lastName';
     }
 
-    let query = `SELECT 
-                    DISTINCT 
-                        firstName, 
-                        lastName, 
-                        fullname, 
-                        account, 
-                        phone,
-                        memberSince 
-                    FROM mckee 
-                    WHERE phone = ?
-                    OR account = ? 
-                    OR fullname = ?`;
-
-    let fullname;
-
-    if (firstName && lastName) {
-        fullname = firstName + ' ' + lastName;
-        query = `SELECT 
-                    DISTINCT 
-                        firstName, 
-                        lastName, 
-                        fullname, 
-                        account, 
-                        areaCode, 
-                        phone,
-                        memberSince 
-                    FROM mckee 
-                    WHERE phone = ?
-                    OR account = ?
-                    OR fullname = ?`;
-    } else if (firstName && !lastName) {
-        fullname = firstName;
-        query = `SELECT
-                    DISTINCT
-                        firstName,
-                        lastName,
-                        fullname,
-                        account,
-                        areaCode,
-                        phone,
-                        memberSince
-                    FROM mckee
-                    WHERE phone = ?
-                    OR account = ?
-                    OR firstName = ?`;
-    } else if (lastName && !firstName) {
-        fullname = lastName;
-        query = `SELECT
-                    DISTINCT
-                        firstName,
-                        lastName,
-                        fullname,
-                        account,
-                        areaCode,
-                        phone,
-                        memberSince
-                    FROM mckee
-                    WHERE phone = ?
-                    OR account = ?
-                    OR lastName = ?`;
-    }
-    // db.all(query, [phone, account, fullname], (err, rows) => {
     db.all(master_sql, values, (err, rows) => {
         console.log(rows);
         if (err) console.log({ err });
