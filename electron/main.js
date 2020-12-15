@@ -1,15 +1,8 @@
-const { app, BrowserWindow, ipcMain, crashReporter } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
-
-crashReporter.start({
-    productName: 'KAKA',
-    companyName: 'Quachio',
-    submitURL: 'http://localhost:3010/api/app-crashes',
-    uploadToServer: true,
-});
 
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'db.sqlite3');
@@ -43,11 +36,9 @@ function createWindow() {
         backgroundColor: '#060b22',
         frame: true,
         fullscreen: true,
-        // fullscreen: false,
         maximizable: true,
         transparent: false,
         autoHideMenuBar: true,
-        // autoHideMenuBar: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -124,8 +115,6 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
 // GET ACCOUNT DETAIL
 ipcMain.on(channels.GET_ACCOUNT, (event, { account }) => {
     console.log(`account detail`, { account });
-    // const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone memberSince, gallonRemain, gallonBuy, afterBuyGallonTotal, overGallon, lastRenewGallon  FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
-    const sql_invoices = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone memberSince, gallonCurrent, gallonBuy, gallonRemain, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id `;
     const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, afterBuyGallonTotal, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
 
     db.get(sql, (err, row) => {
@@ -139,7 +128,6 @@ ipcMain.on(channels.GET_MEMBER_INVOICES, (event, args) => {
     console.log(`get invoice`, account);
     const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account}`;
     db.all(getAccountInvoices, (err, row) => {
-        // console.log({ statement, err, row });
         console.log(row);
 
         event.sender.send(channels.GET_MEMBER_INVOICES, row);
@@ -156,7 +144,6 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     } --- ${receipt.detail.phone.slice(4, 8)} `;
     const account = `[Account #: ${receipt.account}]`;
     const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
-    // const prevGallon = `Gallon Prev: ${receipt.detail.afterBuyGallonTotal}`;
     const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
     const renew1 =
         receipt.gallonLeft <= 0 && receipt.overLimit === 0
@@ -182,7 +169,7 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
             .text(timestamp)
             .text('Thank You')
             .text('Mckee Pure Water')
-            // .barcode(record_id.toString(), 'EAN8', { includeParity: false })
+            .barcode(record_id.toString(), 'EAN8')
             .text(blank)
             .text(blank)
             .cut()
