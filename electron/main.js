@@ -7,7 +7,7 @@ const { channels } = require('../src/shared/constants');
 crashReporter.start({
     productName: 'KAKA',
     companyName: 'Quachio',
-    submitURL: 'http://localhost:3000/api/app-crashes',
+    submitURL: 'http://localhost:3010/api/app-crashes',
     uploadToServer: true,
 });
 
