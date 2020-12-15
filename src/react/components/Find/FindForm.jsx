@@ -10,6 +10,10 @@ function FindForm({
     history,
     find,
     membership,
+    account,
+    phone,
+    firstName,
+    lastName,
     clearMembership,
     getAccount,
 }) {
@@ -94,6 +98,7 @@ function FindForm({
 
             {!membership.error ? (
                 <Form.Button
+                    disabled={!phone && !account && !firstName && !lastName}
                     color='blue'
                     size='massive'
                     circular

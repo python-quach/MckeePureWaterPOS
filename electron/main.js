@@ -50,6 +50,7 @@ function createWindow() {
         // autoHideMenuBar: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
         },
     });
     // mainWindow.removeMenu();

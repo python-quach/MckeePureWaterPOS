@@ -37,19 +37,23 @@ const AccountPortal = (props) => {
 
     // BUY DATA
     const [overLimit, setOverLimit] = useState(
-        parseInt(detail.afterBuyGallonTotal) > 0 ? 0 : detail.overGallon
+        // parseInt(detail.afterBuyGallonTotal) > 0 ? 0 : detail.overGallon
+        parseInt(detail.gallonRemain) >= 0 ? 0 : detail.gallonRemain
     );
     const [buyGallon, setBuyGallon] = useState(0);
-    const [gallonLeft, setGallonLeft] = useState(detail.afterBuyGallonTotal);
+    // const [gallonLeft, setGallonLeft] = useState(detail.afterBuyGallonTotal);
+    const [gallonLeft, setGallonLeft] = useState(detail.gallonRemain);
     const [receipt, setReceipt] = useState({
-        prevGallon: detail.afterBuyGallonTotal,
+        // prevGallon: detail.afterBuyGallonTotal,
+        prevGallon: detail.gallonRemain,
         buyGallon: buyGallon,
         gallonLeft: gallonLeft,
     });
 
     useEffect(() => {
         console.log(`Buy Data`, {
-            prevGallon: detail.afterBuyGallonTotal,
+            // prevGallon: detail.afterBuyGallonTotal,
+            prevGallon: detail.gallonRemain,
             buyGallon,
             gallonLeft,
             overLimit,
@@ -58,9 +62,11 @@ const AccountPortal = (props) => {
             setGallonLeft(0);
         }
         if (buyGallon === '') {
-            setGallonLeft(detail.afterBuyGallonTotal);
+            // setGallonLeft(detail.afterBuyGallonTotal);
+            setGallonLeft(detail.gallonRemain);
         }
-        if (parseInt(buyGallon) === parseInt(detail.afterBuyGallonTotal)) {
+        // if (parseInt(buyGallon) === parseInt(detail.afterBuyGallonTotal)) {
+        if (parseInt(buyGallon) === parseInt(detail.gallonRemain)) {
             setOverLimit(0);
             setGallonLeft(0);
         }
@@ -118,99 +124,114 @@ const AccountPortal = (props) => {
                     component={Form.Input}
                     label='FullName'
                 />
-                <Field
-                    readOnly
-                    name='prevGallon'
-                    width={2}
-                    component={Form.Input}
-                    label='Previous Gallon'
-                />
+                <Form.Group>
+                    <Field
+                        readOnly
+                        name='prevGallon'
+                        width={2}
+                        component={Form.Input}
+                        label='Previous Gallon'
+                    />
 
-                <Form.Input
-                    // type='number'
-                    min='0'
-                    name='buy'
-                    width={2}
-                    value={buyGallon ? buyGallon.toString() : buyGallon}
-                    label='Buy Gallon'
-                    onChange={(e, { value }) => {
-                        console.log(value, e);
+                    <Form.Input
+                        // type='number'
+                        min='0'
+                        name='buy'
+                        width={2}
+                        value={buyGallon ? buyGallon.toString() : buyGallon}
+                        label='Buy Gallon'
+                        onChange={(e, { value }) => {
+                            console.log(value, e);
 
-                        if (isNaN(parseInt(value))) {
-                            console.log(value);
-                            setBuyGallon('');
-                            setOverLimit(0);
-                        }
-                        const buyValue = parseInt(value, 10);
-                        if (buyValue > detail.afterBuyGallonTotal) {
-                            setOverLimit(detail.afterBuyGallonTotal - buyValue);
-                            setBuyGallon(buyValue);
-                        } else {
-                            if (
-                                buyValue < detail.afterBuyGallonTotal ||
-                                buyValue === 0
-                            ) {
+                            if (isNaN(parseInt(value))) {
+                                console.log(value);
+                                // setBuyGallon('');
+                                setBuyGallon(0);
                                 setOverLimit(0);
                             }
-                            if (
-                                buyValue >= 0 &&
-                                buyValue <= detail.afterBuyGallonTotal
-                            ) {
-                                setBuyGallon((prev) => {
-                                    if (buyValue === 0 || buyValue === '') {
-                                        setGallonLeft(
-                                            detail.afterBuyGallonTotal
-                                        );
-                                    } else {
-                                        if (
-                                            buyValue <
-                                            detail.afterBuyGallonTotal
-                                        )
+                            const buyValue = parseInt(value, 10);
+                            // if (buyValue > detail.afterBuyGallonTotal) {
+                            if (buyValue > detail.gallonRemain) {
+                                setOverLimit(detail.gallonRemain - buyValue);
+                                // setOverLimit(detail.afterBuyGallonTotal - buyValue);
+                                setBuyGallon(buyValue);
+                            } else {
+                                if (
+                                    buyValue < detail.gallonRemain ||
+                                    // buyValue < detail.afterBuyGallonTotal ||
+                                    buyValue === 0
+                                ) {
+                                    setOverLimit(0);
+                                }
+                                if (
+                                    buyValue >= 0 &&
+                                    // buyValue <= detail.afterBuyGallonTotal
+                                    buyValue <= detail.gallonRemain
+                                ) {
+                                    setBuyGallon((prev) => {
+                                        if (buyValue === 0 || buyValue === '') {
                                             setGallonLeft(
-                                                detail.afterBuyGallonTotal -
-                                                    buyValue
+                                                // detail.afterBuyGallonTotal
+                                                detail.gallonRemain
                                             );
-                                        if (
-                                            buyValue >
-                                            detail.afterBuyGallonTotal
-                                        )
-                                            setGallonLeft(
-                                                buyValue -
-                                                    detail.afterBuyGallonTotal
-                                            );
+                                        } else {
+                                            if (
+                                                buyValue <
+                                                // detail.afterBuyGallonTotal
+                                                detail.gallonRemain
+                                            )
+                                                setGallonLeft(
+                                                    // detail.afterBuyGallonTotal -
+                                                    detail.gallonRemain -
+                                                        buyValue
+                                                );
+                                            if (
+                                                buyValue >
+                                                // detail.afterBuyGallonTotal
+                                                detail.gallonRemain
+                                            )
+                                                setGallonLeft(
+                                                    buyValue -
+                                                        // detail.afterBuyGallonTotal
+                                                        detail.gallonRemain
+                                                );
 
-                                        if (
-                                            buyValue ===
-                                            detail.afterBuyGallonTotal
-                                        ) {
-                                            setGallonLeft(0);
+                                            if (
+                                                buyValue ===
+                                                // detail.afterBuyGallonTotal
+                                                detail.gallonRemain
+                                            ) {
+                                                setGallonLeft(0);
+                                            }
                                         }
-                                    }
-                                    setBuyGallon(parseInt(value));
-                                });
+                                        setBuyGallon(parseInt(value));
+                                    });
+                                }
                             }
+                        }}
+                    />
+                    <Form.Input
+                        error={
+                            gallonLeft === 0 || gallonLeft < 0 ? true : false
                         }
-                    }}
-                />
-                <Form.Input
-                    error={gallonLeft === 0 || gallonLeft < 0 ? true : false}
-                    width={2}
-                    readOnly
-                    name='GallonLeft'
-                    value={gallonLeft}
-                    label='Gallon Left'
-                />
-                <Form.Input
-                    readOnly
-                    error={overLimit < 0 ? true : false}
-                    name='over'
-                    width={2}
-                    value={overLimit}
-                    label='Over Gallon'
-                    onChange={(e, { value }) => {
-                        setOverLimit(value);
-                    }}
-                />
+                        width={2}
+                        readOnly
+                        name='GallonLeft'
+                        value={gallonLeft}
+                        label='Gallon Left'
+                    />
+                    <Form.Input
+                        readOnly
+                        error={overLimit < 0 ? true : false}
+                        name='over'
+                        width={2}
+                        value={overLimit}
+                        label='Over Gallon'
+                        onChange={(e, { value }) => {
+                            setOverLimit(value);
+                        }}
+                    />
+                </Form.Group>
             </Form>
             <Divider />
             <Button
@@ -253,8 +274,9 @@ const AccountPortal = (props) => {
                 content='Buy'
                 onClick={() => {
                     const receipt = {
-                        // prevGallon: detail.gallonRemain,
-                        prevGallon: detail.afterBuyGallonTotal,
+                        prevGallon: detail.gallonRemain,
+                        // prevGallon: detail.afterBuyGallonTotal,
+                        // prevGallon: detail.afterBuyGallonTotal,
                         buyGallon,
                         gallonLeft,
                         overLimit,
@@ -316,13 +338,15 @@ const mapStateToProps = (state) => {
             memberSince,
 
             // prevGallon: parseInt(gallonRemain) || 0,
-            prevGallon: parseInt(afterBuyGallonTotal) || 0,
+            // prevGallon: parseInt(afterBuyGallonTotal) || 0,
+            prevGallon: parseInt(gallonRemain) || 0,
             // overGallon:
             //     parseInt(overGallon) === parseInt(gallonRemain)
             //         ? 0
             //         : overGallon,
             overGallon:
-                parseInt(overGallon) === parseInt(afterBuyGallonTotal)
+                // parseInt(overGallon) === parseInt(afterBuyGallonTotal)
+                parseInt(overGallon) === parseInt(gallonRemain)
                     ? 0
                     : overGallon,
 

@@ -13,7 +13,20 @@ let upload = multer({
     dest: miniDumpsPath,
 }).single('upload_file_minidump');
 
-app.post('/api/app-crash', upload, (req, res) => {
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+// app.use(multer);
+
+app.get('/api/app-crash', (req, res) => {
+    console.log(req);
+    res.send('Hello');
+});
+
+app.post('/api/app-crashes', upload, (req, res) => {
+    console.log(req.body);
     req.body.filename = req.file.filename;
     const crashData = JSON.stringify(req.body);
     fs.writeFile(req.file.path + '.json', crashData, (e) => {
