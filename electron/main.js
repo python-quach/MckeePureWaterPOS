@@ -174,7 +174,7 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
             .text(timestamp)
             .text('Thank You')
             .text('Mckee Pure Water')
-            .barcode(record_id.toString(), 'EAN8', { includeParity: false })
+            // .barcode(record_id.toString(), 'EAN8', { includeParity: false })
             .text(blank)
             .text(blank)
             .cut()
