@@ -5,10 +5,11 @@ import * as actionTypes from '../../../types';
 import BuyForm from '../BuyForm';
 
 const BuyPortal = (props) => {
-    const { membership, clearMembership } = props;
+    // const { membership, clearMembership } = props;
+    const { membership } = props;
     const [open, setOpenPortal] = useState(true);
-    const [hideField, setHideField] = useState(false);
-    const [hide, setHide] = React.useState(false);
+    // const [hideField, setHideField] = useState(false);
+    // const [hide, setHide] = React.useState(false);
 
     const handleClose = () => {
         setOpenPortal(false);

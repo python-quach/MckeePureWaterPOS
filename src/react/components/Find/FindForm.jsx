@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Form, Transition } from 'semantic-ui-react';
+import { Divider, Form } from 'semantic-ui-react';
 import Field from './FindField';
-import FindFormButton from './FindFormButton';
+// import FindFormButton from './FindFormButton';
 
 function FindForm({
     handleSubmit,
@@ -11,7 +11,6 @@ function FindForm({
     find,
     membership,
     clearMembership,
-    submitSucceeded,
     getAccount,
 }) {
     const [hideField, setHideField] = useState(false);
@@ -23,8 +22,7 @@ function FindForm({
     useEffect(() => {
         if (membership.error) {
             console.log(membership.field);
-            // if (membership.field) {
-            // document.getElementById('phone').focus();
+
             if (membership.field) {
                 document.getElementById(membership.field).focus();
             } else {
@@ -38,7 +36,6 @@ function FindForm({
             size={size}
             onSubmit={handleSubmit((values) => {
                 find(values, (data) => {
-                    // if (!data.error) history.push('/member');
                     if (data.memberships) history.push('/member');
                     if (data.membership) {
                         console.log(data.membership);
@@ -46,13 +43,10 @@ function FindForm({
                             history.push('/account');
                         });
                     }
-                    // if (!data.error && data.memberships)
-                    //     history.push('/member');
-                    // if (!data.error && data.membership)
-                    //     history.push('/account');
                 });
             })}>
             <Field.Phone
+                setHideField={setHideField}
                 hide={hideField}
                 clearMembership={clearMembership}
                 error={membership.error}
@@ -97,10 +91,7 @@ function FindForm({
                 }}
             />
             <Divider hidden />
-            {/* <FindFormButton
-                membership={membership}
-                submitSucceeded={submitSucceeded}
-            /> */}
+
             {!membership.error ? (
                 <Form.Button
                     color='blue'
@@ -122,46 +113,6 @@ function FindForm({
                     labelPosition='right'
                 />
             )}
-
-            {/* <Transition.Group>
-                {!membership.error ? (
-                    <Form.Button
-                        color='blue'
-                        size='massive'
-                        circular
-                        content='Find Membership'
-                        icon='search'
-                        fluid
-                        labelPosition='right'
-                    />
-                ) : (
-                    <Transition
-                        visible={!submitSucceeded}
-                        animation='fade'
-                        duration={500}
-                        unmountOnHide={true}>
-                        <Form.Button
-                            color='red'
-                            size='massive'
-                            circular
-                            content='Unable to Find Membership'
-                            icon='search'
-                            fluid
-                            labelPosition='right'
-                            onClick={(event) => event.preventDefault()}
-                        />
-                    </Transition>
-                )}
-            </Transition.Group> */}
-            {/* <Form.Button
-                color='blue'
-                size='massive'
-                circular
-                content='Find Membership'
-                icon='search'
-                fluid
-                labelPosition='right'
-            /> */}
         </Form>
     );
 }

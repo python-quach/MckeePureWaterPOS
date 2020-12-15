@@ -3,7 +3,7 @@ import { reduxForm, reset, formValueSelector } from 'redux-form';
 import { Header, Icon, Divider } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
-import LoginDebug from './LoginDebug';
+// import LoginDebug from './LoginDebug';
 import LoginForm from './LoginForm';
 import LoginGrid from '../Grid/Grid';
 import * as actionTypes from '../../../types';

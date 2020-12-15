@@ -134,6 +134,9 @@ function FindContainer(props) {
                         focusInput={focusInput}
                         submitSucceeded={submitSucceeded}
                         setOpen={setOpen}
+                        setErrorMessage={setErrorMessage}
+                        setIconColor={setIconColor}
+                        setAnimation={setAnimation}
                     />
                     <Divider hidden />
                     <FindLogoutButton

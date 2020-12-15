@@ -71,19 +71,19 @@ FindNameInput.defaultProps = {
 
 export default FindNameInput;
 
-function name(value, previousValue, allValues, previousAllValues, name) {
-    const wordPattern = /^[a-zA-Z ]+$/;
+// function name(value, previousValue, allValues, previousAllValues, name) {
+//     const wordPattern = /^[a-zA-Z ]+$/;
 
-    if (value.match(wordPattern) && value.length > 0) {
-        return (
-            value.charAt(0).toUpperCase() +
-            value.slice(1).replace(/\s/g, '').toLowerCase()
-        );
-    } else {
-        if (value.length > 1) {
-            return previousValue;
-        } else {
-            return '';
-        }
-    }
-}
+//     if (value.match(wordPattern) && value.length > 0) {
+//         return (
+//             value.charAt(0).toUpperCase() +
+//             value.slice(1).replace(/\s/g, '').toLowerCase()
+//         );
+//     } else {
+//         if (value.length > 1) {
+//             return previousValue;
+//         } else {
+//             return '';
+//         }
+//     }
+// }

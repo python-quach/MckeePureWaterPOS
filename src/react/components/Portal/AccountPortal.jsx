@@ -48,7 +48,12 @@ const AccountPortal = (props) => {
     });
 
     useEffect(() => {
-        console.log(`Buy Data`, { buyGallon, gallonLeft, overLimit });
+        console.log(`Buy Data`, {
+            prevGallon: detail.afterBuyGallonTotal,
+            buyGallon,
+            gallonLeft,
+            overLimit,
+        });
         if (overLimit < 0) {
             setGallonLeft(0);
         }
@@ -258,6 +263,7 @@ const AccountPortal = (props) => {
                         timestamp: currentDate() + '-' + getCurrentTime(),
                     };
 
+                    setReceipt(receipt);
                     printReceipt(receipt);
                 }}
             />

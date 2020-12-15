@@ -1,8 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, crashReporter } = require('electron');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
+
+crashReporter.start({
+    productName: 'KAKA',
+    companyName: 'Quachio',
+    submitURL: 'http://localhost:3000/api/app-crashes',
+    uploadToServer: true,
+});
 
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'db.sqlite3');
@@ -200,8 +207,24 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
 
-    const master_sql = `SELECT * FROM 
-	( SELECT 
+    // const master_sql = `SELECT * FROM
+    // ( SELECT
+    // 	DISTINCT
+    // 		account,
+    // 		firstName,
+    // 		lastName,
+    // 		fullname,
+    // 		phone
+    // 	FROM mckee
+    // 	WHERE
+    // 		phone = ?
+    // 		OR account =  ?
+    // 		OR fullname like ?
+    // 		ORDER BY
+    // 		fullname
+    // ) WHERE account IS NOT NULL AND phone IS NOT NULL`;
+
+    const master_sql = `SELECT 
 		DISTINCT 
 			account, 
 			firstName, 
@@ -214,8 +237,7 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
 			OR account =  ? 
 			OR fullname like ? 
 			ORDER BY 
-			fullname
-	) WHERE account IS NOT NULL AND phone IS NOT NULL`;
+			fullname`;
 
     const first = firstName || '';
     const last = lastName || '';
