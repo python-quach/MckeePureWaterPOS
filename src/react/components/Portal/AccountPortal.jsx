@@ -75,55 +75,57 @@ const AccountPortal = (props) => {
     return (
         <Container style={{ width: '1400px' }}>
             <Form size='huge'>
-                <Field
-                    name='todayDate'
-                    component={Form.Input}
-                    width={3}
-                    label='Today Date'
-                />
-                <Field
-                    name='todayTime'
-                    component={Form.Input}
-                    width={3}
-                    label='Time'
-                />
-                <Field
-                    name='account'
-                    width={2}
-                    component={Form.Input}
-                    label='Account'
-                />
-                <Field
-                    name='areaCode'
-                    width={2}
-                    component={Form.Input}
-                    label='Area Code'
-                />
-                <Field
-                    name='phone'
-                    type='phone'
-                    width={3}
-                    component={Form.Input}
-                    label='Phone Number'
-                />
-                <Field
-                    name='firstName'
-                    width={2}
-                    component={Form.Input}
-                    label='First Name'
-                />
-                <Field
-                    name='lastName'
-                    width={2}
-                    component={Form.Input}
-                    label='Last Name'
-                />
-                <Field
-                    name='fullname'
-                    width={2}
-                    component={Form.Input}
-                    label='FullName'
-                />
+                <Form.Group>
+                    <Field
+                        name='todayDate'
+                        component={Form.Input}
+                        width={3}
+                        label='Today Date'
+                    />
+                    <Field
+                        name='todayTime'
+                        component={Form.Input}
+                        width={3}
+                        label='Time'
+                    />
+                    <Field
+                        name='account'
+                        width={2}
+                        component={Form.Input}
+                        label='Account'
+                    />
+                    <Field
+                        name='areaCode'
+                        width={2}
+                        component={Form.Input}
+                        label='Area Code'
+                    />
+                    <Field
+                        name='phone'
+                        type='phone'
+                        width={3}
+                        component={Form.Input}
+                        label='Phone Number'
+                    />
+                    <Field
+                        name='firstName'
+                        width={2}
+                        component={Form.Input}
+                        label='First Name'
+                    />
+                    <Field
+                        name='lastName'
+                        width={2}
+                        component={Form.Input}
+                        label='Last Name'
+                    />
+                    <Field
+                        name='fullname'
+                        width={2}
+                        component={Form.Input}
+                        label='FullName'
+                    />
+                </Form.Group>
                 <Form.Group>
                     <Field
                         readOnly
@@ -134,11 +136,10 @@ const AccountPortal = (props) => {
                     />
 
                     <Form.Input
-                        // type='number'
-                        min='0'
                         name='buy'
                         width={2}
-                        value={buyGallon ? buyGallon.toString() : buyGallon}
+                        // value={buyGallon ? buyGallon.toString() : buyGallon}
+                        value={buyGallon}
                         label='Buy Gallon'
                         onChange={(e, { value }) => {
                             console.log(value, e);
@@ -147,59 +148,42 @@ const AccountPortal = (props) => {
                                 console.log(value);
                                 // setBuyGallon('');
                                 setBuyGallon(0);
+                                setGallonLeft(detail.gallonRemain);
                                 setOverLimit(0);
                             }
+
                             const buyValue = parseInt(value, 10);
-                            // if (buyValue > detail.afterBuyGallonTotal) {
                             if (buyValue > detail.gallonRemain) {
                                 setOverLimit(detail.gallonRemain - buyValue);
-                                // setOverLimit(detail.afterBuyGallonTotal - buyValue);
                                 setBuyGallon(buyValue);
                             } else {
                                 if (
                                     buyValue < detail.gallonRemain ||
-                                    // buyValue < detail.afterBuyGallonTotal ||
                                     buyValue === 0
                                 ) {
                                     setOverLimit(0);
                                 }
                                 if (
                                     buyValue >= 0 &&
-                                    // buyValue <= detail.afterBuyGallonTotal
                                     buyValue <= detail.gallonRemain
                                 ) {
                                     setBuyGallon((prev) => {
                                         if (buyValue === 0 || buyValue === '') {
-                                            setGallonLeft(
-                                                // detail.afterBuyGallonTotal
-                                                detail.gallonRemain
-                                            );
+                                            setGallonLeft(detail.gallonRemain);
                                         } else {
-                                            if (
-                                                buyValue <
-                                                // detail.afterBuyGallonTotal
-                                                detail.gallonRemain
-                                            )
+                                            if (buyValue < detail.gallonRemain)
                                                 setGallonLeft(
-                                                    // detail.afterBuyGallonTotal -
                                                     detail.gallonRemain -
                                                         buyValue
                                                 );
-                                            if (
-                                                buyValue >
-                                                // detail.afterBuyGallonTotal
-                                                detail.gallonRemain
-                                            )
+                                            if (buyValue > detail.gallonRemain)
                                                 setGallonLeft(
                                                     buyValue -
-                                                        // detail.afterBuyGallonTotal
                                                         detail.gallonRemain
                                                 );
 
                                             if (
-                                                buyValue ===
-                                                // detail.afterBuyGallonTotal
-                                                detail.gallonRemain
+                                                buyValue === detail.gallonRemain
                                             ) {
                                                 setGallonLeft(0);
                                             }
@@ -218,7 +202,7 @@ const AccountPortal = (props) => {
                         readOnly
                         name='GallonLeft'
                         value={gallonLeft}
-                        label='Gallon Left'
+                        label='Gallon After Buy'
                     />
                     <Form.Input
                         readOnly
@@ -226,7 +210,7 @@ const AccountPortal = (props) => {
                         name='over'
                         width={2}
                         value={overLimit}
-                        label='Over Gallon'
+                        label='Gallon Over'
                         onChange={(e, { value }) => {
                             setOverLimit(value);
                         }}
