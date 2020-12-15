@@ -36,9 +36,11 @@ function createWindow() {
         backgroundColor: '#060b22',
         frame: true,
         fullscreen: true,
+        // fullscreen: false,
         maximizable: true,
         transparent: false,
         autoHideMenuBar: true,
+        // autoHideMenuBar: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         },
