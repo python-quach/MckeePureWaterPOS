@@ -208,8 +208,24 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     console.log('find membership', { args });
     const { phone, account, firstName, lastName } = args;
 
-    // const master_sql = `SELECT * FROM
-    // ( SELECT
+    const master_sql = `SELECT * FROM
+    ( SELECT
+    	DISTINCT
+    		account,
+    		firstName,
+    		lastName,
+    		fullname,
+    		phone
+    	FROM mckee
+    	WHERE
+    		phone = ?
+    		OR account =  ?
+    		OR fullname like ?
+    		ORDER BY
+    		fullname
+    ) WHERE account IS NOT NULL AND phone IS NOT NULL`;
+
+    // const master_sql = `SELECT
     // 	DISTINCT
     // 		account,
     // 		firstName,
@@ -222,23 +238,7 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     // 		OR account =  ?
     // 		OR fullname like ?
     // 		ORDER BY
-    // 		fullname
-    // ) WHERE account IS NOT NULL AND phone IS NOT NULL`;
-
-    const master_sql = `SELECT 
-		DISTINCT 
-			account, 
-			firstName, 
-			lastName, 
-			fullname, 
-			phone 
-		FROM mckee 
-		WHERE 
-			phone = ? 
-			OR account =  ? 
-			OR fullname like ? 
-			ORDER BY 
-			fullname`;
+    // 		fullname`;
 
     const first = firstName || '';
     const last = lastName || '';
