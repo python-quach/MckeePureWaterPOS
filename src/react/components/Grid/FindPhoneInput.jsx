@@ -20,7 +20,7 @@ const FindPhoneInput = ({
             }}
             onFocus={clearFields}
             normalize={(value, previousValue) => {
-                console.log(value, previousValue, value.length);
+                // console.log(value, previousValue, value.length);
                 if (value.match(/^\d+$/g) && value.length <= 7) {
                     if (
                         value.length === 7 &&

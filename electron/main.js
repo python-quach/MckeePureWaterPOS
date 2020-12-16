@@ -90,6 +90,16 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
     });
 });
 
+// GET LAST RECORD ID
+ipcMain.on(channels.LAST_RECORD, (event, args) => {
+    console.log('getting last record');
+    const sql = `SELECT MAX(rowid) barcode, record_id FROM mckee`;
+    db.get(sql, (err, row) => {
+        console.log(row);
+        event.sender.send(channels.LAST_RECORD, row);
+    });
+});
+
 // LOGIN USER SQL
 ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
     console.log(`verify login:`, { username, password });
@@ -141,7 +151,7 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
 
     const fullname = `${
         receipt.detail.fullname
-    } --- ${receipt.detail.phone.slice(4, 8)} `;
+    } -- ${receipt.detail.phone.slice(4, 8)} `;
     const account = `[Account #: ${receipt.account}]`;
     const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
     const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
@@ -154,8 +164,12 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     const remainGallon = `Gallon Left: ${receipt.gallonLeft} ${renew1}`;
     const gallonOver = `Gallon Over: ${receipt.overLimit} ${renew2}`;
     const timestamp = `${receipt.timestamp}`;
+    const record_id = `Invoice #: ${parseInt(receipt.record_id) + 1}-${
+        parseInt(receipt.barcode) + 1
+    }`;
     const blank = ` `;
-    const record_id = receipt.detail.record_id;
+    // const record_id = receipt.detail.record_id;
+    console.log(receipt.barcode.toString().length);
     device.open(function (error) {
         printer
             .font('a')
@@ -169,7 +183,11 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
             .text(timestamp)
             .text('Thank You')
             .text('Mckee Pure Water')
-            .barcode(record_id.toString(), 'EAN8')
+            .text(record_id)
+            // .barcode(record_id.toString(), 'EAN8')
+            // .barcode(receipt.barcode.toString() + '0', 'EAN8', {
+            //     includeParity: true,
+            // })
             .text(blank)
             .text(blank)
             .cut()

@@ -4,34 +4,18 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import * as actionTypes from '../../../types';
 import { channels } from '../../../shared/constants';
+import { getCurrentTime, currentDate } from '../../helpers/helpers';
 
 const { ipcRenderer } = window;
 
-const getCurrentTime = () => {
-    const time = new Date();
-    return time.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: true,
-    });
-};
-
-const currentDate = () => {
-    const currentdate = new Date();
-    const datetime =
-        currentdate.getMonth() +
-        1 +
-        '/' +
-        currentdate.getDate() +
-        '/' +
-        currentdate.getFullYear();
-
-    return datetime;
-};
-
 const AccountPortal = (props) => {
-    const { getAccountInvoices, account, detail, printReceipt } = props;
+    const {
+        getAccountInvoices,
+        account,
+        detail,
+        printReceipt,
+        getLastRecord,
+    } = props;
     const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -48,24 +32,35 @@ const AccountPortal = (props) => {
         gallonLeft: gallonLeft,
     });
 
+    // const [purchase, setPurchase] = useState(
+    //     {
+    //         buy: 0,
+    //         left: gallonRemain,
+    //         over: parseInt(gallonRemain) >= 0 ? 0 : gallonRemain,
+    //     },
+    //     setPurchase
+    // );
+
+    const resetGallon = () => {
+        setOverLimit(0);
+        setGallonLeft(0);
+    };
+
     useEffect(() => {
         console.log(`Buy Data`, {
-            prevGallon: gallonRemain,
+            gallonRemain,
             buyGallon,
             gallonLeft,
             overLimit,
+            receipt,
         });
-        if (overLimit < 0) {
-            setGallonLeft(0);
-        }
-        if (buyGallon === '') {
-            setGallonLeft(gallonRemain);
-        }
-        if (parseInt(buyGallon) === parseInt(gallonRemain)) {
-            setOverLimit(0);
-            setGallonLeft(0);
-        }
-    }, [buyGallon, gallonLeft, overLimit, gallonRemain, receipt]);
+    }, [buyGallon, gallonRemain, gallonLeft, overLimit, receipt]);
+
+    useEffect(() => {
+        if (overLimit < 0) setGallonLeft(0);
+        if (buyGallon === '') setGallonLeft(gallonRemain);
+        if (parseInt(buyGallon) === parseInt(gallonRemain)) resetGallon();
+    }, [buyGallon, overLimit, gallonRemain]);
 
     return (
         <Container style={{ width: '1400px' }}>
@@ -127,7 +122,7 @@ const AccountPortal = (props) => {
                         name='prevGallon'
                         width={2}
                         component={Form.Input}
-                        label='Previous Gallon'
+                        label='Gallon Remain'
                     />
 
                     <Form.Input
@@ -136,8 +131,6 @@ const AccountPortal = (props) => {
                         value={buyGallon}
                         label='Buy Gallon'
                         onChange={(e, { value }) => {
-                            console.log(value, e);
-
                             if (isNaN(parseInt(value))) {
                                 console.log(value);
                                 setBuyGallon(0);
@@ -242,7 +235,7 @@ const AccountPortal = (props) => {
                 onClick={() => {
                     const receipt = {
                         prevGallon: gallonRemain,
-                        buyGallon,
+                        buyGallon: buyGallon,
                         gallonLeft,
                         overLimit,
                         account,
@@ -250,10 +243,40 @@ const AccountPortal = (props) => {
                         timestamp: currentDate() + '-' + getCurrentTime(),
                     };
 
-                    console.log('Receipt Data: ', { receipt });
+                    console.log('Receipt Data: ', receipt);
 
                     setReceipt(receipt);
-                    printReceipt(receipt);
+
+                    getLastRecord((lastRecord) => {
+                        printReceipt({
+                            ...receipt,
+                            record_id: lastRecord.record_id,
+                            barcode: lastRecord.barcode,
+                        });
+                    });
+
+                    // printReceipt(receipt);
+                }}
+            />
+            <Button
+                content='Update'
+                onClick={() => {
+                    getLastRecord((lastRecord) => {
+                        const new_purchase = {
+                            record_id: lastRecord.record_id,
+                            barcode: lastRecord.barcode,
+                            account: detail.account,
+                            fullname: detail.fullname,
+                            phone: detail.phone,
+                            memberSince: detail.memberSince,
+                            prevGallon: gallonRemain,
+                            buyGallon: buyGallon,
+                            gallonLeft: gallonLeft,
+                            overLimit: overLimit,
+                            timestamp: currentDate() + '-' + getCurrentTime(),
+                        };
+                        console.log({ new_purchase });
+                    });
                 }}
             />
             <Message>
@@ -328,6 +351,17 @@ const mapDispatchToProps = (dispatch) => {
 
             ipcRenderer.on(channels.PRINT_RECEIPT, (event, args) => {
                 ipcRenderer.removeAllListeners(channels.PRINT_RECEIPT);
+            });
+        },
+        getLastRecord: (callback) => {
+            ipcRenderer.send(channels.LAST_RECORD);
+            ipcRenderer.on(channels.LAST_RECORD, (event, lastRecord) => {
+                ipcRenderer.removeAllListeners(channels.LAST_RECORD);
+                dispatch({
+                    type: actionTypes.LAST_RECORD,
+                    payload: lastRecord,
+                });
+                callback(lastRecord);
             });
         },
         getAccountInvoices: (account, callback) => {
