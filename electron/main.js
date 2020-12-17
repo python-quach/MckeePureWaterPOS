@@ -227,7 +227,6 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                     const account = `[Account #: ${row.account}]`;
                     const prevGallon = `Gallon Prev: ${row.gallonCurrent}`;
                     const gallonBuy = `Gallon Buy:  ${row.gallonBuy}`;
-                    const gallonLeft = `Gallon Left: ${row.gallonRemain}`;
                     const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
                     const blank = '';
                     const renew2 =
@@ -235,6 +234,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                             ? `=> [Please Renew Membership!!!]`
                             : '';
                     const gallonOver = `Gallon Over: ${row.overGallon} ${renew2}`;
+                    const gallonLeft = `Gallon Left: ${row.gallonRemain}${renew2}`;
                     device.open(function (error) {
                         printer
                             .font('a')
@@ -250,7 +250,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                             .text(prevGallon)
                             .text(gallonBuy)
                             .text(gallonLeft)
-                            .text(gallonOver)
+                            // .text(gallonOver)
                             .text(row.invoiceDate + '@' + row.invoiceTime)
                             .text(blank)
                             .text(invoice)
