@@ -15,6 +15,7 @@ const AccountPortal = (props) => {
         detail,
         printReceipt,
         getLastRecord,
+        buy,
     } = props;
     const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
@@ -262,20 +263,48 @@ const AccountPortal = (props) => {
                 content='Update'
                 onClick={() => {
                     getLastRecord((lastRecord) => {
-                        const new_purchase = {
-                            record_id: lastRecord.record_id,
-                            barcode: lastRecord.barcode,
+                        // const new_purchase = {
+                        //     record_id: lastRecord.record_id,
+                        //     barcode: lastRecord.barcode,
+                        //     account: detail.account,
+                        //     fullname: detail.fullname,
+                        //     phone: detail.phone,
+                        //     memberSince: detail.memberSince,
+                        //     prevGallon: gallonRemain,
+                        //     buyGallon: buyGallon,
+                        //     gallonLeft: gallonLeft,
+                        //     overLimit: overLimit,
+                        //     timestamp: currentDate() + '-' + getCurrentTime(),
+                        //     detail: detail,
+                        // };
+
+                        const insertData = {
+                            record_id: parseInt(lastRecord.record_id) + 1,
                             account: detail.account,
+                            firstName: detail.firstName,
+                            lastName: detail.lastName,
                             fullname: detail.fullname,
-                            phone: detail.phone,
                             memberSince: detail.memberSince,
-                            prevGallon: gallonRemain,
-                            buyGallon: buyGallon,
-                            gallonLeft: gallonLeft,
-                            overLimit: overLimit,
-                            timestamp: currentDate() + '-' + getCurrentTime(),
+                            phone: detail.phone,
+                            prevGallon: parseInt(detail.gallonRemain),
+                            buyGallon: parseInt(buyGallon),
+                            gallonLeft: parseInt(gallonLeft),
+                            overGallon: overLimit,
+                            renew: null,
+                            renewFee: 0,
+                            lastRenewGallon: detail.lastRenewGallon,
+                            invoiceDate: currentDate(),
+                            invoiceTime: getCurrentTime(),
+                            areaCode: detail.areaCode,
+                            threeDigit: detail.field6,
+                            fourDigit: detail.field7,
                         };
-                        console.log({ new_purchase });
+
+                        // console.log({ new_purchase });
+                        console.log({ insertData });
+                        buy(insertData, (data) => {
+                            console.log(data);
+                        });
                     });
                 }}
             />
@@ -351,6 +380,13 @@ const mapDispatchToProps = (dispatch) => {
 
             ipcRenderer.on(channels.PRINT_RECEIPT, (event, args) => {
                 ipcRenderer.removeAllListeners(channels.PRINT_RECEIPT);
+            });
+        },
+        buy: (data, callback) => {
+            ipcRenderer.send(channels.BUY_WATER, data);
+            ipcRenderer.on(channels.BUY_WATER, (event, args) => {
+                ipcRenderer.removeAllListeners(channels.BUY_WATER);
+                callback(args);
             });
         },
         getLastRecord: (callback) => {

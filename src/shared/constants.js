@@ -9,5 +9,6 @@ module.exports = {
         CLEAR_ACCOUNT: 'CLEAR_ACCOUNT',
         PRINT_RECEIPT: 'PRINT_RECEIPT',
         LAST_RECORD: 'LAST_RECORD',
+        BUY_WATER: 'BUY_WATER',
     },
 };
