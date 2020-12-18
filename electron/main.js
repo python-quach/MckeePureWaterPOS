@@ -230,7 +230,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                     const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
                     const blank = '';
                     const renew2 =
-                        row.overGallon < 0
+                        row.overGallon <= 0
                             ? `=> [Please Renew Membership!!!]`
                             : '';
                     const gallonOver = `Gallon Over: ${row.overGallon} ${renew2}`;
