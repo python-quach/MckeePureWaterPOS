@@ -219,6 +219,7 @@ const AccountPortal = (props) => {
             </Button>
 
             <Button
+                floated='right'
                 disabled={currentGallon <= 0}
                 content='Buy'
                 onClick={() => {
@@ -255,6 +256,7 @@ const AccountPortal = (props) => {
                 }}
             />
             <Button
+                floated='right'
                 content='Renew'
                 onClick={(e) => {
                     e.preventDefault();
