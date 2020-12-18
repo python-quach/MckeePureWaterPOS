@@ -10,5 +10,6 @@ module.exports = {
         PRINT_RECEIPT: 'PRINT_RECEIPT',
         LAST_RECORD: 'LAST_RECORD',
         BUY_WATER: 'BUY_WATER',
+        RENEW_WATER: 'RENEW_WATER',
     },
 };
