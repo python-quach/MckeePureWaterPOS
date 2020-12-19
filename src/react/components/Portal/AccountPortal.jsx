@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Message, Form, Container, Divider } from 'semantic-ui-react';
+import {
+    Button,
+    Message,
+    Form,
+    Label,
+    Container,
+    Divider,
+    TransitionablePortal,
+    Segment,
+    Grid,
+} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import * as actionTypes from '../../../types';
@@ -18,6 +28,13 @@ const AccountPortal = (props) => {
         buy,
         renew,
     } = props;
+
+    const [open, setOpenPortal] = useState(true);
+    const handleClose = () => {
+        setOpenPortal(false);
+        props.history.push('/find');
+    };
+
     const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -52,267 +69,502 @@ const AccountPortal = (props) => {
                 setGallonOver(0);
             }
         }
-        console.log(`Purchase Data:`, {
-            currentGallon,
-            gallonBuy,
-            gallonAfterBuy,
-            gallonOver,
-        });
+        // console.log(`Purchase Data:`, {
+        //     currentGallon,
+        //     gallonBuy,
+        //     gallonAfterBuy,
+        //     gallonOver,
+        // });
     }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver, gallonRemain]);
 
     return (
-        <Container style={{ width: '1400px' }}>
-            <Form size='huge'>
-                <Form.Group>
-                    <Field
-                        name='todayDate'
-                        component={Form.Input}
-                        width={3}
-                        label='Today Date'
-                    />
-                    <Field
-                        name='todayTime'
-                        component={Form.Input}
-                        width={3}
-                        label='Time'
-                    />
-                    <Field
-                        name='account'
-                        width={2}
-                        component={Form.Input}
-                        label='Account'
-                    />
-                    <Field
-                        name='areaCode'
-                        width={2}
-                        component={Form.Input}
-                        label='Area Code'
-                    />
-                    <Field
-                        name='phone'
-                        type='phone'
-                        width={3}
-                        component={Form.Input}
-                        label='Phone Number'
-                    />
-                    <Field
-                        name='firstName'
-                        width={2}
-                        component={Form.Input}
-                        label='First Name'
-                    />
-                    <Field
-                        name='lastName'
-                        width={2}
-                        component={Form.Input}
-                        label='Last Name'
-                    />
-                    <Field
-                        name='fullname'
-                        width={2}
-                        component={Form.Input}
-                        label='FullName'
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Input type='hidden' width={10} />
-                    <Form.Input
-                        width={2}
-                        error
-                        readOnly
-                        label='Current Gallon'
-                        name='currentGallon'
-                        value={currentGallon || 0}
-                        onChange={(e, { value }) => {
-                            console.log('currentGallon', value);
-                            setCurrentGallon(value);
-                        }}
-                    />
-                    <Form.Input
-                        width={2}
-                        error
-                        label='Gallon Buy'
-                        name='gallonBuy'
-                        value={gallonBuy}
-                        onChange={(e, { value }) => {
-                            console.log('gallonBuy', value);
-                            if (isNaN(parseInt(value))) {
-                                setGallonBuy(0);
-                                setGallonAfterBuy(gallonRemain);
-                            } else {
-                                setGallonBuy(parseInt(value));
-                                setGallonAfterBuy(
-                                    parseInt(gallonRemain) - parseInt(value)
-                                );
-                                console.log('afterBuyGallon', gallonAfterBuy);
-                            }
-                        }}
-                    />
-                    <Form.Input
-                        width={2}
-                        readOnly
-                        error
-                        label='Gallon Remain'
-                        value={gallonAfterBuy}
-                        onChange={(e, { value }) => {
-                            console.log('gallonAfterBuy', value);
-                        }}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Input type='hidden' width={12} />
-                    <Form.Input
-                        width={2}
-                        error
-                        label='Renew Fee'
-                        name='renewalFee'
-                        value={renewalFee}
-                        onChange={(e, { value }) => {
-                            console.log(value);
-                            if (isNaN(parseInt(value))) {
-                                setRenewalFee(0);
-                            } else {
-                                setRenewalFee(parseInt(value));
-                            }
-                        }}
-                    />
-                    <Form.Input
-                        width={2}
-                        error
-                        label='Renew Gallon'
-                        name='renewalAmount'
-                        value={renewAmount}
-                        onChange={(e, { value }) => {
-                            console.log(value);
-                            if (isNaN(parseInt(value))) {
-                                setRenewAmount(0);
-                            } else {
-                                setRenewAmount(parseInt(value));
-                            }
-                        }}
-                    />
-                </Form.Group>
-            </Form>
-            <Divider />
-            <Button
-                onClick={() => {
-                    if (props.membership.members) {
-                        props.history.push('/member');
-                    } else {
-                        props.history.push('find');
-                    }
+        <TransitionablePortal onClose={handleClose} open={open}>
+            <Segment
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    position: 'fixed',
+                    bottom: '1%',
+                    zIndex: 5000,
+                    backgroundColor: '#002b487d',
                 }}>
-                Back
-            </Button>
-            <Button
-                loading={loading}
-                onClick={() => {
-                    console.log(account);
-                    setLoading(true);
-                    getAccountInvoices(account, (data) => {
-                        console.log(data);
-                        setLoading(false);
-                        setInvoices(data);
-                    });
-                }}>
-                Get Invoice
-            </Button>
+                <Grid style={{ height: '100vh' }} verticalAlign='middle'>
+                    <Grid.Column>
+                        {/* <Container style={{ width: '1400px' }}> */}
+                        {/* <Form size='huge'> */}
+                        <Form>
+                            <Form.Group>
+                                <Field
+                                    readOnly
+                                    name='todayDate'
+                                    component={Form.Input}
+                                    className='TodayDate'
+                                    inverted={true}
+                                    icon='calendar'
+                                    placeholder='mm/dd/yyyy'
+                                    iconPosition='left'
+                                    // width={3}
+                                    width={2}
+                                    label='Today Date'
+                                />
+                                <Field
+                                    name='todayTime'
+                                    readOnly
+                                    className='TodayDate'
+                                    component={Form.Input}
+                                    inverted={true}
+                                    placeholder='00:00:00 PM'
+                                    icon='time'
+                                    iconPosition='left'
+                                    width={2}
+                                    // width={3}
+                                    label='Current Time'
+                                />
+                                <Form.Input type='hidden' width={8} />
+                                <Field
+                                    name='memberSince'
+                                    readOnly
+                                    className='TodayDate'
+                                    component={Form.Input}
+                                    inverted={true}
+                                    placeholder='mm/dd/yyy'
+                                    icon='calendar'
+                                    iconPosition='left'
+                                    width={2}
+                                    label='Member Since'
+                                />
+                                <Field
+                                    readOnly
+                                    label='Account'
+                                    name='account'
+                                    className='BuyAccount'
+                                    component={Form.Input}
+                                    inverted={true}
+                                    icon='hashtag'
+                                    iconPosition='left'
+                                    width={2}
+                                />
+                                <Field
+                                    readOnly
+                                    label='Record'
+                                    name='record_id'
+                                    className='TodayDate'
+                                    component={Form.Input}
+                                    inverted={true}
+                                    icon='hashtag'
+                                    iconPosition='left'
+                                    width={2}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Field
+                                    className='AreaCode'
+                                    inverted={true}
+                                    name='areaCode'
+                                    width={1}
+                                    component={Form.Input}
+                                    label='Area Code'
+                                />
+                                <Field
+                                    className='PhoneNumber'
+                                    inverted={true}
+                                    name='phone'
+                                    // type='phone'
+                                    width={2}
+                                    component={Form.Input}
+                                    label='Phone Number'
+                                />
+                                {/* <Field
+                                    name='firstName'
+                                    width={2}
+                                    component={Form.Input}
+                                    label='First Name'
+                                />
+                                <Field
+                                    name='lastName'
+                                    width={2}
+                                    component={Form.Input}
+                                    label='Last Name'
+                                /> */}
+                                <Field
+                                    // basic
+                                    className='Test'
+                                    // transparent={true}
+                                    inverted={true}
+                                    name='fullname'
+                                    width={3}
+                                    component={Form.Input}
+                                    label='Customer Name'
+                                />
+                                <Form.Input type='hidden' width={7} />
+                                <Form.Input
+                                    // className='PhoneNumber'
+                                    className='AreaCode'
+                                    width={1}
+                                    // error
+                                    readOnly
+                                    inverted={true}
+                                    label='Current'
+                                    name='currentGallon'
+                                    value={currentGallon || 0}
+                                    onChange={(e, { value }) => {
+                                        console.log('currentGallon', value);
+                                        setCurrentGallon(value);
+                                    }}
+                                />
+                                <Form.Input
+                                    disabled={
+                                        // detail.currentGallon >= 0 && gallonBuy > 0
+                                        currentGallon > 0 ? false : true
+                                    }
+                                    inverted={true}
+                                    // className='PhoneNumber'
+                                    className='AreaCode'
+                                    // width={2}
+                                    width={1}
+                                    // error
+                                    // label='Gallon Buy'
+                                    label='Buy'
+                                    name='gallonBuy'
+                                    value={gallonBuy}
+                                    onChange={(e, { value }) => {
+                                        console.log('gallonBuy', value);
+                                        if (isNaN(parseInt(value))) {
+                                            setGallonBuy(0);
+                                            setGallonAfterBuy(gallonRemain);
+                                        } else {
+                                            setGallonBuy(parseInt(value));
+                                            setGallonAfterBuy(
+                                                parseInt(gallonRemain) -
+                                                    parseInt(value)
+                                            );
+                                            console.log(
+                                                'afterBuyGallon',
+                                                gallonAfterBuy
+                                            );
+                                        }
+                                    }}
+                                />
+                                <Form.Input
+                                    className={
+                                        gallonBuy > currentGallon
+                                            ? 'Remain'
+                                            : 'AreaCode'
+                                    }
+                                    width={1}
+                                    readOnly
+                                    type='text'
+                                    inverted={true}
+                                    label='Remain'
+                                    value={gallonAfterBuy}
+                                    onChange={(e, { value }) => {
+                                        console.log('gallonAfterBuy', value);
+                                    }}
+                                />
+                                {/* <Form.Input
+                                    label='Remain'
+                                    inverted={true}
+                                    width={3}
+                                    className='Test'
+                                    action={{
+                                        color: 'teal',
+                                        labelPosition: 'right',
+                                        icon: 'cart',
+                                        content: 'Buy',
+                                    }}
+                                    defaultValue='http://ww.short.url/c0opq'
+                                /> */}
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Input type='hidden' width={13} />
+                                <Form.Input
+                                    className='AreaCode'
+                                    inverted={true}
+                                    width={1}
+                                    // error
+                                    label='Renew Fee'
+                                    name='renewalFee'
+                                    value={renewalFee}
+                                    onChange={(e, { value }) => {
+                                        console.log(value);
+                                        if (isNaN(parseInt(value))) {
+                                            setRenewalFee(0);
+                                        } else {
+                                            setRenewalFee(parseInt(value));
+                                        }
+                                    }}
+                                />
+                                <Form.Input
+                                    className='AreaCode'
+                                    inverted={true}
+                                    width={1}
+                                    // error
+                                    label='Renew Gallon'
+                                    name='renewalAmount'
+                                    value={renewAmount}
+                                    onChange={(e, { value }) => {
+                                        console.log(value);
+                                        if (isNaN(parseInt(value))) {
+                                            setRenewAmount(0);
+                                        } else {
+                                            setRenewAmount(parseInt(value));
+                                        }
+                                    }}
+                                />
+                                <Form.Button
+                                    width={1}
+                                    style={{ marginTop: '30px' }}
+                                    // floated='right'
+                                    content='Renew'
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        console.log({
+                                            renewalFee,
+                                            renewAmount,
+                                        });
 
-            <Button
-                floated='right'
-                disabled={currentGallon <= 0}
-                content='Buy'
-                onClick={() => {
-                    getLastRecord((lastRecord) => {
-                        console.log({ currentGallon });
-                        const insertData = {
-                            record_id: parseInt(lastRecord.record_id) + 1,
-                            account: detail.account,
-                            firstName: detail.firstName,
-                            lastName: detail.lastName,
-                            fullname: detail.fullname,
-                            memberSince: detail.memberSince,
-                            phone: detail.phone,
-                            prevGallon: parseInt(detail.gallonRemain),
-                            buyGallon: parseInt(gallonBuy),
-                            gallonLeft: parseInt(gallonAfterBuy),
-                            overGallon: parseInt(gallonAfterBuy),
-                            renew: 0,
-                            renewFee: 0,
-                            lastRenewGallon: detail.lastRenewGallon,
-                            invoiceDate: currentDate(),
-                            invoiceTime: getCurrentTime(),
-                            areaCode: detail.areaCode,
-                            threeDigit: detail.field6,
-                            fourDigit: detail.field7,
-                        };
+                                        getLastRecord((lastRecord) => {
+                                            const insertData = {
+                                                record_id:
+                                                    parseInt(
+                                                        lastRecord.record_id
+                                                    ) + 1,
+                                                account: detail.account,
+                                                firstName: detail.firstName,
+                                                lastName: detail.lastName,
+                                                fullname: detail.fullname,
+                                                memberSince: detail.memberSince,
+                                                phone: detail.phone,
+                                                prevGallon:
+                                                    parseInt(gallonRemain) +
+                                                    parseInt(renewAmount),
+                                                buyGallon: 0,
+                                                gallonLeft:
+                                                    parseInt(gallonRemain) +
+                                                    parseInt(renewAmount),
+                                                overGallon:
+                                                    parseInt(gallonRemain) +
+                                                    parseInt(renewAmount),
+                                                preOver: detail.overGallon,
+                                                renew: parseInt(renewAmount),
+                                                renewFee: parseInt(renewalFee),
+                                                lastRenewGallon: parseInt(
+                                                    renewAmount
+                                                ),
+                                                invoiceDate: currentDate(),
+                                                invoiceTime: getCurrentTime(),
+                                                areaCode: detail.areaCode,
+                                                threeDigit: detail.field6,
+                                                fourDigit: detail.field7,
+                                            };
 
-                        console.log({ insertData });
-                        buy(insertData, (data) => {
-                            console.log(data);
-                            props.history.push('/member');
-                        });
-                    });
-                }}
-            />
-            <Button
-                floated='right'
-                content='Renew'
-                onClick={(e) => {
-                    e.preventDefault();
-                    console.log({ renewalFee, renewAmount });
+                                            console.log({ insertData });
+                                            renew(insertData, (data) => {
+                                                console.log(data);
+                                                getAccount(account, (data) => {
+                                                    setCurrentGallon(
+                                                        data.gallonCurrent
+                                                    );
+                                                    setGallonBuy(0);
+                                                    setGallonAfterBuy(
+                                                        data.gallonRemain
+                                                    );
+                                                    setRenewAmount(0);
+                                                    setRenewalFee(0);
 
-                    getLastRecord((lastRecord) => {
-                        const insertData = {
-                            record_id: parseInt(lastRecord.record_id) + 1,
-                            account: detail.account,
-                            firstName: detail.firstName,
-                            lastName: detail.lastName,
-                            fullname: detail.fullname,
-                            memberSince: detail.memberSince,
-                            phone: detail.phone,
-                            prevGallon:
-                                parseInt(gallonRemain) + parseInt(renewAmount),
-                            buyGallon: 0,
-                            gallonLeft:
-                                parseInt(gallonRemain) + parseInt(renewAmount),
-                            overGallon:
-                                parseInt(gallonRemain) + parseInt(renewAmount),
-                            preOver: detail.overGallon,
-                            renew: parseInt(renewAmount),
-                            renewFee: parseInt(renewalFee),
-                            lastRenewGallon: parseInt(renewAmount),
-                            invoiceDate: currentDate(),
-                            invoiceTime: getCurrentTime(),
-                            areaCode: detail.areaCode,
-                            threeDigit: detail.field6,
-                            fourDigit: detail.field7,
-                        };
+                                                    console.log(data);
+                                                });
+                                            });
+                                        });
+                                    }}
+                                />
+                                {/* <Form.Input
+                                    width={2}
+                                    inverted={true}
+                                    // label='Renewal Fee'
+                                    labelPosition='right'
+                                    value={renewalFee}
+                                    type='text'
+                                    onChange={(e, { value }) => {
+                                        console.log(value);
+                                        if (isNaN(parseInt(value))) {
+                                            setRenewalFee(0);
+                                        } else {
+                                            setRenewalFee(parseInt(value));
+                                        }
+                                    }}
+                                    placeholder='Amount'>
+                                    <Label>$</Label>
+                                    <input />
+                                    <Label color='teal'>.00</Label>
+                                </Form.Input> */}
+                                {/* <Form.Input
+                                    // label='Remain'
+                                    inverted={true}
+                                    width={3}
+                                    // className='Test'
+                                    action={{
+                                        color: 'teal',
+                                        labelPosition: 'right',
+                                        icon: 'cart',
+                                        content: 'Renew Gallon',
+                                    }}
+                                    value={renewAmount}
+                                    onChange={(e, { value }) => {
+                                        if (isNaN(parseInt(value))) {
+                                            setRenewAmount(0);
+                                        } else {
+                                            setRenewAmount(parseInt(value));
+                                        }
+                                        // setRenewAmount(parseInt(value));
+                                    }}
+                                    // defaultValue='http://ww.short.url/c0opq'
+                                /> */}
+                            </Form.Group>
+                        </Form>
+                        <Divider />
+                        <Button
+                            onClick={() => {
+                                if (props.membership.members) {
+                                    setOpenPortal(false);
+                                    props.history.push('/member');
+                                } else {
+                                    setOpenPortal(false);
+                                    props.history.push('find');
+                                }
+                            }}>
+                            Back
+                        </Button>
+                        <Button
+                            loading={loading}
+                            onClick={() => {
+                                console.log(account);
+                                setLoading(true);
+                                getAccountInvoices(account, (data) => {
+                                    console.log(data);
+                                    setLoading(false);
+                                    setInvoices(data);
+                                });
+                            }}>
+                            Get Invoice
+                        </Button>
 
-                        console.log({ insertData });
-                        renew(insertData, (data) => {
-                            console.log(data);
-                            getAccount(account, (data) => {
-                                setCurrentGallon(data.gallonCurrent);
-                                setGallonBuy(0);
-                                setGallonAfterBuy(data.gallonRemain);
-                                setRenewAmount(0);
-                                setRenewalFee(0);
+                        <Button
+                            disabled={
+                                // detail.currentGallon >= 0 && gallonBuy > 0
+                                currentGallon > 0 && gallonBuy >= 1
+                                    ? false
+                                    : true
+                            }
+                            floated='right'
+                            // disabled={currentGallon <= 0}
+                            content='Buy'
+                            onClick={() => {
+                                getLastRecord((lastRecord) => {
+                                    console.log({ currentGallon });
+                                    const insertData = {
+                                        record_id:
+                                            parseInt(lastRecord.record_id) + 1,
+                                        account: detail.account,
+                                        firstName: detail.firstName,
+                                        lastName: detail.lastName,
+                                        fullname: detail.fullname,
+                                        memberSince: detail.memberSince,
+                                        phone: detail.phone,
+                                        prevGallon: parseInt(
+                                            detail.gallonRemain
+                                        ),
+                                        buyGallon: parseInt(gallonBuy),
+                                        gallonLeft: parseInt(gallonAfterBuy),
+                                        overGallon: parseInt(gallonAfterBuy),
+                                        renew: 0,
+                                        renewFee: 0,
+                                        lastRenewGallon: detail.lastRenewGallon,
+                                        invoiceDate: currentDate(),
+                                        invoiceTime: getCurrentTime(),
+                                        areaCode: detail.areaCode,
+                                        threeDigit: detail.field6,
+                                        fourDigit: detail.field7,
+                                    };
 
-                                console.log(data);
-                            });
-                        });
-                    });
-                }}
-            />
-            <Message>
+                                    console.log({ insertData });
+                                    buy(insertData, (data) => {
+                                        console.log(data);
+                                        props.history.push('/member');
+                                    });
+                                });
+                            }}
+                        />
+                        <Button
+                            floated='right'
+                            content='Renew'
+                            onClick={(e) => {
+                                e.preventDefault();
+                                console.log({ renewalFee, renewAmount });
+
+                                getLastRecord((lastRecord) => {
+                                    const insertData = {
+                                        record_id:
+                                            parseInt(lastRecord.record_id) + 1,
+                                        account: detail.account,
+                                        firstName: detail.firstName,
+                                        lastName: detail.lastName,
+                                        fullname: detail.fullname,
+                                        memberSince: detail.memberSince,
+                                        phone: detail.phone,
+                                        prevGallon:
+                                            parseInt(gallonRemain) +
+                                            parseInt(renewAmount),
+                                        buyGallon: 0,
+                                        gallonLeft:
+                                            parseInt(gallonRemain) +
+                                            parseInt(renewAmount),
+                                        overGallon:
+                                            parseInt(gallonRemain) +
+                                            parseInt(renewAmount),
+                                        preOver: detail.overGallon,
+                                        renew: parseInt(renewAmount),
+                                        renewFee: parseInt(renewalFee),
+                                        lastRenewGallon: parseInt(renewAmount),
+                                        invoiceDate: currentDate(),
+                                        invoiceTime: getCurrentTime(),
+                                        areaCode: detail.areaCode,
+                                        threeDigit: detail.field6,
+                                        fourDigit: detail.field7,
+                                    };
+
+                                    console.log({ insertData });
+                                    renew(insertData, (data) => {
+                                        console.log(data);
+                                        getAccount(account, (data) => {
+                                            setCurrentGallon(
+                                                data.gallonCurrent
+                                            );
+                                            setGallonBuy(0);
+                                            setGallonAfterBuy(
+                                                data.gallonRemain
+                                            );
+                                            setRenewAmount(0);
+                                            setRenewalFee(0);
+
+                                            console.log(data);
+                                        });
+                                    });
+                                });
+                            }}
+                        />
+                        {/* <Message>
                 <Message.Content>
                     <pre>{JSON.stringify(account || [], null, 2)}</pre>
                     <pre>{JSON.stringify(detail || [], null, 2)}</pre>
                     <pre>{JSON.stringify(invoices || [], null, 2)}</pre>
                 </Message.Content>
-            </Message>
-        </Container>
+            </Message> */}
+                        {/* </Container> */}
+                    </Grid.Column>
+                </Grid>
+            </Segment>
+        </TransitionablePortal>
     );
 };
 
@@ -351,7 +603,7 @@ const mapStateToProps = (state) => {
             lastRenewGallon,
             memberSince,
             prevGallon: parseInt(gallonRemain) || 0,
-            record_id,
+            record_id: record_id ? parseInt(record_id) + 1 : 0,
             renew,
             renewFee,
             todayDate: currentDate(),

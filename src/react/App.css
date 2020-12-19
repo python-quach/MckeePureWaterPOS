@@ -136,7 +136,8 @@
 .two.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
     /* background-color: black; */
     color: white;
-    background-color: #002b487d;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
 }
 .two.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
     color: #00bcd4;
@@ -239,13 +240,17 @@
 /* 3 BuyAccount */
 .three.wide.field.BuyAccount label {
     /* color: rgba(24, 35, 94, 0.644); */
-    color: red;
+    /* color: red; */
+    /* color: white; */
+    color: #fff;
+    margin-bottom: 10px;
 }
 
 .three.wide.field.BuyAccount div.ui.inverted.left.icon.input input {
     /* background-color: black; */
     color: white;
-    background-color: #002b487d;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
 }
 .three.wide.field.BuyAccount div.ui.inverted.left.icon.input i {
     color: #00bcd4;
@@ -275,13 +280,90 @@
 .three.wide.field.TodayDate div.ui.inverted.left.icon.input input {
     /* background-color: black; */
     color: white;
-    background-color: #002b487d;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
 }
 .three.wide.field.three.wide.field.TodayDate div.ui.inverted.left.icon.input i {
     color: #00bcd4;
     /* color: #fff; */
 }
 
+/* TodayDate Buy */
+.two.wide.field.TodayDate label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.two.wide.field.TodayDate div.ui.inverted.left.icon.input input {
+    /* background-color: black; */
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+.two.wide.field.two.wide.field.TodayDate div.ui.inverted.left.icon.input i {
+    color: #00bcd4;
+    /* color: #fff; */
+}
+
+/* Customer full name */
+.three.wide.field.Test label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.three.wide.field.three.wide.field.Test div.ui.inverted.input input {
+    /* background-color: black; */
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+
+/* Area Code */
+.two.wide.field.AreaCode label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.two.wide.field.two.wide.field.AreaCode div.ui.inverted.input input {
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+
+/* Area Code */
+.one.wide.field.AreaCode label {
+    color: #fff;
+    /* color: red; */
+    margin-bottom: 10px;
+}
+.one.wide.field.one.wide.field.AreaCode div.ui.inverted.input input {
+    color: white;
+    /* color: red; */
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+
+/* Area Code */
+.one.wide.field.Remain label {
+    /* color: #fff; */
+    color: red;
+    margin-bottom: 10px;
+}
+.one.wide.field.one.wide.field.Remain div.ui.inverted.input input {
+    /* color: white; */
+    color: red;
+    font-weight: bold;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+
+/* Phone Number */
+.two.wide.field.PhoneNumber label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.two.wide.field.two.wide.field.PhoneNumber div.ui.inverted.input input {
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
 /* FORM BUY: First Name */
 /* .three.wide.field.FirstName label {
     color: #fff;
