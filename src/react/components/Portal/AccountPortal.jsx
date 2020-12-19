@@ -36,13 +36,19 @@ const AccountPortal = (props) => {
         props.history.push('/find');
     };
 
+    const [date, setCurrentDate] = useState(currentDate());
+    const [time, setCurrentTime] = useState(getCurrentTime());
+
     const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const [currentGallon, setCurrentGallon] = useState(
-        detail.gallonCurrent - detail.gallonBuy
-    );
+    // const [currentGallon, setCurrentGallon] = useState(
+    //     detail.gallonCurrent - detail.gallonBuy
+    // );
+
+    const [currentGallon, setCurrentGallon] = useState(detail.gallonRemain);
+
     const [gallonBuy, setGallonBuy] = useState(0);
     const [gallonAfterBuy, setGallonAfterBuy] = useState(gallonRemain);
     const [gallonOver, setGallonOver] = useState(
@@ -88,10 +94,11 @@ const AccountPortal = (props) => {
                     <Grid.Column>
                         <Form>
                             <Form.Group>
-                                <Field
+                                <Form.Input
                                     readOnly
                                     name='todayDate'
-                                    component={Form.Input}
+                                    // component={Form.Input}
+                                    value={date}
                                     className='TodayDate'
                                     inverted={true}
                                     icon='calendar'
@@ -100,11 +107,12 @@ const AccountPortal = (props) => {
                                     width={2}
                                     label='Today Date'
                                 />
-                                <Field
+                                <Form.Input
                                     name='todayTime'
+                                    value={time}
                                     readOnly
                                     className='TodayDate'
-                                    component={Form.Input}
+                                    // component={Form.Input}
                                     inverted={true}
                                     placeholder='00:00:00 PM'
                                     icon='time'
@@ -138,7 +146,7 @@ const AccountPortal = (props) => {
                                 />
                                 <Field
                                     readOnly
-                                    label='Record'
+                                    label='Invoice'
                                     name='record_id'
                                     className='TodayDate'
                                     component={Form.Input}
@@ -263,8 +271,27 @@ const AccountPortal = (props) => {
                                                     console.log({ insertData });
                                                     buy(insertData, (data) => {
                                                         console.log(data);
-                                                        props.history.push(
-                                                            '/member'
+                                                        getAccount(
+                                                            account,
+                                                            (data) => {
+                                                                setCurrentGallon(
+                                                                    // data.gallonCurrent
+                                                                    data.gallonRemain
+                                                                );
+                                                                setGallonBuy(0);
+                                                                setGallonAfterBuy(
+                                                                    data.gallonRemain
+                                                                );
+                                                                setCurrentDate(
+                                                                    currentDate()
+                                                                );
+                                                                setCurrentTime(
+                                                                    getCurrentTime
+                                                                );
+                                                                console.log(
+                                                                    data
+                                                                );
+                                                            }
                                                         );
                                                     });
                                                 });
@@ -352,7 +379,15 @@ const AccountPortal = (props) => {
                                     }}
                                 />
                                 <Form.Button
-                                    disabled={gallonRemain > 0 ? true : false}
+                                    // color='red'
+                                    color='blue'
+                                    disabled={
+                                        gallonRemain <= 0 &&
+                                        renewAmount > 0 &&
+                                        renewalFee > 0
+                                            ? false
+                                            : true
+                                    }
                                     width={1}
                                     style={{ marginTop: '30px' }}
                                     content='Renew'
@@ -407,7 +442,12 @@ const AccountPortal = (props) => {
                                                     );
                                                     setRenewAmount(0);
                                                     setRenewalFee(0);
-
+                                                    setCurrentDate(
+                                                        currentDate()
+                                                    );
+                                                    setCurrentTime(
+                                                        getCurrentTime
+                                                    );
                                                     console.log(data);
                                                 });
                                             });
@@ -444,6 +484,7 @@ const AccountPortal = (props) => {
                         </Button>
 
                         <Button
+                            color='green'
                             disabled={
                                 currentGallon > 0 && gallonBuy >= 1
                                     ? false
@@ -482,19 +523,38 @@ const AccountPortal = (props) => {
                                     console.log({ insertData });
                                     buy(insertData, (data) => {
                                         console.log(data);
-                                        props.history.push('/member');
+                                        getAccount(account, (data) => {
+                                            setCurrentGallon(
+                                                // data.gallonCurrent
+                                                data.gallonRemain
+                                            );
+                                            setGallonBuy(0);
+                                            setGallonAfterBuy(
+                                                data.gallonRemain
+                                            );
+                                            setCurrentDate(currentDate());
+                                            setCurrentTime(getCurrentTime);
+                                            console.log(data);
+                                        });
+                                        // props.history.push('/member');
                                     });
                                 });
                             }}
                         />
 
-                        {/* <Message>
-                <Message.Content>
-                    <pre>{JSON.stringify(account || [], null, 2)}</pre>
-                    <pre>{JSON.stringify(detail || [], null, 2)}</pre>
-                    <pre>{JSON.stringify(invoices || [], null, 2)}</pre>
-                </Message.Content>
-            </Message> */}
+                        <Message>
+                            <Message.Content>
+                                <pre>
+                                    {JSON.stringify(account || [], null, 2)}
+                                </pre>
+                                <pre>
+                                    {JSON.stringify(detail || [], null, 2)}
+                                </pre>
+                                <pre>
+                                    {JSON.stringify(invoices || [], null, 2)}
+                                </pre>
+                            </Message.Content>
+                        </Message>
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -540,8 +600,8 @@ const mapStateToProps = (state) => {
             record_id: record_id ? parseInt(record_id) + 1 : 0,
             renew,
             renewFee,
-            todayDate: currentDate(),
-            todayTime: getCurrentTime(),
+            // todayDate: currentDate(),
+            // todayTime: getCurrentTime(),
         },
         membership: state.membership,
         account: state.account.account,
@@ -609,5 +669,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const ReduxForm = reduxForm({ form: 'buy' })(AccountPortal);
+const ReduxForm = reduxForm({ form: 'buy', enableReinitialize: true })(
+    AccountPortal
+);
 export default connect(mapStateToProps, mapDispatchToProps)(ReduxForm);
