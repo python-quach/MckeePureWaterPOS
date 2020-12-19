@@ -27,6 +27,7 @@ const AccountPortal = (props) => {
         getAccount,
         buy,
         renew,
+        handleSubmit,
     } = props;
 
     const [open, setOpenPortal] = useState(true);
@@ -50,6 +51,7 @@ const AccountPortal = (props) => {
 
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
+    const [type, setType] = useState(null);
 
     useEffect(() => {
         console.log(`Purchase Data:`, {
@@ -206,6 +208,69 @@ const AccountPortal = (props) => {
                                     label='Buy'
                                     name='gallonBuy'
                                     value={gallonBuy}
+                                    onKeyPress={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.keyCode === 13
+                                        ) {
+                                            console.log('Key Press', e.key);
+                                            if (gallonBuy > 0) {
+                                                e.preventDefault();
+                                                getLastRecord((lastRecord) => {
+                                                    console.log({
+                                                        currentGallon,
+                                                    });
+                                                    const insertData = {
+                                                        record_id:
+                                                            parseInt(
+                                                                lastRecord.record_id
+                                                            ) + 1,
+                                                        account: detail.account,
+                                                        firstName:
+                                                            detail.firstName,
+                                                        lastName:
+                                                            detail.lastName,
+                                                        fullname:
+                                                            detail.fullname,
+                                                        memberSince:
+                                                            detail.memberSince,
+                                                        phone: detail.phone,
+                                                        prevGallon: parseInt(
+                                                            detail.gallonRemain
+                                                        ),
+                                                        buyGallon: parseInt(
+                                                            gallonBuy
+                                                        ),
+                                                        gallonLeft: parseInt(
+                                                            gallonAfterBuy
+                                                        ),
+                                                        overGallon: parseInt(
+                                                            gallonAfterBuy
+                                                        ),
+                                                        renew: 0,
+                                                        renewFee: 0,
+                                                        lastRenewGallon:
+                                                            detail.lastRenewGallon,
+                                                        invoiceDate: currentDate(),
+                                                        invoiceTime: getCurrentTime(),
+                                                        areaCode:
+                                                            detail.areaCode,
+                                                        threeDigit:
+                                                            detail.field6,
+                                                        fourDigit:
+                                                            detail.field7,
+                                                    };
+                                                    console.log({ insertData });
+                                                    buy(insertData, (data) => {
+                                                        console.log(data);
+                                                        props.history.push(
+                                                            '/member'
+                                                        );
+                                                    });
+                                                });
+                                            }
+                                        }
+                                    }}
                                     onChange={(e, { value }) => {
                                         console.log('gallonBuy', value);
                                         if (isNaN(parseInt(value))) {
@@ -221,6 +286,14 @@ const AccountPortal = (props) => {
                                                 'afterBuyGallon',
                                                 gallonAfterBuy
                                             );
+                                        }
+
+                                        console.log(e);
+                                        if (
+                                            e.code === 'Enter' ||
+                                            e.keyCode === 13
+                                        ) {
+                                            console.log('Enter Key Hit', value);
                                         }
                                     }}
                                 />
@@ -244,6 +317,7 @@ const AccountPortal = (props) => {
                             <Form.Group>
                                 <Form.Input type='hidden' width={13} />
                                 <Form.Input
+                                    disabled={gallonRemain > 0 ? true : false}
                                     className='AreaCode'
                                     inverted={true}
                                     width={1}
@@ -260,6 +334,7 @@ const AccountPortal = (props) => {
                                     }}
                                 />
                                 <Form.Input
+                                    disabled={gallonRemain > 0 ? true : false}
                                     className='AreaCode'
                                     inverted={true}
                                     width={1}
@@ -277,15 +352,12 @@ const AccountPortal = (props) => {
                                     }}
                                 />
                                 <Form.Button
+                                    disabled={gallonRemain > 0 ? true : false}
                                     width={1}
                                     style={{ marginTop: '30px' }}
                                     content='Renew'
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        console.log({
-                                            renewalFee,
-                                            renewAmount,
-                                        });
 
                                         getLastRecord((lastRecord) => {
                                             const insertData = {
@@ -379,7 +451,8 @@ const AccountPortal = (props) => {
                             }
                             floated='right'
                             content='Buy'
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.preventDefault();
                                 getLastRecord((lastRecord) => {
                                     console.log({ currentGallon });
                                     const insertData = {
@@ -406,7 +479,6 @@ const AccountPortal = (props) => {
                                         threeDigit: detail.field6,
                                         fourDigit: detail.field7,
                                     };
-
                                     console.log({ insertData });
                                     buy(insertData, (data) => {
                                         console.log(data);
