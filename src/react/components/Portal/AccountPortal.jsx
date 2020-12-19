@@ -69,12 +69,6 @@ const AccountPortal = (props) => {
                 setGallonOver(0);
             }
         }
-        // console.log(`Purchase Data:`, {
-        //     currentGallon,
-        //     gallonBuy,
-        //     gallonAfterBuy,
-        //     gallonOver,
-        // });
     }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver, gallonRemain]);
 
     return (
@@ -90,8 +84,6 @@ const AccountPortal = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        {/* <Container style={{ width: '1400px' }}> */}
-                        {/* <Form size='huge'> */}
                         <Form>
                             <Form.Group>
                                 <Field
@@ -103,7 +95,6 @@ const AccountPortal = (props) => {
                                     icon='calendar'
                                     placeholder='mm/dd/yyyy'
                                     iconPosition='left'
-                                    // width={3}
                                     width={2}
                                     label='Today Date'
                                 />
@@ -117,7 +108,6 @@ const AccountPortal = (props) => {
                                     icon='time'
                                     iconPosition='left'
                                     width={2}
-                                    // width={3}
                                     label='Current Time'
                                 />
                                 <Form.Input type='hidden' width={8} />
@@ -187,9 +177,7 @@ const AccountPortal = (props) => {
                                     label='Last Name'
                                 /> */}
                                 <Field
-                                    // basic
                                     className='Test'
-                                    // transparent={true}
                                     inverted={true}
                                     name='fullname'
                                     width={3}
@@ -198,10 +186,8 @@ const AccountPortal = (props) => {
                                 />
                                 <Form.Input type='hidden' width={7} />
                                 <Form.Input
-                                    // className='PhoneNumber'
                                     className='AreaCode'
                                     width={1}
-                                    // error
                                     readOnly
                                     inverted={true}
                                     label='Current'
@@ -213,17 +199,10 @@ const AccountPortal = (props) => {
                                     }}
                                 />
                                 <Form.Input
-                                    disabled={
-                                        // detail.currentGallon >= 0 && gallonBuy > 0
-                                        currentGallon > 0 ? false : true
-                                    }
+                                    disabled={currentGallon > 0 ? false : true}
                                     inverted={true}
-                                    // className='PhoneNumber'
                                     className='AreaCode'
-                                    // width={2}
                                     width={1}
-                                    // error
-                                    // label='Gallon Buy'
                                     label='Buy'
                                     name='gallonBuy'
                                     value={gallonBuy}
@@ -261,19 +240,6 @@ const AccountPortal = (props) => {
                                         console.log('gallonAfterBuy', value);
                                     }}
                                 />
-                                {/* <Form.Input
-                                    label='Remain'
-                                    inverted={true}
-                                    width={3}
-                                    className='Test'
-                                    action={{
-                                        color: 'teal',
-                                        labelPosition: 'right',
-                                        icon: 'cart',
-                                        content: 'Buy',
-                                    }}
-                                    defaultValue='http://ww.short.url/c0opq'
-                                /> */}
                             </Form.Group>
                             <Form.Group>
                                 <Form.Input type='hidden' width={13} />
@@ -281,7 +247,6 @@ const AccountPortal = (props) => {
                                     className='AreaCode'
                                     inverted={true}
                                     width={1}
-                                    // error
                                     label='Renew Fee'
                                     name='renewalFee'
                                     value={renewalFee}
@@ -314,7 +279,6 @@ const AccountPortal = (props) => {
                                 <Form.Button
                                     width={1}
                                     style={{ marginTop: '30px' }}
-                                    // floated='right'
                                     content='Renew'
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -378,48 +342,6 @@ const AccountPortal = (props) => {
                                         });
                                     }}
                                 />
-                                {/* <Form.Input
-                                    width={2}
-                                    inverted={true}
-                                    // label='Renewal Fee'
-                                    labelPosition='right'
-                                    value={renewalFee}
-                                    type='text'
-                                    onChange={(e, { value }) => {
-                                        console.log(value);
-                                        if (isNaN(parseInt(value))) {
-                                            setRenewalFee(0);
-                                        } else {
-                                            setRenewalFee(parseInt(value));
-                                        }
-                                    }}
-                                    placeholder='Amount'>
-                                    <Label>$</Label>
-                                    <input />
-                                    <Label color='teal'>.00</Label>
-                                </Form.Input> */}
-                                {/* <Form.Input
-                                    // label='Remain'
-                                    inverted={true}
-                                    width={3}
-                                    // className='Test'
-                                    action={{
-                                        color: 'teal',
-                                        labelPosition: 'right',
-                                        icon: 'cart',
-                                        content: 'Renew Gallon',
-                                    }}
-                                    value={renewAmount}
-                                    onChange={(e, { value }) => {
-                                        if (isNaN(parseInt(value))) {
-                                            setRenewAmount(0);
-                                        } else {
-                                            setRenewAmount(parseInt(value));
-                                        }
-                                        // setRenewAmount(parseInt(value));
-                                    }}
-                                    // defaultValue='http://ww.short.url/c0opq'
-                                /> */}
                             </Form.Group>
                         </Form>
                         <Divider />
@@ -451,13 +373,11 @@ const AccountPortal = (props) => {
 
                         <Button
                             disabled={
-                                // detail.currentGallon >= 0 && gallonBuy > 0
                                 currentGallon > 0 && gallonBuy >= 1
                                     ? false
                                     : true
                             }
                             floated='right'
-                            // disabled={currentGallon <= 0}
                             content='Buy'
                             onClick={() => {
                                 getLastRecord((lastRecord) => {
@@ -495,64 +415,7 @@ const AccountPortal = (props) => {
                                 });
                             }}
                         />
-                        {/* <Button
-                            floated='right'
-                            content='Renew'
-                            onClick={(e) => {
-                                e.preventDefault();
-                                console.log({ renewalFee, renewAmount });
 
-                                getLastRecord((lastRecord) => {
-                                    const insertData = {
-                                        record_id:
-                                            parseInt(lastRecord.record_id) + 1,
-                                        account: detail.account,
-                                        firstName: detail.firstName,
-                                        lastName: detail.lastName,
-                                        fullname: detail.fullname,
-                                        memberSince: detail.memberSince,
-                                        phone: detail.phone,
-                                        prevGallon:
-                                            parseInt(gallonRemain) +
-                                            parseInt(renewAmount),
-                                        buyGallon: 0,
-                                        gallonLeft:
-                                            parseInt(gallonRemain) +
-                                            parseInt(renewAmount),
-                                        overGallon:
-                                            parseInt(gallonRemain) +
-                                            parseInt(renewAmount),
-                                        preOver: detail.overGallon,
-                                        renew: parseInt(renewAmount),
-                                        renewFee: parseInt(renewalFee),
-                                        lastRenewGallon: parseInt(renewAmount),
-                                        invoiceDate: currentDate(),
-                                        invoiceTime: getCurrentTime(),
-                                        areaCode: detail.areaCode,
-                                        threeDigit: detail.field6,
-                                        fourDigit: detail.field7,
-                                    };
-
-                                    console.log({ insertData });
-                                    renew(insertData, (data) => {
-                                        console.log(data);
-                                        getAccount(account, (data) => {
-                                            setCurrentGallon(
-                                                data.gallonCurrent
-                                            );
-                                            setGallonBuy(0);
-                                            setGallonAfterBuy(
-                                                data.gallonRemain
-                                            );
-                                            setRenewAmount(0);
-                                            setRenewalFee(0);
-
-                                            console.log(data);
-                                        });
-                                    });
-                                });
-                            }}
-                        /> */}
                         {/* <Message>
                 <Message.Content>
                     <pre>{JSON.stringify(account || [], null, 2)}</pre>
@@ -560,7 +423,6 @@ const AccountPortal = (props) => {
                     <pre>{JSON.stringify(invoices || [], null, 2)}</pre>
                 </Message.Content>
             </Message> */}
-                        {/* </Container> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
