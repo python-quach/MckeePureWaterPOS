@@ -6,10 +6,12 @@ const { channels } = require('../src/shared/constants');
 
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'db.sqlite3');
-const db = new sqlite3.Database(dbFile, (err) => {
-    if (err) console.error('Database opening error', err);
-    console.log(`sqlite debug:`, { err, dbFile, userData });
-});
+// const db = new sqlite3.Database(dbFile, (err) => {
+//     if (err) console.error('Database opening error', err);
+//     console.log(`sqlite debug:`, { err, dbFile, userData });
+// });
+
+let db;
 
 // ESC-POS PRINTER SETUP
 const escpos = require('escpos');
@@ -21,6 +23,11 @@ const printer = new escpos.Printer(device, options);
 let mainWindow;
 
 function createWindow() {
+    db = new sqlite3.Database(dbFile, (err) => {
+        if (err) console.error('Database opening error', err);
+        console.log(`sqlite debug:`, { err, dbFile, userData });
+    });
+
     const startUrl =
         process.env.ELECTRON_START_URL ||
         url.format({
@@ -48,6 +55,12 @@ function createWindow() {
     mainWindow.setOpacity(1);
     mainWindow.loadURL(startUrl);
     mainWindow.on('closed', function () {
+        db.close((err) => {
+            if (err) {
+                console.error(err.message);
+            }
+            console.log('Close the database connection.');
+        });
         mainWindow = null;
     });
     mainWindow.once('ready-to-show', () => {
@@ -59,6 +72,12 @@ app.on('ready', createWindow);
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
+        db.close((err) => {
+            if (err) {
+                console.error(err.message);
+            }
+            console.log('Close the database connection.');
+        });
         app.quit();
     }
 });
