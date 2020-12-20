@@ -52,13 +52,11 @@ const BuyScreen = (props) => {
     const [renewAmount, setRenewAmount] = useState(0);
 
     const [disableRenewButton, setDisabledRenewButton] = useState(
-        gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0 ? false : true
-    );
-
-    const [disableRenewInput, setDisabledRenewInput] = useState(
-        // gallonRemain > 0 ? true : false
+        // gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0 ? false : true
         true
     );
+
+    const [disableRenewInput, setDisabledRenewInput] = useState(true);
 
     const resetRenewData = (data) => {
         setCurrentGallon(data.gallonCurrent);
