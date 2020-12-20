@@ -51,11 +51,9 @@ const BuyScreen = (props) => {
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
 
-    const [disableRenewButton, setDisabledRenewButton] = useState(
-        // gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0 ? false : true
-        true
-    );
+    const [disableBuyInput, setDisableBuyInput] = useState(true);
 
+    const [disableRenewButton, setDisabledRenewButton] = useState(true);
     const [disableRenewInput, setDisabledRenewInput] = useState(true);
 
     const resetRenewData = (data) => {
@@ -112,7 +110,6 @@ const BuyScreen = (props) => {
     };
 
     const buyWaterGallon = (e) => {
-        // if (e.key === 'Enter' || e.keyCode === 13) {
         if (gallonBuy > 0) {
             e.preventDefault();
             getLastRecord((lastRecord) => {
@@ -144,7 +141,6 @@ const BuyScreen = (props) => {
                 });
             });
         }
-        // }
     };
 
     const handleBuyValue = (e, { value }) => {
@@ -184,6 +180,17 @@ const BuyScreen = (props) => {
         });
     }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver]);
 
+    // useEffect(() => {
+    //     if (gallonAfterBuy < 0) {
+    //         setGallonOver(gallonAfterBuy);
+    //     } else {
+    //         if (gallonBuy === 0) {
+    //             setGallonAfterBuy(gallonRemain);
+    //             setGallonOver(0);
+    //         }
+    //     }
+    // }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver, gallonRemain]);
+
     useEffect(() => {
         if (gallonAfterBuy < 0) {
             setGallonOver(gallonAfterBuy);
@@ -193,19 +200,22 @@ const BuyScreen = (props) => {
                 setGallonOver(0);
             }
         }
-    }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver, gallonRemain]);
-
-    useEffect(() => {
         setDisabledRenewButton(
             gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0
                 ? false
                 : true
         );
-    }, [gallonRemain, renewAmount, renewalFee]);
-
-    useEffect(() => {
         setDisabledRenewInput(gallonRemain > 0 ? true : false);
-    }, [gallonRemain]);
+        setDisableBuyInput(currentGallon > 0 ? false : true);
+        // }, [gallonRemain, renewAmount, renewalFee, currentGallon]);
+    }, [
+        gallonRemain,
+        renewAmount,
+        renewalFee,
+        currentGallon,
+        gallonAfterBuy,
+        gallonBuy,
+    ]);
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
@@ -224,32 +234,33 @@ const BuyScreen = (props) => {
                             <Form.Group>
                                 <Form.Input
                                     name='todayDate'
-                                    readOnly
+                                    label='Today Date'
                                     value={date}
                                     className='TodayDate'
                                     inverted={true}
                                     icon='calendar'
                                     placeholder='mm/dd/yyyy'
                                     iconPosition='left'
+                                    readOnly
                                     width={2}
-                                    label='Today Date'
                                 />
                                 <Form.Input
-                                    readOnly
                                     name='todayTime'
+                                    label='Current Time'
                                     value={time}
                                     className='TodayDate'
                                     inverted={true}
                                     placeholder='00:00:00 PM'
                                     icon='time'
                                     iconPosition='left'
+                                    readOnly
                                     width={2}
-                                    label='Current Time'
                                 />
                                 <Form.Input type='hidden' width={8} />
                                 <Field
-                                    readOnly
                                     name='memberSince'
+                                    label='Member Since'
+                                    readOnly
                                     className='TodayDate'
                                     component={Form.Input}
                                     inverted={true}
@@ -257,7 +268,6 @@ const BuyScreen = (props) => {
                                     icon='calendar'
                                     iconPosition='left'
                                     width={2}
-                                    label='Member Since'
                                 />
                                 <Field
                                     readOnly
@@ -325,13 +335,13 @@ const BuyScreen = (props) => {
                                     value={currentGallon || 0}
                                 />
                                 <Form.Input
-                                    disabled={currentGallon > 0 ? false : true}
-                                    inverted={true}
-                                    className='AreaCode'
-                                    width={1}
-                                    label='Buy'
                                     name='gallonBuy'
+                                    label='Buy'
+                                    className='AreaCode'
                                     value={gallonBuy}
+                                    disabled={disableBuyInput}
+                                    inverted={true}
+                                    width={1}
                                     onChange={handleBuyValue}
                                     onKeyPress={(e) =>
                                         e.key === 'Enter' || e.keyCode === 13
