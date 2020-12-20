@@ -3,8 +3,6 @@ import {
     Button,
     Message,
     Form,
-    Label,
-    Container,
     Divider,
     TransitionablePortal,
     Segment,
@@ -27,7 +25,6 @@ const AccountPortal = (props) => {
         getAccount,
         buy,
         renew,
-        handleSubmit,
     } = props;
 
     const [open, setOpenPortal] = useState(true);
