@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import {
     Button,
     Message,
-    Form,
     Divider,
     TransitionablePortal,
     Segment,
     Grid,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import * as actionTypes from '../../../types';
 import { channels } from '../../../shared/constants';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
+import BuyForm from './BuyForm';
 
 const { ipcRenderer } = window;
 
@@ -217,171 +217,23 @@ const BuyScreen = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        <Form>
-                            <Form.Group>
-                                <Form.Input
-                                    name='todayDate'
-                                    label='Today Date'
-                                    value={date}
-                                    className='TodayDate'
-                                    inverted={true}
-                                    icon='calendar'
-                                    placeholder='mm/dd/yyyy'
-                                    iconPosition='left'
-                                    readOnly
-                                    width={2}
-                                />
-                                <Form.Input
-                                    name='todayTime'
-                                    label='Current Time'
-                                    value={time}
-                                    className='TodayDate'
-                                    inverted={true}
-                                    placeholder='00:00:00 PM'
-                                    icon='time'
-                                    iconPosition='left'
-                                    readOnly
-                                    width={2}
-                                />
-                                <Form.Input type='hidden' width={8} />
-                                <Field
-                                    name='memberSince'
-                                    label='Member Since'
-                                    readOnly
-                                    className='TodayDate'
-                                    component={Form.Input}
-                                    inverted={true}
-                                    placeholder='mm/dd/yyy'
-                                    icon='calendar'
-                                    iconPosition='left'
-                                    width={2}
-                                />
-                                <Field
-                                    readOnly
-                                    label='Account'
-                                    name='account'
-                                    className='BuyAccount'
-                                    placeholder='xxxxxx'
-                                    component={Form.Input}
-                                    inverted={true}
-                                    icon='hashtag'
-                                    iconPosition='left'
-                                    width={2}
-                                />
-                                <Field
-                                    readOnly
-                                    label='Invoice'
-                                    name='record_id'
-                                    className='TodayDate'
-                                    placeholder='xxxxxxx'
-                                    component={Form.Input}
-                                    inverted={true}
-                                    icon='hashtag'
-                                    iconPosition='left'
-                                    width={2}
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Field
-                                    className='AreaCode'
-                                    inverted={true}
-                                    name='areaCode'
-                                    width={1}
-                                    readonly
-                                    placeholder='xxx'
-                                    component={Form.Input}
-                                    label='Area Code'
-                                />
-                                <Field
-                                    readOnly
-                                    className='PhoneNumber'
-                                    inverted={true}
-                                    name='phone'
-                                    placeholder='xxx-xxxx'
-                                    width={2}
-                                    component={Form.Input}
-                                    label='Phone Number'
-                                />
-
-                                <Field
-                                    className='Test'
-                                    inverted={true}
-                                    name='fullname'
-                                    width={3}
-                                    component={Form.Input}
-                                    label='Customer Name'
-                                />
-                                <Form.Input type='hidden' width={7} />
-                                <Form.Input
-                                    className='AreaCode'
-                                    width={1}
-                                    readOnly
-                                    inverted={true}
-                                    label='Current'
-                                    name='currentGallon'
-                                    value={currentGallon || 0}
-                                />
-                                <Form.Input
-                                    name='gallonBuy'
-                                    label='Buy'
-                                    className='AreaCode'
-                                    value={gallonBuy}
-                                    disabled={disableBuyInput}
-                                    inverted={true}
-                                    width={1}
-                                    onChange={handleBuyValue}
-                                    onKeyPress={(e) =>
-                                        e.key === 'Enter' || e.keyCode === 13
-                                            ? buyWaterGallon(e)
-                                            : null
-                                    }
-                                />
-                                <Form.Input
-                                    className={
-                                        gallonBuy > currentGallon
-                                            ? 'Remain'
-                                            : 'AreaCode'
-                                    }
-                                    width={1}
-                                    readOnly
-                                    type='text'
-                                    inverted={true}
-                                    label='Remain'
-                                    value={gallonAfterBuy || 0}
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Input type='hidden' width={13} />
-                                <Form.Input
-                                    label='Renew Fee'
-                                    name='renewalFee'
-                                    className='AreaCode'
-                                    value={renewalFee}
-                                    disabled={disableRenewInput}
-                                    inverted={true}
-                                    onChange={handleRenewalFee}
-                                    width={1}
-                                />
-                                <Form.Input
-                                    label='Renew Gallon'
-                                    name='renewalAmount'
-                                    className='AreaCode'
-                                    value={renewAmount}
-                                    disabled={disableRenewInput}
-                                    inverted={true}
-                                    onChange={handleRenewalAmount}
-                                    width={1}
-                                />
-                                <Form.Button
-                                    content='Renew'
-                                    style={{ marginTop: '30px' }}
-                                    color='blue'
-                                    disabled={disableRenewButton}
-                                    onClick={renewWaterGallon}
-                                    width={1}
-                                />
-                            </Form.Group>
-                        </Form>
+                        <BuyForm
+                            date={date}
+                            time={time}
+                            currentGallon={currentGallon}
+                            gallonBuy={gallonBuy}
+                            disableBuyInput={disableBuyInput}
+                            handleBuyValue={handleBuyValue}
+                            buyWaterGallon={buyWaterGallon}
+                            gallonAfterBuy={gallonAfterBuy}
+                            renewalFee={renewalFee}
+                            disableRenewInput={disableRenewInput}
+                            handleRenewalFee={handleRenewalFee}
+                            handleRenewalAmount={handleRenewalAmount}
+                            renewAmount={renewAmount}
+                            disableRenewButton={disableRenewButton}
+                            renewWaterGallon={renewWaterGallon}
+                        />
                         <Divider />
                         <Button
                             onClick={() => {
@@ -408,7 +260,6 @@ const BuyScreen = (props) => {
                             }}>
                             Get Invoice
                         </Button>
-
                         <Button
                             color='green'
                             disabled={
@@ -420,8 +271,7 @@ const BuyScreen = (props) => {
                             content='Buy'
                             onClick={buyWaterGallon}
                         />
-
-                        {/* <Message>
+                        <Message>
                             <Message.Content>
                                 <pre>
                                     {JSON.stringify(account || [], null, 2)}
@@ -433,7 +283,7 @@ const BuyScreen = (props) => {
                                     {JSON.stringify(invoices || [], null, 2)}
                                 </pre>
                             </Message.Content>
-                        </Message> */}
+                        </Message>
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -479,8 +329,6 @@ const mapStateToProps = (state) => {
             record_id: record_id ? parseInt(record_id) + 1 : '',
             renew,
             renewFee,
-            // todayDate: currentDate(),
-            // todayTime: getCurrentTime(),
         },
         membership: state.membership,
         account: state.account.account,
