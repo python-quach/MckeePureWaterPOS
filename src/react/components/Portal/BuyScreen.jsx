@@ -32,25 +32,20 @@ const BuyScreen = (props) => {
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
-
     const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
-
     const [currentGallon, setCurrentGallon] = useState(detail.gallonRemain);
-
     const [gallonBuy, setGallonBuy] = useState(0);
     const [gallonAfterBuy, setGallonAfterBuy] = useState(gallonRemain);
-    const [gallonOver, setGallonOver] = useState(
-        gallonRemain < 0 ? gallonRemain : 0
-    );
-
+    // const [gallonOver, setGallonOver] = useState(
+    //     gallonRemain < 0 ? gallonRemain : 0
+    // );
+    const [gallonOver, setGallonOver] = useState(gallonRemain);
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
-
     const [disabledBuyButton, setDisabledBuyButton] = useState(true);
     const [disableBuyInput, setDisableBuyInput] = useState(true);
-
     const [disableRenewButton, setDisabledRenewButton] = useState(true);
     const [disableRenewInput, setDisabledRenewInput] = useState(true);
 
