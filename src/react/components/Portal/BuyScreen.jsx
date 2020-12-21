@@ -51,25 +51,26 @@ const BuyScreen = (props) => {
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
 
+    const [disabledBuyButton, setDisabledBuyButton] = useState(true);
     const [disableBuyInput, setDisableBuyInput] = useState(true);
 
     const [disableRenewButton, setDisabledRenewButton] = useState(true);
     const [disableRenewInput, setDisabledRenewInput] = useState(true);
 
-    const resetRenewData = (data) => {
-        setCurrentGallon(data.gallonCurrent);
+    const resetRenewData = ({ gallonCurrent, gallonRemain }) => {
+        setCurrentGallon(gallonCurrent);
         setGallonBuy(0);
-        setGallonAfterBuy(data.gallonRemain);
+        setGallonAfterBuy(gallonRemain);
         setRenewAmount(0);
         setRenewalFee(0);
         setCurrentDate(currentDate());
         setCurrentTime(getCurrentTime);
     };
 
-    const resetBuyData = (data) => {
-        setCurrentGallon(data.gallonRemain);
+    const resetBuyData = ({ gallonRemain }) => {
+        setCurrentGallon(gallonRemain);
         setGallonBuy(0);
-        setGallonAfterBuy(data.gallonRemain);
+        setGallonAfterBuy(gallonRemain);
         setCurrentDate(currentDate());
         setCurrentTime(getCurrentTime);
     };
@@ -143,6 +144,15 @@ const BuyScreen = (props) => {
         }
     };
 
+    const handleGetInvoices = () => {
+        console.log(account);
+        setLoading(true);
+        getAccountInvoices(account, (data) => {
+            console.log(data);
+            setLoading(false);
+            setInvoices(data);
+        });
+    };
     const handleBuyValue = (e, { value }) => {
         if (isNaN(parseInt(value))) {
             setGallonBuy(0);
@@ -171,6 +181,16 @@ const BuyScreen = (props) => {
         }
     };
 
+    const handleBackButton = () => {
+        if (props.membership.members) {
+            setOpenPortal(false);
+            props.history.push('/member');
+        } else {
+            setOpenPortal(false);
+            props.history.push('find');
+        }
+    };
+
     useEffect(() => {
         console.log(`Purchase Data:`, {
             currentGallon,
@@ -192,6 +212,11 @@ const BuyScreen = (props) => {
                 ? false
                 : true
         );
+
+        setDisabledBuyButton(
+            currentGallon > 0 && gallonBuy >= 1 ? false : true
+        );
+
         setDisabledRenewInput(gallonRemain > 0 ? true : false);
         setDisableBuyInput(currentGallon > 0 ? false : true);
     }, [
@@ -235,47 +260,25 @@ const BuyScreen = (props) => {
                             renewWaterGallon={renewWaterGallon}
                         />
                         <Divider />
+                        <Button content='Back' onClick={handleBackButton} />
                         <Button
-                            onClick={() => {
-                                if (props.membership.members) {
-                                    setOpenPortal(false);
-                                    props.history.push('/member');
-                                } else {
-                                    setOpenPortal(false);
-                                    props.history.push('find');
-                                }
-                            }}>
-                            Back
-                        </Button>
-                        <Button
+                            color='twitter'
+                            content='Invoices'
                             loading={loading}
-                            onClick={() => {
-                                console.log(account);
-                                setLoading(true);
-                                getAccountInvoices(account, (data) => {
-                                    console.log(data);
-                                    setLoading(false);
-                                    setInvoices(data);
-                                });
-                            }}>
-                            Get Invoice
-                        </Button>
+                            onClick={handleGetInvoices}
+                        />
                         <Button
                             color='green'
-                            disabled={
-                                currentGallon > 0 && gallonBuy >= 1
-                                    ? false
-                                    : true
-                            }
+                            disabled={disabledBuyButton}
                             floated='right'
                             content='Buy'
                             onClick={buyWaterGallon}
                         />
                         <Message>
                             <Message.Content>
-                                <pre>
+                                {/* <pre>
                                     {JSON.stringify(account || [], null, 2)}
-                                </pre>
+                                </pre> */}
                                 <pre>
                                     {JSON.stringify(detail || [], null, 2)}
                                 </pre>
