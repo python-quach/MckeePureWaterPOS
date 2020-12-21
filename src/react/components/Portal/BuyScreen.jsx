@@ -178,20 +178,7 @@ const BuyScreen = (props) => {
             gallonAfterBuy,
             gallonOver,
         });
-    }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver]);
 
-    // useEffect(() => {
-    //     if (gallonAfterBuy < 0) {
-    //         setGallonOver(gallonAfterBuy);
-    //     } else {
-    //         if (gallonBuy === 0) {
-    //             setGallonAfterBuy(gallonRemain);
-    //             setGallonOver(0);
-    //         }
-    //     }
-    // }, [currentGallon, gallonBuy, gallonAfterBuy, gallonOver, gallonRemain]);
-
-    useEffect(() => {
         if (gallonAfterBuy < 0) {
             setGallonOver(gallonAfterBuy);
         } else {
@@ -207,7 +194,6 @@ const BuyScreen = (props) => {
         );
         setDisabledRenewInput(gallonRemain > 0 ? true : false);
         setDisableBuyInput(currentGallon > 0 ? false : true);
-        // }, [gallonRemain, renewAmount, renewalFee, currentGallon]);
     }, [
         gallonRemain,
         renewAmount,
@@ -215,6 +201,7 @@ const BuyScreen = (props) => {
         currentGallon,
         gallonAfterBuy,
         gallonBuy,
+        gallonOver,
     ]);
 
     return (
