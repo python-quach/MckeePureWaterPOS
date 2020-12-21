@@ -9,13 +9,9 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import * as actionTypes from '../../../types';
-import { channels } from '../../../shared/constants';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import * as actions from '../../../actions';
-
-const { ipcRenderer } = window;
 
 const BuyScreen = (props) => {
     const [open, setOpenPortal] = useState(true);
@@ -340,68 +336,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         printReceipt: (receipt, callback) => {
-//             ipcRenderer.send(channels.PRINT_RECEIPT, { receipt });
-
-//             ipcRenderer.on(channels.PRINT_RECEIPT, (event, args) => {
-//                 ipcRenderer.removeAllListeners(channels.PRINT_RECEIPT);
-//             });
-//         },
-//         buy: (data, callback) => {
-//             ipcRenderer.send(channels.BUY_WATER, data);
-//             ipcRenderer.on(channels.BUY_WATER, (event, args) => {
-//                 ipcRenderer.removeAllListeners(channels.BUY_WATER);
-//                 callback(args);
-//             });
-//         },
-//         renew: (data, callback) => {
-//             ipcRenderer.send(channels.RENEW_WATER, data);
-//             ipcRenderer.on(channels.RENEW_WATER, (event, args) => {
-//                 ipcRenderer.removeAllListeners(channels.RENEW_WATER);
-//                 callback(args);
-//             });
-//         },
-//         getLastRecord: (callback) => {
-//             ipcRenderer.send(channels.LAST_RECORD);
-//             ipcRenderer.on(channels.LAST_RECORD, (event, lastRecord) => {
-//                 ipcRenderer.removeAllListeners(channels.LAST_RECORD);
-//                 dispatch({
-//                     type: actionTypes.LAST_RECORD,
-//                     payload: lastRecord,
-//                 });
-//                 callback(lastRecord);
-//             });
-//         },
-//         getAccount: (account, callback) => {
-//             ipcRenderer.send(channels.GET_ACCOUNT, { account });
-
-//             ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
-//                 ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
-//                 dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
-//                 callback(response);
-//             });
-//         },
-//         getAccountInvoices: (account, callback) => {
-//             ipcRenderer.send(channels.GET_MEMBER_INVOICES, {
-//                 account,
-//             });
-//             ipcRenderer.on(channels.GET_MEMBER_INVOICES, (event, args) => {
-//                 ipcRenderer.removeAllListeners(channels.GET_MEMBER_INVOICES);
-//                 console.log({ args });
-//                 dispatch({
-//                     type: actionTypes.GET_MEMBER_INVOICES,
-//                     payload: args,
-//                 });
-//                 callback(args);
-//             });
-//         },
-//     };
-// };
-
 const ReduxForm = reduxForm({ form: 'buy', enableReinitialize: true })(
     BuyScreen
 );
-// export default connect(mapStateToProps, mapDispatchToProps)(ReduxForm);
 export default connect(mapStateToProps, actions)(ReduxForm);
