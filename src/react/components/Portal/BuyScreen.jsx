@@ -6,6 +6,7 @@ import {
     TransitionablePortal,
     Segment,
     Grid,
+    Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -25,22 +26,23 @@ const BuyScreen = (props) => {
         renew,
     } = props;
 
+    const { gallonRemain } = detail;
+
     const handleClose = () => {
         setOpenPortal(false);
         props.history.push('/find');
+        setShowReceipt(false);
     };
+
+    const [showReceipt, setShowReceipt] = useState(false);
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
-    const { gallonRemain } = detail;
     const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [currentGallon, setCurrentGallon] = useState(detail.gallonRemain);
+    const [currentGallon, setCurrentGallon] = useState(gallonRemain);
     const [gallonBuy, setGallonBuy] = useState(0);
     const [gallonAfterBuy, setGallonAfterBuy] = useState(gallonRemain);
-    // const [gallonOver, setGallonOver] = useState(
-    //     gallonRemain < 0 ? gallonRemain : 0
-    // );
     const [gallonOver, setGallonOver] = useState(gallonRemain);
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
@@ -129,6 +131,7 @@ const BuyScreen = (props) => {
                 };
                 buy(insertData, () => {
                     getAccount(account, (data) => {
+                        setShowReceipt(true);
                         resetBuyData(data);
                     });
                 });
@@ -177,9 +180,11 @@ const BuyScreen = (props) => {
         if (props.membership.members) {
             setOpenPortal(false);
             props.history.push('/member');
+            setShowReceipt(false);
         } else {
             setOpenPortal(false);
             props.history.push('find');
+            setShowReceipt(false);
         }
     };
 
@@ -252,6 +257,104 @@ const BuyScreen = (props) => {
                             renewWaterGallon={renewWaterGallon}
                         />
                         <Divider />
+                        <Table celled inverted selectable color='blue'>
+                            <Table.Header>
+                                <Table.Row>
+                                    <Table.HeaderCell colSpan='9'>
+                                        Customer Last Purchase Receipt
+                                    </Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Header>
+                            <Table.Header>
+                                <Table.Row>
+                                    <Table.HeaderCell>Account</Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Invoice #
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>Name</Table.HeaderCell>
+
+                                    {parseInt(detail.renew) > 0 ||
+                                    parseInt(detail.renewFee) > 0 ? null : (
+                                        <>
+                                            <Table.HeaderCell>
+                                                Gallon Previous
+                                            </Table.HeaderCell>
+                                            <Table.HeaderCell>
+                                                Gallon Buy
+                                            </Table.HeaderCell>
+                                            <Table.HeaderCell>
+                                                Gallon Left
+                                            </Table.HeaderCell>
+                                        </>
+                                    )}
+                                    {parseInt(detail.renew) > 0 ||
+                                    parseInt(detail.renewFee) > 0 ? (
+                                        <>
+                                            <Table.HeaderCell>
+                                                Renew Gallon
+                                            </Table.HeaderCell>
+                                            <Table.HeaderCell>
+                                                Gallon Over
+                                            </Table.HeaderCell>
+                                            <Table.HeaderCell>
+                                                Gallon Total
+                                            </Table.HeaderCell>
+                                            <Table.HeaderCell>
+                                                Renew Fee
+                                            </Table.HeaderCell>
+                                        </>
+                                    ) : null}
+
+                                    <Table.HeaderCell>Date</Table.HeaderCell>
+                                    <Table.HeaderCell>Time</Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                                <Table.Row>
+                                    <Table.Cell content={detail.account} />
+                                    <Table.Cell content={detail.record_id} />
+                                    <Table.Cell content={detail.fullname} />
+                                    {parseInt(detail.renew) > 0 ||
+                                    parseInt(detail.renewFee) > 0 ? null : (
+                                        <>
+                                            <Table.Cell
+                                                content={detail.gallonCurrent}
+                                            />
+                                            <Table.Cell
+                                                content={detail.gallonBuy}
+                                            />
+                                            <Table.Cell
+                                                content={detail.gallonRemain}
+                                            />
+                                        </>
+                                    )}
+                                    {parseInt(detail.renewFee) > 0 ||
+                                    parseInt(detail.renew) > 0 ? (
+                                        <>
+                                            <Table.Cell
+                                                content={detail.renew}
+                                            />
+                                            <Table.Cell
+                                                content={
+                                                    parseInt(
+                                                        detail.gallonRemain
+                                                    ) - parseInt(detail.renew)
+                                                }
+                                            />
+                                            <Table.Cell
+                                                content={detail.gallonRemain}
+                                            />
+                                            <Table.Cell
+                                                content={detail.renewFee}
+                                            />
+                                        </>
+                                    ) : null}
+
+                                    <Table.Cell content={detail.invoiceDate} />
+                                    <Table.Cell content={detail.invoiceTime} />
+                                </Table.Row>
+                            </Table.Body>
+                        </Table>
                         <Button content='Back' onClick={handleBackButton} />
                         <Button
                             color='twitter'
