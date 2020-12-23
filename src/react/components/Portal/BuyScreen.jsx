@@ -264,13 +264,7 @@ const BuyScreen = (props) => {
                             disableRenewButton={disableRenewButton}
                             renewWaterGallon={renewWaterGallon}
                         />
-                        <Button content='Back' onClick={handleBackButton} />
-                        <Button
-                            color='twitter'
-                            content='Invoices'
-                            loading={loading}
-                            onClick={handleGetInvoices}
-                        />
+
                         <Button
                             color='green'
                             disabled={disabledBuyButton}
@@ -283,6 +277,19 @@ const BuyScreen = (props) => {
                         ) : (
                             <BuyReceipt detail={detail} />
                         )}
+                        <Divider hidden />
+                        <Button
+                            content='Back'
+                            floated='right'
+                            onClick={handleBackButton}
+                        />
+                        <Button
+                            floated='right'
+                            color='twitter'
+                            content='Invoices'
+                            loading={loading}
+                            onClick={handleGetInvoices}
+                        />
 
                         {/* <Message>
                             <Message.Content>

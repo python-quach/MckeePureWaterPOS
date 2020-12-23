@@ -1,55 +1,115 @@
 import React from 'react';
-import { Table, Label } from 'semantic-ui-react';
+import { Table, Label, Segment } from 'semantic-ui-react';
 
 const RenewReceipt = (props) => {
+    const {
+        detail: {
+            account,
+            fullname,
+            renew,
+            record_id,
+            invoiceTime,
+            invoiceDate,
+            renewFee,
+            gallonRemain,
+        },
+    } = props;
     return (
-        <Table celled basic inverted selectable>
+        <Table celled basic inverted selectable striped size='large' compact>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan='12'>
-                        <Label ribbon color='pink'>
-                            {props.detail.renew !== null &&
-                            props.detail.renew > 0
-                                ? `Last Renewal Receipt: [${props.detail.account} - ${props.detail.fullname}]`
-                                : `Customer Last Purchase Receipt: [${props.account} - ${props.detail.fullname}]`}
-                        </Label>
+                        <Label
+                            ribbon
+                            icon='tags'
+                            size='large'
+                            color='blue'
+                            content={`Last Renewal Receipt: [${account} - ${fullname}]`}
+                        />
                     </Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Header>
+            <Table.Header style={{ backgroundColor: '#9e9e9e24' }}>
                 <Table.Row>
                     <Table.HeaderCell content='Account' />
                     <Table.HeaderCell content='Invoice #' />
-                    <Table.HeaderCell content='Name' />
-                    <Table.HeaderCell content='Renew Gallon' />
-                    <Table.HeaderCell content='Gallon Over' />
-                    <Table.HeaderCell content='Gallon Total' />
-                    <Table.HeaderCell content='Renew Fee' />
                     <Table.HeaderCell content='Date' />
                     <Table.HeaderCell content='Time' />
+                    <Table.HeaderCell content='Name' />
+                    <Table.HeaderCell
+                        textAlign='right'
+                        content='Renew Fee'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        textAlign='right'
+                        content='Renew Gallon'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        textAlign='right'
+                        content='Gallon Over'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        textAlign='right'
+                        content='Gallon Total'
+                        style={{ paddingRight: '25px' }}
+                    />
                 </Table.Row>
             </Table.Header>
             <Table.Body>
                 <Table.Row>
-                    <Table.Cell content={props.detail.account}>
-                        <Label color='teal' ribbon>
-                            {props.detail.account}
-                        </Label>
+                    <Table.Cell>
+                        <Label
+                            color='violet'
+                            ribbon
+                            content={account}
+                            size='large'
+                        />
                     </Table.Cell>
-                    <Table.Cell content={props.detail.record_id} />
-                    <Table.Cell content={props.detail.fullname} />
-
-                    <Table.Cell content={props.detail.renew || 0} />
-                    <Table.Cell
-                        content={
-                            parseInt(props.detail.gallonRemain) -
-                            parseInt(props.detail.renew || 0)
-                        }
-                    />
-                    <Table.Cell content={props.detail.gallonRemain} />
-                    <Table.Cell content={props.detail.renewFee} />
-                    <Table.Cell content={props.detail.invoiceDate} />
-                    <Table.Cell content={props.detail.invoiceTime} />
+                    <Table.Cell content={record_id} />
+                    <Table.Cell content={invoiceDate} />
+                    <Table.Cell content={invoiceTime} />
+                    <Table.Cell content={fullname} />
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            color='green'
+                            size='large'
+                            icon='dollar'
+                            content={renewFee}
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            color='blue'
+                            content={renew || 0}
+                            icon='cart'
+                            size='large'
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            color='red'
+                            content={
+                                parseInt(gallonRemain) - parseInt(renew || 0)
+                            }
+                            icon='tint'
+                            size='large'
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            color='blue'
+                            content={gallonRemain}
+                            icon='tint'
+                            size='large'
+                        />
+                    </Table.Cell>
                 </Table.Row>
             </Table.Body>
         </Table>

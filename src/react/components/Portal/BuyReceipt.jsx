@@ -2,61 +2,107 @@ import React from 'react';
 import { Table, Label } from 'semantic-ui-react';
 
 const BuyReceipt = (props) => {
+    const {
+        detail: {
+            account,
+            fullname,
+            record_id,
+            gallonCurrent,
+            gallonBuy,
+            gallonRemain,
+            invoiceDate,
+            invoiceTime,
+        },
+    } = props;
     return (
-        <Table celled basic inverted selectable striped>
+        <Table celled basic inverted selectable striped size='large' compact>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan='12'>
-                        <Label ribbon color='pink'>
-                            {props.detail.renew !== null &&
-                            props.detail.renew > 0
-                                ? `Last Renewal Receipt: [${props.detail.account} - ${props.detail.fullname}]`
-                                : `Customer Last Purchase Receipt: [${props.detail.account} - ${props.detail.fullname}]`}
-                        </Label>
+                        <Label
+                            ribbon
+                            icon='tags'
+                            color='green'
+                            size='large'
+                            content={`Last Purchase Receipt: [${account} - ${fullname}]`}
+                        />
                     </Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Header>
+            <Table.Header style={{ backgroundColor: '#9e9e9e24' }}>
                 <Table.Row>
                     <Table.HeaderCell content='Account' />
                     <Table.HeaderCell content='Invoice #' />
-                    <Table.HeaderCell content='Name' />
-                    <Table.HeaderCell content='Gallon Previous' />
-                    <Table.HeaderCell content='Gallon Buy' />
-                    <Table.HeaderCell content='Gallon Left' />
                     <Table.HeaderCell content='Date' />
                     <Table.HeaderCell content='Time' />
+                    <Table.HeaderCell content='Name' />
+                    <Table.HeaderCell
+                        content='Gallon Previous'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        content='Gallon Buy'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        content='Gallon Left'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
                 </Table.Row>
             </Table.Header>
             <Table.Body>
                 <Table.Row>
-                    <Table.Cell content={props.detail.account}>
-                        <Label color='teal' ribbon>
-                            {props.detail.account}
-                        </Label>
-                    </Table.Cell>
-                    <Table.Cell content={props.detail.record_id} />
-                    <Table.Cell content={props.detail.fullname} />
                     <Table.Cell>
+                        <Label
+                            color='violet'
+                            ribbon
+                            size='large'
+                            icon='hashtag'
+                            content={account}
+                        />
+                    </Table.Cell>
+                    <Table.Cell content={record_id} />
+                    <Table.Cell content={invoiceDate} />
+                    <Table.Cell content={invoiceTime} />
+                    <Table.Cell content={fullname} />
+                    <Table.Cell textAlign='right'>
                         <Label
                             ribbon
                             color='blue'
-                            content={props.detail.gallonCurrent}
+                            size='large'
+                            icon='tint'
+                            content={gallonCurrent}
                         />
                     </Table.Cell>
-                    <Table.Cell>
-                        <Label ribbon content={props.detail.gallonBuy} />
-                    </Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell textAlign='right'>
                         <Label
                             ribbon
+                            icon='cart'
+                            size='large'
                             color='green'
-                            content={props.detail.gallonRemain}
+                            content={gallonBuy}
                         />
                     </Table.Cell>
-
-                    <Table.Cell content={props.detail.invoiceDate} />
-                    <Table.Cell content={props.detail.invoiceTime} />
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            icon='tint'
+                            size='large'
+                            color={gallonRemain < 0 ? 'red' : 'blue'}
+                            content={gallonRemain}
+                        />
+                        {gallonRemain < 0 ? (
+                            <Label
+                                basic
+                                color='red'
+                                pointing='left'
+                                content='Please renew membership'
+                            />
+                        ) : null}
+                    </Table.Cell>
                 </Table.Row>
             </Table.Body>
         </Table>

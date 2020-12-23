@@ -148,14 +148,14 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
-                    <DebugMessage
+                    {/* <DebugMessage
                         membership={membership}
                         phone={phone}
                         account={account}
                         firstName={firstName}
                         lastName={lastName}
                         submitSucceeded={submitSucceeded}
-                    />
+                    /> */}
                 </FindGrid>
             </Segment>
         </TransitionablePortal>

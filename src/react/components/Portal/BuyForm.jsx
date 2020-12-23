@@ -4,7 +4,7 @@ import { Field } from 'redux-form';
 
 const BuyForm = (props) => {
     return (
-        <Form>
+        <Form size='large'>
             <Form.Group>
                 <Form.Input
                     name='todayDate'
@@ -150,7 +150,7 @@ const BuyForm = (props) => {
                     width={1}
                 />
                 <Form.Input
-                    label='Renew Gallon'
+                    label='Gallon'
                     name='renewalAmount'
                     className='AreaCode'
                     value={props.renewAmount}
