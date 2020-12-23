@@ -135,10 +135,10 @@ const BuyReceipt = (props) => {
                             ribbon
                             icon='tint'
                             size='large'
-                            color={gallonRemain < 0 ? 'red' : 'blue'}
+                            color={gallonRemain <= 0 ? 'red' : 'blue'}
                             content={gallonRemain}
                         />
-                        {gallonRemain < 0 ? (
+                        {gallonRemain <= 0 ? (
                             <Label
                                 basic
                                 color='red'
