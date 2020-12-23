@@ -264,14 +264,6 @@ const BuyScreen = (props) => {
                             disableRenewButton={disableRenewButton}
                             renewWaterGallon={renewWaterGallon}
                         />
-                        {/* <Divider /> */}
-                        {detail.renew !== null && detail.renew > 0 ? (
-                            <RenewReceipt detail={detail} />
-                        ) : (
-                            <BuyReceipt detail={detail} />
-                        )}
-
-                        {/* <Divider /> */}
                         <Button content='Back' onClick={handleBackButton} />
                         <Button
                             color='twitter'
@@ -286,6 +278,12 @@ const BuyScreen = (props) => {
                             content='Buy'
                             onClick={buyWaterGallon}
                         />
+                        {detail.renew !== null && detail.renew > 0 ? (
+                            <RenewReceipt detail={detail} />
+                        ) : (
+                            <BuyReceipt detail={detail} />
+                        )}
+
                         {/* <Message>
                             <Message.Content>
                                     {JSON.stringify(account || [], null, 2)}
