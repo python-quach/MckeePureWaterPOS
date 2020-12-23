@@ -15,14 +15,14 @@ const BuyReceipt = (props) => {
         },
     } = props;
     return (
-        <Table celled basic inverted selectable striped size='large' compact>
+        <Table celled basic inverted selectable striped size='large'>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan='12'>
                         <Label
                             ribbon
                             icon='tags'
-                            color='green'
+                            // color='green'
                             size='large'
                             content={`Last Purchase Receipt: [${account} - ${fullname}]`}
                         />
@@ -32,10 +32,22 @@ const BuyReceipt = (props) => {
             <Table.Header style={{ backgroundColor: '#9e9e9e24' }}>
                 <Table.Row>
                     <Table.HeaderCell content='Account' />
-                    <Table.HeaderCell content='Invoice #' />
-                    <Table.HeaderCell content='Date' />
-                    <Table.HeaderCell content='Time' />
                     <Table.HeaderCell content='Name' />
+                    <Table.HeaderCell
+                        content='Invoice'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        content='Date'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
+                    <Table.HeaderCell
+                        content='Time'
+                        textAlign='right'
+                        style={{ paddingRight: '25px' }}
+                    />
                     <Table.HeaderCell
                         content='Gallon Previous'
                         textAlign='right'
@@ -64,10 +76,42 @@ const BuyReceipt = (props) => {
                             content={account}
                         />
                     </Table.Cell>
-                    <Table.Cell content={record_id} />
-                    <Table.Cell content={invoiceDate} />
-                    <Table.Cell content={invoiceTime} />
-                    <Table.Cell content={fullname} />
+                    <Table.Cell>
+                        <Label
+                            ribbon
+                            size='large'
+                            icon='user'
+                            color='pink'
+                            content={fullname}
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            size='large'
+                            icon='hashtag'
+                            color='yellow'
+                            content={record_id}
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            size='large'
+                            icon='calendar'
+                            color='orange'
+                            content={invoiceDate}
+                        />
+                    </Table.Cell>
+                    <Table.Cell textAlign='right'>
+                        <Label
+                            ribbon
+                            size='large'
+                            icon='time'
+                            color='orange'
+                            content={invoiceTime}
+                        />
+                    </Table.Cell>
                     <Table.Cell textAlign='right'>
                         <Label
                             ribbon

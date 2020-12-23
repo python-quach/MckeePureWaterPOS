@@ -272,7 +272,9 @@ const BuyScreen = (props) => {
                             content='Buy'
                             onClick={buyWaterGallon}
                         />
-                        {detail.renew !== null && detail.renew > 0 ? (
+                        {detail.renew !== null &&
+                        detail.renew > 0 &&
+                        detail.gallonBuy !== detail.renew ? (
                             <RenewReceipt detail={detail} />
                         ) : (
                             <BuyReceipt detail={detail} />
