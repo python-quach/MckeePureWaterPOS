@@ -12,7 +12,7 @@ import { channels } from '../../../shared/constants';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
-import DebugMessage from '../Debug/DebugMessage';
+// import DebugMessage from '../Debug/DebugMessage';
 import * as actionTypes from '../../../types';
 
 const { ipcRenderer } = window;

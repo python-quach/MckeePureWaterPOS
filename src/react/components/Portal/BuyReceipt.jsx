@@ -22,7 +22,6 @@ const BuyReceipt = (props) => {
                         <Label
                             ribbon
                             icon='tags'
-                            // color='green'
                             size='large'
                             content={`Last Purchase Receipt: [${account} - ${fullname}]`}
                         />

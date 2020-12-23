@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Label, Segment } from 'semantic-ui-react';
+import { Table, Label } from 'semantic-ui-react';
 
 const RenewReceipt = (props) => {
     const {

@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
     Button,
-    Message,
     Divider,
-    Label,
     TransitionablePortal,
     Segment,
     Grid,
-    Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -34,19 +31,19 @@ const BuyScreen = (props) => {
     const handleClose = () => {
         setOpenPortal(false);
         props.history.push('/find');
-        setShowReceipt(false);
+        // setShowReceipt(false);
     };
 
-    const [showReceipt, setShowReceipt] = useState(false);
+    // const [showReceipt, setShowReceipt] = useState(false);
 
-    const [renewCheck, setRenewCheck] = useState(
-        // detail.renew === null ? 0 : detail.renew
-        detail.renew || 0
-    );
+    // const [renewCheck, setRenewCheck] = useState(
+    //     // detail.renew === null ? 0 : detail.renew
+    //     detail.renew || 0
+    // );
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
-    const [invoices, setInvoices] = useState(null);
+    // const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currentGallon, setCurrentGallon] = useState(gallonRemain);
     const [gallonBuy, setGallonBuy] = useState(0);
@@ -139,7 +136,7 @@ const BuyScreen = (props) => {
                 };
                 buy(insertData, () => {
                     getAccount(account, (data) => {
-                        setShowReceipt(true);
+                        // setShowReceipt(true);
                         resetBuyData(data);
                     });
                 });
@@ -153,7 +150,7 @@ const BuyScreen = (props) => {
         getAccountInvoices(account, (data) => {
             console.log(data);
             setLoading(false);
-            setInvoices(data);
+            // setInvoices(data);
         });
     };
     const handleBuyValue = (e, { value }) => {
@@ -188,11 +185,11 @@ const BuyScreen = (props) => {
         if (props.membership.members) {
             setOpenPortal(false);
             props.history.push('/member');
-            setShowReceipt(false);
+            // setShowReceipt(false);
         } else {
             setOpenPortal(false);
             props.history.push('find');
-            setShowReceipt(false);
+            // setShowReceipt(false);
         }
     };
 
@@ -233,6 +230,14 @@ const BuyScreen = (props) => {
         gallonBuy,
         gallonOver,
     ]);
+
+    useEffect(() => {
+        if (disableRenewInput) {
+            document.getElementById('buy').focus();
+        } else {
+            document.getElementById('renew').focus();
+        }
+    }, [disableRenewInput]);
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>

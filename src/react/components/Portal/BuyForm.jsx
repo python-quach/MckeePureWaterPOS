@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
 
 const BuyForm = (props) => {
+    // useEffect(() => {
+    //     // if (!props.disableRenewInput) {
+    //     document.getElementById('buy').focus();
+    //     // } else {
+    //     //     document.getElementById('renew').focus();
+    //     // }
+    // }, []);
+    // // }, [props.disableRenewInput]);
+
     return (
         <Form size='large'>
             <Form.Group>
@@ -109,6 +118,7 @@ const BuyForm = (props) => {
                     value={props.currentGallon || 0}
                 />
                 <Form.Input
+                    id='buy'
                     name='gallonBuy'
                     label='Buy'
                     className='AreaCode'
@@ -140,6 +150,7 @@ const BuyForm = (props) => {
             <Form.Group>
                 <Form.Input type='hidden' width={13} />
                 <Form.Input
+                    id='renew'
                     label='Renew Fee'
                     name='renewalFee'
                     className='AreaCode'
