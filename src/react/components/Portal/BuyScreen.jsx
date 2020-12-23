@@ -3,6 +3,7 @@ import {
     Button,
     Message,
     Divider,
+    Label,
     TransitionablePortal,
     Segment,
     Grid,
@@ -12,6 +13,8 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
+import BuyReceipt from './BuyReceipt';
+import RenewReceipt from './RenewReceipt';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {
@@ -35,6 +38,11 @@ const BuyScreen = (props) => {
     };
 
     const [showReceipt, setShowReceipt] = useState(false);
+
+    const [renewCheck, setRenewCheck] = useState(
+        // detail.renew === null ? 0 : detail.renew
+        detail.renew || 0
+    );
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
@@ -256,105 +264,86 @@ const BuyScreen = (props) => {
                             disableRenewButton={disableRenewButton}
                             renewWaterGallon={renewWaterGallon}
                         />
-                        <Divider />
-                        <Table celled inverted selectable color='blue'>
+                        {/* <Divider /> */}
+                        {detail.renew !== null && detail.renew > 0 ? (
+                            <RenewReceipt detail={detail} />
+                        ) : (
+                            <BuyReceipt detail={detail} />
+                        )}
+
+                        {/* <Table celled basic inverted selectable>
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell colSpan='9'>
-                                        Customer Last Purchase Receipt
+                                    <Table.HeaderCell colSpan='12'>
+                                        <Label ribbon color='pink'>
+                                            {detail.renew !== null &&
+                                            detail.renew > 0
+                                                ? `Last Renewal Receipt: [${detail.account} - ${detail.fullname}]`
+                                                : `Customer Last Purchase Receipt: [${detail.account} - ${detail.fullname}]`}
+                                        </Label>
                                     </Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell>Account</Table.HeaderCell>
-                                    <Table.HeaderCell>
-                                        Invoice #
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell>Name</Table.HeaderCell>
-
-                                    {parseInt(detail.renew) > 0 ||
-                                    parseInt(detail.renewFee) > 0 ? null : (
-                                        <>
-                                            <Table.HeaderCell>
-                                                Gallon Previous
-                                            </Table.HeaderCell>
-                                            <Table.HeaderCell>
-                                                Gallon Buy
-                                            </Table.HeaderCell>
-                                            <Table.HeaderCell>
-                                                Gallon Left
-                                            </Table.HeaderCell>
-                                        </>
-                                    )}
-                                    {parseInt(detail.renew) > 0 ||
-                                    parseInt(detail.renewFee) > 0 ? (
-                                        <>
-                                            <Table.HeaderCell>
-                                                Renew Gallon
-                                            </Table.HeaderCell>
-                                            <Table.HeaderCell>
-                                                Gallon Over
-                                            </Table.HeaderCell>
-                                            <Table.HeaderCell>
-                                                Gallon Total
-                                            </Table.HeaderCell>
-                                            <Table.HeaderCell>
-                                                Renew Fee
-                                            </Table.HeaderCell>
-                                        </>
-                                    ) : null}
-
-                                    <Table.HeaderCell>Date</Table.HeaderCell>
-                                    <Table.HeaderCell>Time</Table.HeaderCell>
+                                    <Table.HeaderCell content='Account' />
+                                    <Table.HeaderCell content='Invoice #' />
+                                    <Table.HeaderCell content='Name' />
+                                    <Table.HeaderCell content='Gallon Previous' />
+                                    <Table.HeaderCell content='Gallon Buy' />
+                                    <Table.HeaderCell content='Gallon Left' />
+                                    <Table.HeaderCell content='Renew Gallon' />
+                                    <Table.HeaderCell content='Gallon Over' />
+                                    <Table.HeaderCell content='Gallon Total' />
+                                    <Table.HeaderCell content='Renew Fee' />
+                                    <Table.HeaderCell content='Date' />
+                                    <Table.HeaderCell content='Time' />
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
                                 <Table.Row>
-                                    <Table.Cell content={detail.account} />
+                                    <Table.Cell content={detail.account}>
+                                        <Label color='teal' ribbon>
+                                            {detail.account}
+                                        </Label>
+                                    </Table.Cell>
                                     <Table.Cell content={detail.record_id} />
                                     <Table.Cell content={detail.fullname} />
-                                    {parseInt(detail.renew) > 0 ||
-                                    parseInt(detail.renewFee) > 0 ? null : (
-                                        <>
-                                            <Table.Cell
-                                                content={detail.gallonCurrent}
-                                            />
-                                            <Table.Cell
-                                                content={detail.gallonBuy}
-                                            />
-                                            <Table.Cell
-                                                content={detail.gallonRemain}
-                                            />
-                                        </>
-                                    )}
-                                    {parseInt(detail.renewFee) > 0 ||
-                                    parseInt(detail.renew) > 0 ? (
-                                        <>
-                                            <Table.Cell
-                                                content={detail.renew}
-                                            />
-                                            <Table.Cell
-                                                content={
-                                                    parseInt(
-                                                        detail.gallonRemain
-                                                    ) - parseInt(detail.renew)
-                                                }
-                                            />
-                                            <Table.Cell
-                                                content={detail.gallonRemain}
-                                            />
-                                            <Table.Cell
-                                                content={detail.renewFee}
-                                            />
-                                        </>
-                                    ) : null}
-
+                                    <Table.Cell>
+                                        <Label
+                                            ribbon
+                                            color='blue'
+                                            content={detail.gallonCurrent}
+                                        />
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Label
+                                            ribbon
+                                            color='red'
+                                            content={detail.gallonBuy}
+                                        />
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Label
+                                            ribbon
+                                            content={detail.gallonRemain}
+                                        />
+                                    </Table.Cell>
+                                    <Table.Cell content={detail.renew || 0} />
+                                    <Table.Cell
+                                        content={
+                                            parseInt(detail.gallonRemain) -
+                                            parseInt(detail.renew || 0)
+                                        }
+                                    />
+                                    <Table.Cell content={detail.gallonRemain} />
+                                    <Table.Cell content={detail.renewFee} />
                                     <Table.Cell content={detail.invoiceDate} />
                                     <Table.Cell content={detail.invoiceTime} />
                                 </Table.Row>
                             </Table.Body>
-                        </Table>
+                        </Table> */}
+                        {/* <Divider /> */}
                         <Button content='Back' onClick={handleBackButton} />
                         <Button
                             color='twitter'
@@ -369,11 +358,9 @@ const BuyScreen = (props) => {
                             content='Buy'
                             onClick={buyWaterGallon}
                         />
-                        <Message>
+                        {/* <Message>
                             <Message.Content>
-                                {/* <pre>
                                     {JSON.stringify(account || [], null, 2)}
-                                </pre> */}
                                 <pre>
                                     {JSON.stringify(detail || [], null, 2)}
                                 </pre>
@@ -381,7 +368,7 @@ const BuyScreen = (props) => {
                                     {JSON.stringify(invoices || [], null, 2)}
                                 </pre>
                             </Message.Content>
-                        </Message>
+                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
