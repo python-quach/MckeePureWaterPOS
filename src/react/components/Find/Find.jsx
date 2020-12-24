@@ -6,6 +6,7 @@ import {
     Divider,
     Header,
     Icon,
+    Button,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { channels } from '../../../shared/constants';
@@ -137,6 +138,21 @@ function FindContainer(props) {
                         setErrorMessage={setErrorMessage}
                         setIconColor={setIconColor}
                         setAnimation={setAnimation}
+                    />
+                    <Divider hidden />
+                    <Button
+                        color='teal'
+                        circular={true}
+                        fluid={true}
+                        size='massive'
+                        id='AddButton'
+                        icon='add circle'
+                        labelPosition='right'
+                        content='Add New Membership'
+                        onClick={() => {
+                            console.log('Add New MemberShip');
+                            props.history.push('/add');
+                        }}
                     />
                     <Divider hidden />
                     <FindLogoutButton

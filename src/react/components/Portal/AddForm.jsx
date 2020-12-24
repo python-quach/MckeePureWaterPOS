@@ -2,7 +2,11 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
 
-const BuyForm = (props) => {
+const AddForm = (props) => {
+    console.log('props:', props.last);
+
+    const [id, setId] = React.useState(props.last.record_id + 1);
+
     return (
         <Form size='large'>
             <Form.Group>
@@ -55,7 +59,7 @@ const BuyForm = (props) => {
                     iconPosition='left'
                     width={2}
                 />
-                <Field
+                {/* <Field
                     readOnly
                     label='Invoice'
                     name='record_id'
@@ -64,6 +68,17 @@ const BuyForm = (props) => {
                     component={Form.Input}
                     inverted={true}
                     icon='hashtag'
+                    iconPosition='left'
+                    width={2}
+                /> */}
+                <Form.Input
+                    label='Invoice'
+                    name='record_id'
+                    className='TodayDate'
+                    placeholder='xxxxxxx'
+                    inverted={true}
+                    icon='hashtag'
+                    value={id}
                     iconPosition='left'
                     width={2}
                 />
@@ -195,4 +210,4 @@ const BuyForm = (props) => {
     );
 };
 
-export default BuyForm;
+export default AddForm;

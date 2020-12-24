@@ -15,7 +15,7 @@ const BuyReceipt = (props) => {
         },
     } = props;
     return (
-        <Table celled basic inverted selectable striped size='large'>
+        <Table celled basic inverted selectable size='large'>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan='12'>
@@ -28,7 +28,8 @@ const BuyReceipt = (props) => {
                     </Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Header style={{ backgroundColor: '#9e9e9e24' }}>
+            {/* <Table.Header style={{ backgroundColor: '#9e9e9e24' }}> */}
+            <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell content='Account' />
                     <Table.HeaderCell content='Name' />

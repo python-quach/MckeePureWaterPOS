@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
+import AddForm from './AddForm';
 import BuyReceipt from './BuyReceipt';
 import RenewReceipt from './RenewReceipt';
 import * as actions from '../../../actions';
@@ -33,6 +34,16 @@ const BuyScreen = (props) => {
         props.history.push('/find');
         // setShowReceipt(false);
     };
+
+    const [last, setLastId] = useState(null);
+
+    useEffect(() => {
+        if (!last)
+            getLastRecord((account) => {
+                setLastId(account);
+                console.log({ account });
+            });
+    }, [last, getLastRecord]);
 
     // const [showReceipt, setShowReceipt] = useState(false);
 
@@ -266,9 +277,10 @@ const BuyScreen = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        <BuyForm
+                        <AddForm
                             date={date}
                             time={time}
+                            last={last}
                             currentGallon={currentGallon}
                             gallonBuy={gallonBuy}
                             disableBuyInput={disableBuyInput}
@@ -286,20 +298,6 @@ const BuyScreen = (props) => {
                             disabledBuyButton={disabledBuyButton}
                         />
 
-                        {/* <Button
-                            color='green'
-                            disabled={disabledBuyButton}
-                            floated='right'
-                            content='Buy'
-                            onClick={buyWaterGallon}
-                        /> */}
-                        {detail.renew !== null &&
-                        detail.renew > 0 &&
-                        detail.gallonBuy !== detail.renew ? (
-                            <RenewReceipt detail={detail} />
-                        ) : (
-                            <BuyReceipt detail={detail} />
-                        )}
                         <Divider hidden />
                         <Button
                             content='Back'
@@ -313,18 +311,6 @@ const BuyScreen = (props) => {
                             loading={loading}
                             onClick={handleGetInvoices}
                         />
-
-                        {/* <Message>
-                            <Message.Content>
-                                    {JSON.stringify(account || [], null, 2)}
-                                <pre>
-                                    {JSON.stringify(detail || [], null, 2)}
-                                </pre>
-                                <pre>
-                                    {JSON.stringify(invoices || [], null, 2)}
-                                </pre>
-                            </Message.Content>
-                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -365,7 +351,7 @@ const mapStateToProps = (state) => {
             invoiceTime,
             lastName,
             lastRenewGallon,
-            memberSince,
+            memberSince: currentDate(),
             prevGallon: parseInt(gallonRemain) || 0,
             record_id: record_id ? parseInt(record_id) + 1 : '',
             renew,
@@ -377,7 +363,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const ReduxForm = reduxForm({ form: 'buy', enableReinitialize: true })(
+const ReduxForm = reduxForm({ form: 'add', enableReinitialize: true })(
     BuyScreen
 );
 export default connect(mapStateToProps, actions)(ReduxForm);
