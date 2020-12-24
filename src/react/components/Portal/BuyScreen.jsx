@@ -231,13 +231,27 @@ const BuyScreen = (props) => {
         gallonOver,
     ]);
 
+    // useEffect(() => {
+    //     if (disableRenewInput) {
+    //         document.getElementById('buy').focus();
+    //     } else {
+    //         document.getElementById('renew').focus();
+    //     }
+    // }, [disableRenewInput]);
+
     useEffect(() => {
-        if (disableRenewInput) {
-            document.getElementById('buy').focus();
-        } else {
+        document.getElementById('buy').focus();
+    });
+
+    useEffect(() => {
+        if (disabledBuyButton && renewAmount === 0) {
             document.getElementById('renew').focus();
         }
-    }, [disableRenewInput]);
+    });
+
+    // useEffect(() => {
+    //     document.getElementById('renew').focus();
+    // });
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
