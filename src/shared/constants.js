@@ -11,5 +11,6 @@ module.exports = {
         LAST_RECORD: 'LAST_RECORD',
         BUY_WATER: 'BUY_WATER',
         RENEW_WATER: 'RENEW_WATER',
+        GET_LAST_ACCOUNT: 'GET_LAST_ACCOUNT',
     },
 };

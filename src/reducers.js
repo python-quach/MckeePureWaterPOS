@@ -15,6 +15,8 @@ const membershipInitialState = {
 const accountInitialState = {
     account: null,
     invoices: null,
+    lastRecord: null,
+    lastAccount: null,
 };
 
 export function accountReducer(state = accountInitialState, action) {
@@ -26,6 +28,16 @@ export function accountReducer(state = accountInitialState, action) {
             return {
                 ...state,
                 invoices: action.payload,
+            };
+        case actionTypes.LAST_RECORD:
+            return {
+                ...state,
+                lastRecord: action.payload.record_id,
+            };
+        case actionTypes.GET_LAST_ACCOUNT:
+            return {
+                ...state,
+                lastAccount: action.payload,
             };
         default:
             return state;

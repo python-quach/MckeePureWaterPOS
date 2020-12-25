@@ -1,5 +1,6 @@
 import { channels } from './shared/constants';
 import * as actionTypes from './types';
+import { reset } from 'redux-form';
 
 const { ipcRenderer } = window;
 
@@ -59,5 +60,81 @@ export const getAccountInvoices = (account, callback) => (dispatch) => {
             payload: args,
         });
         callback(args);
+    });
+};
+
+export const getLastAccount = (callback) => (dispatch) => {
+    ipcRenderer.send(channels.GET_LAST_ACCOUNT);
+    ipcRenderer.on(channels.GET_LAST_ACCOUNT, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.GET_LAST_ACCOUNT);
+        const { account } = response;
+        dispatch({
+            type: actionTypes.GET_LAST_ACCOUNT,
+            payload: account,
+        });
+        callback(account);
+    });
+};
+
+// FIND FORM ACTIONS:
+
+// export const getAccount = (account, callback) => (dispatch) {
+//     ipcRenderer.send(channels.GET_ACCOUNT, { account });
+
+//     ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
+//         ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
+//         // console.log(response);
+//         dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
+//         callback();
+//     });
+// },
+export const getLast = (callback) => (dispatch) => {
+    ipcRenderer.send(channels.LAST_RECORD);
+    ipcRenderer.on(channels.LAST_RECORD, (event, lastRecord) => {
+        ipcRenderer.removeAllListeners(channels.LAST_RECORD);
+        dispatch({
+            type: actionTypes.LAST_RECORD,
+            payload: lastRecord,
+        });
+        callback();
+    });
+};
+
+export const clearForm = () => (dispatch) => {
+    dispatch(reset('membership'));
+};
+
+export const clearMembership = () => (dispatch) => {
+    dispatch({ type: actionTypes.CLEAR_MEMBERSHIP });
+};
+
+export const focusInput = (name) => {
+    document.getElementById(name).focus();
+};
+
+export const find = ({ phone, account, firstName, lastName }, callback) => (
+    dispatch
+) => {
+    ipcRenderer.send(channels.FIND_MEMBERSHIP, {
+        phone,
+        account,
+        firstName,
+        lastName,
+    });
+    ipcRenderer.on(channels.FIND_MEMBERSHIP, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.FIND_MEMBERSHIP);
+        if (response.error) {
+            dispatch({
+                type: actionTypes.FIND_ERROR,
+                payload: response,
+            });
+        } else {
+            dispatch({
+                type: actionTypes.FIND_MEMBERSHIP,
+                payload: response,
+            });
+        }
+
+        callback(response);
     });
 };

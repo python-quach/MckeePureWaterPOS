@@ -20,3 +20,51 @@ export const currentDate = () => {
 
     return datetime;
 };
+
+export const normalizeAreaCode = (value, previousValue) => {
+    console.log(value);
+    if (value.length <= 3 && value.match(/^\d+$/g)) {
+        if (value.length === 3) {
+            document.getElementById('Phone').focus();
+            return value;
+        }
+        return value;
+    } else {
+        if (value === '') {
+            return '';
+        } else {
+            return previousValue;
+        }
+    }
+};
+export const normalizeInput = (value, previousValue) => {
+    console.log({ value, previousValue });
+    if (value.match(/^\d+$/g) && value.length <= 7) {
+        if (value.length === 7 && value.length > previousValue.length)
+            return value.slice(0, 3) + '-' + value.slice(3, 7);
+        if (value.length === 0) return '';
+        return value;
+    }
+
+    if (
+        previousValue &&
+        previousValue.length > value.length &&
+        value.length < 9
+    ) {
+        return value;
+    }
+
+    if (
+        previousValue &&
+        previousValue.length < value.length &&
+        value.length < 9
+    ) {
+        console.log('match second if', value);
+        if (value.match(/^\d+$/g) || value.charAt(3) === '-') {
+            return value;
+        }
+        return previousValue;
+    }
+
+    return previousValue;
+};

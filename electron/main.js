@@ -109,6 +109,17 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
     });
 });
 
+ipcMain.on(channels.GET_LAST_ACCOUNT, (event, args) => {
+    console.log('getting last account');
+    const sql = `SELECT DISTINCT account FROM mckee ORDER BY record_id DESC LIMIT 1`;
+    db.get(sql, (err, row) => {
+        if (err) return console.log(err.message);
+        event.sender.send(channels.GET_LAST_ACCOUNT, {
+            account: parseInt(row.account),
+        });
+    });
+});
+
 // GET LAST RECORD ID
 ipcMain.on(channels.LAST_RECORD, (event, args) => {
     console.log('getting last record');

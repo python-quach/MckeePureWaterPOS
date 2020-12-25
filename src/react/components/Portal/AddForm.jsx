@@ -1,19 +1,14 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
+import { normalizeAreaCode, normalizeInput } from '../../helpers/helpers';
 
 const AddForm = (props) => {
-    console.log('props:', props.last);
-
-    const [id, setId] = React.useState(props.last.record_id + 1);
-
     return (
         <Form size='large'>
             <Form.Group>
-                <Form.Input
+                <Field
                     name='todayDate'
-                    label='Today Date'
-                    value={props.date}
                     className='TodayDate'
                     inverted={true}
                     icon='calendar'
@@ -21,11 +16,13 @@ const AddForm = (props) => {
                     iconPosition='left'
                     readOnly
                     width={2}
+                    component={Form.Input}
+                    label='Today Date'
                 />
-                <Form.Input
+                <Field
                     name='todayTime'
                     label='Current Time'
-                    value={props.time}
+                    component={Form.Input}
                     className='TodayDate'
                     inverted={true}
                     placeholder='00:00:00 PM'
@@ -59,43 +56,32 @@ const AddForm = (props) => {
                     iconPosition='left'
                     width={2}
                 />
-                {/* <Field
-                    readOnly
+                <Field
                     label='Invoice'
                     name='record_id'
-                    className='TodayDate'
-                    placeholder='xxxxxxx'
                     component={Form.Input}
-                    inverted={true}
-                    icon='hashtag'
-                    iconPosition='left'
-                    width={2}
-                /> */}
-                <Form.Input
-                    label='Invoice'
-                    name='record_id'
                     className='TodayDate'
                     placeholder='xxxxxxx'
                     inverted={true}
                     icon='hashtag'
-                    value={id}
                     iconPosition='left'
                     width={2}
                 />
             </Form.Group>
             <Form.Group>
                 <Field
+                    id='areaCode'
                     className='AreaCode'
                     inverted={true}
                     name='areaCode'
                     width={1}
-                    readOnly
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
+                    normalize={normalizeAreaCode}
                 />
                 <Field
-                    readOnly
+                    id='Phone'
                     className='PhoneNumber'
                     inverted={true}
                     name='phone'
@@ -103,18 +89,27 @@ const AddForm = (props) => {
                     width={2}
                     component={Form.Input}
                     label='Phone Number'
+                    normalize={normalizeInput}
                 />
 
-                <Field
+                {/* <Field
                     className='Test'
                     inverted={true}
                     name='fullname'
                     width={3}
                     component={Form.Input}
                     label='Customer Name'
+                /> */}
+                <Field
+                    name='firstName'
+                    inverted={true}
+                    className='PhoneNumber'
+                    width={2}
+                    component={Form.Input}
+                    label='First Name'
                 />
                 {/* <Form.Input type='hidden' width={7} /> */}
-                <Form.Input type='hidden' width={6} />
+                <Form.Input type='hidden' width={7} />
                 <Form.Input
                     className='AreaCode'
                     width={1}
@@ -169,7 +164,8 @@ const AddForm = (props) => {
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Input type='hidden' width={13} />
+                {/* <Form.Input type='hidden' width={13} /> */}
+                <Form.Input type='hidden' width={12} />
                 <Form.Input
                     id='renew'
                     label='Renew Fee'
@@ -197,7 +193,7 @@ const AddForm = (props) => {
                     width={1}
                 />
                 <Form.Button
-                    content='Renew'
+                    content='Add Membership'
                     style={{ marginTop: '30px' }}
                     color='blue'
                     size='large'
