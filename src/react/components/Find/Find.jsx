@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { reduxForm, reset, formValueSelector } from 'redux-form';
 import { reduxForm, formValueSelector } from 'redux-form';
 import {
     TransitionablePortal,
@@ -10,16 +9,10 @@ import {
     Button,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-// import { channels } from '../../../shared/constants';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
-// import DebugMessage from '../Debug/DebugMessage';
-// import * as actionTypes from '../../../types';
 import * as actions from '../../../actions';
-
-// const { ipcRenderer } = window;
-
 function FindContainer(props) {
     const {
         submitSucceeded,
@@ -36,7 +29,6 @@ function FindContainer(props) {
         membership,
         clearMembership,
         getAccount,
-        // getLast,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -45,12 +37,8 @@ function FindContainer(props) {
     const [animation, setAnimation] = useState('vertical flip');
     const [duration, setDuration] = useState(500);
     const [closeMe, setCloseMe] = useState(false);
-    const [hideLogoutButton, setHideLogoutButton] = React.useState(false);
+    const [hideLogoutButton, setHideLogoutButton] = useState(false);
     const [disableFindButton, setDisableFindButton] = useState(false);
-
-    // useEffect(() => {
-    //     console.log('FindContainer', { props });
-    // });
 
     useEffect(() => {
         if (!props.user_id) {
@@ -93,8 +81,6 @@ function FindContainer(props) {
         <TransitionablePortal
             open={open}
             transition={{ animation, duration }}
-            // onStart={() => console.log('onStart', { open })}
-            // onOpen={() => console.log('onOPen', { open })}
             onClose={() => console.log('onClose', { open })}
             onHide={() => console.log('closing trans', { open })}>
             <Segment
@@ -159,14 +145,6 @@ function FindContainer(props) {
                                     props.history.push('/add');
                                 });
                             });
-                            // getLast(() => {
-                            //     props.history.push('/add');
-                            // });
-
-                            // await props.getLastAccount(() => {});
-                            // await props.getLastRecord(() => {});
-
-                            // props.history.push('/add');
                         }}
                     />
                     <Divider hidden />
@@ -179,14 +157,6 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
-                    {/* <DebugMessage
-                        membership={membership}
-                        phone={phone}
-                        account={account}
-                        firstName={firstName}
-                        lastName={lastName}
-                        submitSucceeded={submitSucceeded}
-                    /> */}
                 </FindGrid>
             </Segment>
         </TransitionablePortal>
@@ -211,68 +181,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         getAccount: (account, callback) => {
-//             ipcRenderer.send(channels.GET_ACCOUNT, { account });
-
-//             ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
-//                 ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
-//                 // console.log(response);
-//                 dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
-//                 callback();
-//             });
-//         },
-//         getLast: (callback) => {
-//             ipcRenderer.send(channels.LAST_RECORD);
-//             ipcRenderer.on(channels.LAST_RECORD, (event, lastRecord) => {
-//                 ipcRenderer.removeAllListeners(channels.LAST_RECORD);
-//                 dispatch({
-//                     type: actionTypes.LAST_RECORD,
-//                     payload: lastRecord,
-//                 });
-//                 callback();
-//             });
-//         },
-//         clearForm: () => dispatch(reset('membership')),
-//         clearMembership: () => dispatch({ type: actionTypes.CLEAR_MEMBERSHIP }),
-//         focusInput: (name) => {
-//             document.getElementById(name).focus();
-//         },
-//         find: ({ phone, account, firstName, lastName }, callback) => {
-//             // console.log('FindForm was submitted', {
-//             //     phone,
-//             //     account,
-//             //     firstName,
-//             //     lastName,
-//             // });
-//             ipcRenderer.send(channels.FIND_MEMBERSHIP, {
-//                 phone,
-//                 account,
-//                 firstName,
-//                 lastName,
-//             });
-//             ipcRenderer.on(channels.FIND_MEMBERSHIP, (event, response) => {
-//                 ipcRenderer.removeAllListeners(channels.FIND_MEMBERSHIP);
-//                 // console.log(response);
-//                 if (response.error) {
-//                     dispatch({
-//                         type: actionTypes.FIND_ERROR,
-//                         payload: response,
-//                     });
-//                 } else {
-//                     dispatch({
-//                         type: actionTypes.FIND_MEMBERSHIP,
-//                         payload: response,
-//                     });
-//                 }
-
-//                 callback(response);
-//             });
-//         },
-//     };
-// };
-
 const ReduxFindFrom = reduxForm({ form: 'membership' })(FindContainer);
-// export default connect(mapStateToProps, mapDispatchToProps)(ReduxFindFrom);
 export default connect(mapStateToProps, actions)(ReduxFindFrom);
