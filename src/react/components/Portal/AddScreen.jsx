@@ -14,13 +14,7 @@ import DebugMessage from '../../components/Debug/DebugMessage';
 import * as actions from '../../../actions';
 
 const AddScreen = (props) => {
-    const {
-        getLastAccount,
-        getLastRecord,
-        lastRecord,
-        lastAccount,
-        addForm,
-    } = props;
+    const { lastRecord, lastAccount, addForm } = props;
     const [open, setOpenPortal] = useState(true);
 
     const handleClose = () => {
@@ -37,15 +31,6 @@ const AddScreen = (props) => {
             props.history.push('find');
         }
     };
-
-    // useEffect(() => {
-    //     // if (!lastRecord || !lastAccount) {
-    //     //     getLastAccount(() => {});
-    //     //     getLastRecord(() => {});
-    //     // }
-    //     getLastAccount(() => {});
-    //     getLastRecord(() => {});
-    // }, [lastRecord, getLastAccount, lastAccount, getLastRecord]);
 
     useEffect(() => {
         if (lastRecord && lastAccount) console.log({ lastRecord, lastAccount });
@@ -74,6 +59,7 @@ const AddScreen = (props) => {
                             time={getCurrentTime}
                             record={lastRecord}
                             account={lastAccount}
+                            add={addForm}
                         />
                         <Divider hidden />
                         <Button
@@ -102,17 +88,20 @@ const mapStateToProps = (state) => {
             account: lastAccount ? lastAccount + 1 : '',
             record_id: lastRecord ? lastRecord + 1 : '',
         },
+
         membership: state.membership,
         account: state.account.account,
         detail: state.account,
         lastRecord: state.account.lastRecord,
         lastAccount: state.account.lastAccount,
+        areaCode: selectFormData(state, 'areaCode') || '',
         phone: selectFormData(state, 'phone') || '',
+        firstName: selectFormData(state, 'firstName') || '',
+        lastName: selectFormData(state, 'lastName') || '',
         addForm: state.form.add ? state.form.add.values : {},
         submitSucceeded: state.form.add ? state.form.add.submitSucceeded : {},
     };
 };
 
-// const ReduxForm = reduxForm({ form: 'add', enableReinitialize: true })(
 const ReduxForm = reduxForm({ form: 'add' })(AddScreen);
 export default connect(mapStateToProps, actions)(ReduxForm);

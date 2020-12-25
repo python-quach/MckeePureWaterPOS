@@ -1,13 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form } from 'semantic-ui-react';
-import { Field } from 'redux-form';
+import { Field, reset } from 'redux-form';
 import { normalizeAreaCode, normalizeInput } from '../../helpers/helpers';
 
 const AddForm = (props) => {
+    const { add } = props;
+    const [currentGallon, setCurrentGallon] = useState(0);
+    const [buyGallon, setBuyGallon] = useState(0);
+    const [remain, setRemainGallon] = useState(0);
+    const [fee, setFee] = useState(0);
+    const [gallonAmount, setGallonAmount] = useState(0);
+    const [fullname, setFullName] = useState(null);
+    const [newMember, setNewMember] = useState(null);
+    const [added, setAdded] = useState(false);
+
+    useEffect(() => {
+        console.log(props.add);
+        const { firstName, lastName } = props.add;
+        if (firstName && lastName) {
+            setFullName(firstName + ' ' + lastName);
+        }
+    }, [props.add]);
+
+    useEffect(() => {
+        console.log({ newMember });
+    }, [newMember]);
+
+    useEffect(() => {
+        if (added) {
+            document.getElementById('buy').focus();
+        }
+    }, [added]);
+
+    // useEffect(() => {
+    //     if (props.addForm.firstName || props.addForm.lastName) {
+    //         setFullName(props.addForm.firstName + ' ' + props.addForm.lastName);
+    //     }
+    // }, [props.addForm.firstName, props.addForm.lastName, setFullName]);
+
     return (
         <Form size='large'>
             <Form.Group>
                 <Field
+                    // readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     name='todayDate'
                     className='TodayDate'
                     inverted={true}
@@ -20,6 +56,8 @@ const AddForm = (props) => {
                     label='Today Date'
                 />
                 <Field
+                    // readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     name='todayTime'
                     label='Current Time'
                     component={Form.Input}
@@ -33,6 +71,8 @@ const AddForm = (props) => {
                 />
                 <Form.Input type='hidden' width={8} />
                 <Field
+                    // readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     name='memberSince'
                     label='Member Since'
                     readOnly
@@ -45,6 +85,8 @@ const AddForm = (props) => {
                     width={2}
                 />
                 <Field
+                    // readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     readOnly
                     label='Account'
                     name='account'
@@ -57,6 +99,9 @@ const AddForm = (props) => {
                     width={2}
                 />
                 <Field
+                    // readOnly={!newMember ? false : true}
+                    readOnly
+                    error={!newMember ? false : true}
                     label='Invoice'
                     name='record_id'
                     component={Form.Input}
@@ -70,6 +115,8 @@ const AddForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Field
+                    readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     id='areaCode'
                     className='AreaCode'
                     inverted={true}
@@ -81,6 +128,8 @@ const AddForm = (props) => {
                     normalize={normalizeAreaCode}
                 />
                 <Field
+                    readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
                     id='Phone'
                     className='PhoneNumber'
                     inverted={true}
@@ -91,46 +140,144 @@ const AddForm = (props) => {
                     label='Phone Number'
                     normalize={normalizeInput}
                 />
-
-                {/* <Field
-                    className='Test'
-                    inverted={true}
-                    name='fullname'
-                    width={3}
-                    component={Form.Input}
-                    label='Customer Name'
-                /> */}
                 <Field
+                    readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
+                    id='firstName'
                     name='firstName'
                     inverted={true}
                     className='PhoneNumber'
+                    placeholder='Enter Name'
                     width={2}
                     component={Form.Input}
                     label='First Name'
+                    normalize={(value) => {
+                        if (value.match(/^[a-zA-Z]+$/g))
+                            return value.toUpperCase();
+                    }}
                 />
-                {/* <Form.Input type='hidden' width={7} /> */}
-                <Form.Input type='hidden' width={7} />
+                <Field
+                    readOnly={!newMember ? false : true}
+                    error={!newMember ? false : true}
+                    name='lastName'
+                    label='Last Name'
+                    inverted={true}
+                    className='PhoneNumber'
+                    placeholder='Enter Name'
+                    width={2}
+                    component={Form.Input}
+                    normalize={(value) => {
+                        if (value.match(/^[a-zA-Z]+$/g))
+                            return value.toUpperCase();
+                    }}
+                />
+                <Form.Input type='hidden' width={5} />
                 <Form.Input
+                    error={!newMember ? false : true}
+                    readOnly={!newMember ? false : true}
+                    id='renew'
+                    label='Renew Fee'
+                    name='renewalFee'
                     className='AreaCode'
+                    value={fee}
+                    onChange={(e, { value }) => {
+                        if (isNaN(parseInt(value))) {
+                            setFee(0);
+                        } else {
+                            setFee(parseInt(value));
+                        }
+                    }}
+                    inverted={true}
+                    width={1}
+                />
+                <Form.Input
+                    error={!newMember ? false : true}
+                    readOnly={!newMember ? false : true}
+                    label='Gallon'
+                    name='renewalAmount'
+                    className='AreaCode'
+                    value={gallonAmount}
+                    disabled={!fee}
+                    inverted={true}
+                    onChange={(e, { value }) => {
+                        if (isNaN(parseInt(value))) {
+                            setGallonAmount(0);
+                        } else {
+                            setGallonAmount(parseInt(value));
+                        }
+                    }}
+                    onKeyPress={(e) =>
+                        e.key === 'Enter' || e.keyCode === 13
+                            ? // ? props.renewWaterGallon(e)
+                              console.log({ fullname })
+                            : null
+                    }
+                    width={1}
+                />
+                <Form.Button
+                    content='Add Membership'
+                    style={{ marginTop: '30px' }}
+                    color='blue'
+                    size='large'
+                    disabled={!fee || !gallonAmount || added}
+                    onClick={() => {
+                        const data = {
+                            ...add,
+                            fullname: fullname,
+                        };
+                        console.log({ data });
+                        setNewMember({
+                            ...add,
+                            fullname: fullname,
+                        });
+                        setCurrentGallon(gallonAmount);
+                        setRemainGallon(gallonAmount);
+                        setAdded(true);
+                        // document.getElementById('buy').focus();
+                    }}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Input type='hidden' width={12} />
+                <Form.Input
+                    error={!newMember ? false : true}
+                    name='currentGallon'
+                    className='AreaCode'
+                    value={currentGallon}
+                    disabled={!currentGallon && !added}
                     width={1}
                     readOnly
                     inverted={true}
                     label='Current'
-                    name='currentGallon'
-                    disabled={props.disableBuyInput}
-                    // value={props.currentGallon || 0}
-                    value={props.currentGallon < 0 ? 0 : props.currentGallon}
+                    onChange={(e, { value }) => {
+                        if (isNaN(parseInt(value))) {
+                            setCurrentGallon(0);
+                        } else {
+                            setCurrentGallon(parseInt(value));
+                        }
+                    }}
                 />
                 <Form.Input
-                    id='buy'
                     name='gallonBuy'
-                    label='Buy'
                     className='AreaCode'
-                    value={props.gallonBuy}
-                    disabled={props.disableBuyInput}
+                    id='buy'
+                    label='Buy'
+                    value={buyGallon}
+                    disabled={!buyGallon && !added}
                     inverted={true}
                     width={1}
-                    onChange={props.handleBuyValue}
+                    onChange={(e, { value }) => {
+                        if (isNaN(parseInt(value))) {
+                            setBuyGallon(0);
+                            setRemainGallon(currentGallon);
+                        } else {
+                            setBuyGallon(parseInt(value));
+                            setRemainGallon(
+                                parseInt(currentGallon) - parseInt(value)
+                            );
+                        }
+                    }}
+                    // onChange={props.handleBuyValue}
                     onKeyPress={(e) =>
                         e.key === 'Enter' || e.keyCode === 13
                             ? props.buyWaterGallon(e)
@@ -146,10 +293,20 @@ const AddForm = (props) => {
                     }
                     width={1}
                     readOnly
+                    name='remain'
                     type='text'
                     inverted={true}
                     label='Remain'
-                    value={props.gallonAfterBuy || 0}
+                    disabled={!remain}
+                    // value={props.gallonAfterBuy || 0}
+                    value={remain}
+                    onChange={(e, { value }) => {
+                        if (isNaN(parseInt(value))) {
+                            setRemainGallon(0);
+                        } else {
+                            setRemainGallon(parseInt(value));
+                        }
+                    }}
                 />
                 <Form.Button
                     content='Buy'
@@ -158,48 +315,10 @@ const AddForm = (props) => {
                         marginTop: '30px',
                     }}
                     color='green'
-                    disabled={props.disabledBuyButton}
+                    // disabled={!currentGallon && !buyGallon}
+                    disabled={!currentGallon || !buyGallon}
                     onClick={props.buyWaterGallon}
                     width={1}
-                />
-            </Form.Group>
-            <Form.Group>
-                {/* <Form.Input type='hidden' width={13} /> */}
-                <Form.Input type='hidden' width={12} />
-                <Form.Input
-                    id='renew'
-                    label='Renew Fee'
-                    name='renewalFee'
-                    className='AreaCode'
-                    value={props.renewalFee}
-                    disabled={props.disableRenewInput}
-                    inverted={true}
-                    onChange={props.handleRenewalFee}
-                    width={1}
-                />
-                <Form.Input
-                    label='Gallon'
-                    name='renewalAmount'
-                    className='AreaCode'
-                    value={props.renewAmount}
-                    disabled={props.disableRenewInput}
-                    inverted={true}
-                    onChange={props.handleRenewalAmount}
-                    onKeyPress={(e) =>
-                        e.key === 'Enter' || e.keyCode === 13
-                            ? props.renewWaterGallon(e)
-                            : null
-                    }
-                    width={1}
-                />
-                <Form.Button
-                    content='Add Membership'
-                    style={{ marginTop: '30px' }}
-                    color='blue'
-                    size='large'
-                    disabled={props.disableRenewButton}
-                    onClick={props.renewWaterGallon}
-                    // width={1}
                 />
             </Form.Group>
         </Form>
