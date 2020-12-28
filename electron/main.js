@@ -88,6 +88,7 @@ app.on('activate', function () {
     }
 });
 
+// USER LOGIN:
 ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
     console.log('verify login:', { username, password });
 
@@ -109,6 +110,7 @@ ipcMain.on(channels.APP_INFO, (event, { username, password }) => {
     });
 });
 
+// GET LAST ACCOUNT:
 ipcMain.on(channels.GET_LAST_ACCOUNT, (event, args) => {
     console.log('getting last account');
     const sql = `SELECT DISTINCT account FROM mckee ORDER BY record_id DESC LIMIT 1`;
@@ -120,7 +122,7 @@ ipcMain.on(channels.GET_LAST_ACCOUNT, (event, args) => {
     });
 });
 
-// GET LAST RECORD ID
+// GET LAST RECORD ID:
 ipcMain.on(channels.LAST_RECORD, (event, args) => {
     console.log('getting last record');
     const sql = `SELECT MAX(rowid) barcode, record_id FROM mckee`;
@@ -151,6 +153,12 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
         }
     });
 });
+
+// ADD NEW MEMBERSHIP
+// ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
+//     console.log('add new membership', { args });
+//     event.sender.sender(channels.ADD_NEW_MEMBER, 'gonna add member');
+// });
 
 // GET ACCOUNT DETAIL
 ipcMain.on(channels.GET_ACCOUNT, (event, { account }) => {
@@ -292,6 +300,165 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                             lastRecord: last,
                         });
                     });
+                }
+            );
+
+            console.log(`A row has been inserted with rowid ${this.lastID}`);
+        }
+    );
+});
+
+ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
+    console.log('Add New Member', args);
+    const {
+        record_id,
+        account,
+        firstName,
+        lastName,
+        fullname,
+        memberSince,
+        phone,
+        gallonLeft,
+        buyGallon,
+        lastRenewGallon,
+        overGallon,
+        renew,
+        renewFee,
+        prevGallon,
+        invoiceDate,
+        invoiceTime,
+        areaCode,
+        threeDigit,
+        fourDigit,
+    } = args;
+    const sql = `INSERT INTO mckee (
+	record_id,
+	account,
+	firstName,
+	lastName,
+	fullname,
+	memberSince,
+	phone,
+	gallonCurrent,
+	gallonBuy,
+	gallonRemain,
+	overGallon,
+	renew,
+	renewFee,
+	lastRenewGallon,
+	invoiceDate,
+	invoiceTime,
+	areaCode,
+	field6,
+	field7
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(
+        sql,
+        [
+            record_id,
+            account,
+            firstName,
+            lastName,
+            fullname,
+            memberSince,
+            phone,
+            prevGallon,
+            buyGallon,
+            gallonLeft,
+            overGallon,
+            renew,
+            renewFee,
+            lastRenewGallon,
+            invoiceDate,
+            invoiceTime,
+            areaCode,
+            threeDigit,
+            fourDigit,
+        ],
+        function (err) {
+            if (err) {
+                return console.log(err.message);
+            }
+
+            const last = this.lastID;
+
+            db.get(
+                `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
+                (err, row) => {
+                    console.log(row);
+                    const renewGallon = `Renew Gallon: ${row.renew}`;
+                    // const overLimit = `Gallon Over: ${args.preOver}`;
+                    const renewFee = `Renew Fee: $${row.renewFee}`;
+                    const fullname = `${row.fullname} -- ${row.field7}`;
+                    const account = `[Account #: ${row.account}]`;
+                    const prevGallon = `Gallon Total: ${row.gallonCurrent}`;
+                    // const gallonBuy = `Gallon Buy:  ${row.gallonBuy}`;
+                    const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
+                    const blank = '';
+                    // const renew2 =
+                    //     row.overGallon < 0
+                    //         ? `=> [Please Renew Membership!!!]`
+                    //         : '';
+                    // const gallonOver = `Gallon Over: ${row.overGallon} ${renew2}`;
+                    // const gallonLeft = `Gallon Left: ${row.gallonRemain}${renew2}`;
+                    if (args.preOver < 0) {
+                        device.open(function (error) {
+                            printer
+                                .font('a')
+                                .align('lt')
+                                .text('Thank You')
+                                .text('Mckee Pure Water')
+                                .text('2349 McKee Rd')
+                                .text('San Jose, CA 95116')
+                                .text('(408) 729-1319')
+                                .text(blank)
+                                .text(fullname)
+                                .text(account)
+                                .text(renewFee)
+                                .text(renewGallon)
+                                // .text(args.preOver < 0 ? overLimit : '')
+                                .text(prevGallon)
+                                // .text(gallonLeft)
+                                // .text(args.preOver)
+                                .text(row.invoiceDate + '@' + row.invoiceTime)
+                                .text(blank)
+                                .text(invoice)
+                                .text(blank)
+                                .cut()
+                                .close();
+                            event.sender.send(channels.RENEW_WATER, {
+                                ...row,
+                                lastRecord: last,
+                            });
+                        });
+                    } else {
+                        device.open(function (error) {
+                            printer
+                                .font('a')
+                                .align('lt')
+                                .text('Thank You')
+                                .text('Mckee Pure Water')
+                                .text('2349 McKee Rd')
+                                .text('San Jose, CA 95116')
+                                .text('(408) 729-1319')
+                                .text(blank)
+                                .text(fullname)
+                                .text(account)
+                                .text(renewFee)
+                                .text(renewGallon)
+                                .text(prevGallon)
+                                .text(row.invoiceDate + '@' + row.invoiceTime)
+                                .text(blank)
+                                .text(invoice)
+                                .text(blank)
+                                .cut()
+                                .close();
+                            event.sender.send(channels.RENEW_WATER, {
+                                ...row,
+                                lastRecord: last,
+                            });
+                        });
+                    }
                 }
             );
 

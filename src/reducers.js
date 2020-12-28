@@ -17,13 +17,14 @@ const accountInitialState = {
     invoices: null,
     lastRecord: null,
     lastAccount: null,
+    newMember: null,
 };
 
 export function accountReducer(state = accountInitialState, action) {
     switch (action.type) {
         case actionTypes.GET_ACCOUNT:
-            // return { ...state, account: action.payload };
             return action.payload;
+        // return { ...state, account: action.payload };
         case actionTypes.GET_MEMBER_INVOICES:
             return {
                 ...state,
@@ -38,6 +39,11 @@ export function accountReducer(state = accountInitialState, action) {
             return {
                 ...state,
                 lastAccount: action.payload,
+            };
+        case actionTypes.ADD_NEW_MEMBER:
+            return {
+                ...state,
+                newMember: action.payload,
             };
         default:
             return state;

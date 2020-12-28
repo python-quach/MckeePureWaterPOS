@@ -138,3 +138,16 @@ export const find = ({ phone, account, firstName, lastName }, callback) => (
         callback(response);
     });
 };
+
+export const addNewMembership = (data) => (dispatch) => {
+    console.log(data);
+    ipcRenderer.send(channels.ADD_NEW_MEMBER, data);
+    ipcRenderer.on(channels.ADD_NEW_MEMBER, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.ADD_NEW_MEMBER);
+        console.log('response', response);
+        dispatch({
+            type: actionTypes.ADD_NEW_MEMBER,
+            payload: response,
+        });
+    });
+};

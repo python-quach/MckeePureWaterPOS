@@ -130,6 +130,7 @@ function FindContainer(props) {
                     />
                     <Divider hidden />
                     <Button
+                        // disabled={phone || account || firstName || lastName}
                         color='teal'
                         circular={true}
                         fluid={true}

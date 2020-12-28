@@ -14,7 +14,14 @@ import DebugMessage from '../../components/Debug/DebugMessage';
 import * as actions from '../../../actions';
 
 const AddScreen = (props) => {
-    const { lastRecord, lastAccount, addForm } = props;
+    const {
+        lastRecord,
+        lastAccount,
+        addForm,
+        getLastRecord,
+        firstName,
+        lastName,
+    } = props;
     const [open, setOpenPortal] = useState(true);
 
     const handleClose = () => {
@@ -31,6 +38,20 @@ const AddScreen = (props) => {
             props.history.push('find');
         }
     };
+
+    useEffect(() => {
+        if (!lastRecord || !lastAccount) {
+            props.history.push('/find');
+        }
+    });
+
+    // useEffect(() => {
+    //     if (!lastRecord && !lastAccount) {
+    //         props.getLastAccount(() => {
+    //             props.getLastRecord(() => {});
+    //         });
+    //     }
+    // });
 
     useEffect(() => {
         if (lastRecord && lastAccount) console.log({ lastRecord, lastAccount });
@@ -57,9 +78,13 @@ const AddScreen = (props) => {
                         <AddForm
                             date={currentDate}
                             time={getCurrentTime}
+                            firstName={firstName}
+                            lastName={lastName}
                             record={lastRecord}
+                            getLastRecord={getLastRecord}
                             account={lastAccount}
                             add={addForm}
+                            addNewMembership={props.addNewMembership}
                         />
                         <Divider hidden />
                         <Button

@@ -25,7 +25,7 @@ export const normalizeAreaCode = (value, previousValue) => {
     console.log(value);
     if (value.length <= 3 && value.match(/^\d+$/g)) {
         if (value.length === 3) {
-            document.getElementById('Phone').focus();
+            // document.getElementById('Phone').focus();
             return value;
         }
         return value;

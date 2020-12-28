@@ -129,8 +129,9 @@ const BuyForm = (props) => {
                 />
 
                 <Form.Input
+                    // disabled={props.disableBuyInput}
                     className={
-                        props.gallonBuy > props.currentGallon
+                        props.gallonBuy >= props.currentGallon
                             ? 'Remain'
                             : 'AreaCode'
                     }
