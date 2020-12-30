@@ -24,22 +24,25 @@ const BuyScreen = (props) => {
         getAccount,
         buy,
         renew,
+        clearAccount,
+        clearMembership,
+        clearFindForm,
+        history,
+        changeName,
+        formBuy,
     } = props;
 
     const { gallonRemain } = detail;
 
     const handleClose = () => {
+        clearAccount();
+        clearMembership();
+        clearFindForm();
         setOpenPortal(false);
-        props.history.push('/find');
-        // setShowReceipt(false);
+        history.push('/find');
     };
 
-    // const [showReceipt, setShowReceipt] = useState(false);
-
-    // const [renewCheck, setRenewCheck] = useState(
-    //     // detail.renew === null ? 0 : detail.renew
-    //     detail.renew || 0
-    // );
+    const [edited, setEdited] = useState(false);
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
@@ -136,7 +139,6 @@ const BuyScreen = (props) => {
                 };
                 buy(insertData, () => {
                     getAccount(account, (data) => {
-                        // setShowReceipt(true);
                         resetBuyData(data);
                     });
                 });
@@ -183,13 +185,17 @@ const BuyScreen = (props) => {
 
     const handleBackButton = () => {
         if (props.membership.members) {
+            props.clearAccount();
+            props.clearMembership();
+            props.clearFindForm();
             setOpenPortal(false);
-            props.history.push('/member');
-            // setShowReceipt(false);
+            props.history.push('/find');
         } else {
+            props.clearAccount();
+            props.clearMembership();
+            props.clearFindForm();
             setOpenPortal(false);
-            props.history.push('find');
-            // setShowReceipt(false);
+            props.history.push('/find');
         }
     };
 
@@ -231,16 +237,11 @@ const BuyScreen = (props) => {
         gallonOver,
     ]);
 
-    // useEffect(() => {
-    //     if (disableRenewInput) {
-    //         document.getElementById('buy').focus();
-    //     } else {
-    //         document.getElementById('renew').focus();
-    //     }
-    // }, [disableRenewInput]);
-
     useEffect(() => {
-        document.getElementById('buy').focus();
+        if (!edited) {
+            document.getElementById('buy').focus();
+        }
+        // document.getElementById('buy').focus();
     });
 
     useEffect(() => {
@@ -249,9 +250,22 @@ const BuyScreen = (props) => {
         }
     });
 
-    // useEffect(() => {
-    //     document.getElementById('renew').focus();
-    // });
+    useEffect(() => {
+        if (!account) {
+            props.history.push('/find');
+        }
+    });
+
+    useEffect(() => {
+        console.log({ edited });
+        if (edited) {
+            document.getElementById('areaCode').focus();
+        }
+    }, [edited]);
+
+    useEffect(() => {
+        changeName(formBuy.firstName + ' ' + formBuy.lastName);
+    }, [changeName, formBuy.firstName, formBuy.lastName]);
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
@@ -280,19 +294,12 @@ const BuyScreen = (props) => {
                             handleRenewalFee={handleRenewalFee}
                             handleRenewalAmount={handleRenewalAmount}
                             renewAmount={renewAmount}
-                            // renewWaterGallon={renewWaterGallon}
                             disableRenewButton={disableRenewButton}
                             renewWaterGallon={renewWaterGallon}
                             disabledBuyButton={disabledBuyButton}
+                            edited={edited}
+                            changeName={changeName}
                         />
-
-                        {/* <Button
-                            color='green'
-                            disabled={disabledBuyButton}
-                            floated='right'
-                            content='Buy'
-                            onClick={buyWaterGallon}
-                        /> */}
                         {detail.renew !== null &&
                         detail.renew > 0 &&
                         detail.gallonBuy !== detail.renew ? (
@@ -308,23 +315,19 @@ const BuyScreen = (props) => {
                         />
                         <Button
                             floated='right'
+                            color={!edited ? 'vk' : 'google plus'}
+                            content={!edited ? 'Edit Customer' : 'Save'}
+                            onClick={() => {
+                                setEdited((prevState) => !prevState);
+                            }}
+                        />
+                        <Button
+                            floated='right'
                             color='twitter'
                             content='Invoices'
                             loading={loading}
                             onClick={handleGetInvoices}
                         />
-
-                        {/* <Message>
-                            <Message.Content>
-                                    {JSON.stringify(account || [], null, 2)}
-                                <pre>
-                                    {JSON.stringify(detail || [], null, 2)}
-                                </pre>
-                                <pre>
-                                    {JSON.stringify(invoices || [], null, 2)}
-                                </pre>
-                            </Message.Content>
-                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -355,15 +358,18 @@ const mapStateToProps = (state) => {
         initialValues: {
             account,
             areaCode,
-            firstName,
+            // firstName,
+            firstName: firstName || '',
             phone,
             fullname,
+            // fullname: firstName + ' ' + lastName,
+            // fullname:
             gallonBuy,
             gallonCurrent,
             gallonRemain,
             invoiceDate,
             invoiceTime,
-            lastName,
+            lastName: lastName || '',
             lastRenewGallon,
             memberSince,
             prevGallon: parseInt(gallonRemain) || 0,
@@ -374,6 +380,7 @@ const mapStateToProps = (state) => {
         membership: state.membership,
         account: state.account.account,
         detail: state.account,
+        formBuy: state.form.buy ? state.form.buy.values : {},
     };
 };
 

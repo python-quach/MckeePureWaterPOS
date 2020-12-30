@@ -308,6 +308,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
     );
 });
 
+// Add New Membership
 ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
     console.log('Add New Member', args);
     const {
@@ -386,21 +387,13 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
                     console.log(row);
-                    const renewGallon = `Renew Gallon: ${row.renew}`;
-                    // const overLimit = `Gallon Over: ${args.preOver}`;
-                    const renewFee = `Renew Fee: $${row.renewFee}`;
+                    const renewFee = `Membership Fee: $${row.renewFee}`;
+                    // const renewGallon = `Total Gallon: ${row.renew}`;
                     const fullname = `${row.fullname} -- ${row.field7}`;
                     const account = `[Account #: ${row.account}]`;
                     const prevGallon = `Gallon Total: ${row.gallonCurrent}`;
-                    // const gallonBuy = `Gallon Buy:  ${row.gallonBuy}`;
                     const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
                     const blank = '';
-                    // const renew2 =
-                    //     row.overGallon < 0
-                    //         ? `=> [Please Renew Membership!!!]`
-                    //         : '';
-                    // const gallonOver = `Gallon Over: ${row.overGallon} ${renew2}`;
-                    // const gallonLeft = `Gallon Left: ${row.gallonRemain}${renew2}`;
                     if (args.preOver < 0) {
                         device.open(function (error) {
                             printer
@@ -415,11 +408,7 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                                 .text(fullname)
                                 .text(account)
                                 .text(renewFee)
-                                .text(renewGallon)
-                                // .text(args.preOver < 0 ? overLimit : '')
                                 .text(prevGallon)
-                                // .text(gallonLeft)
-                                // .text(args.preOver)
                                 .text(row.invoiceDate + '@' + row.invoiceTime)
                                 .text(blank)
                                 .text(invoice)
@@ -445,7 +434,6 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                                 .text(fullname)
                                 .text(account)
                                 .text(renewFee)
-                                .text(renewGallon)
                                 .text(prevGallon)
                                 .text(row.invoiceDate + '@' + row.invoiceTime)
                                 .text(blank)
@@ -453,7 +441,8 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                                 .text(blank)
                                 .cut()
                                 .close();
-                            event.sender.send(channels.RENEW_WATER, {
+                            // event.sender.send(channels.RENEW_WATER, {
+                            event.sender.send(channels.ADD_NEW_MEMBER, {
                                 ...row,
                                 lastRecord: last,
                             });
@@ -707,7 +696,8 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     		fullname
     ) WHERE account IS NOT NULL AND phone IS NOT NULL`;
 
-    // const master_sql = `SELECT
+    // const master_sql = ` SELECT DISTINCT account FROM (SELECT * FROM
+    // ( SELECT
     // 	DISTINCT
     // 		account,
     // 		firstName,
@@ -720,7 +710,8 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
     // 		OR account =  ?
     // 		OR fullname like ?
     // 		ORDER BY
-    // 		fullname`;
+    // 		fullname
+    // ) WHERE account IS NOT NULL AND phone IS NOT NULL)`;
 
     const first = firstName || '';
     const last = lastName || '';

@@ -1,6 +1,6 @@
 import { channels } from './shared/constants';
 import * as actionTypes from './types';
-import { reset } from 'redux-form';
+import { reset, change } from 'redux-form';
 
 const { ipcRenderer } = window;
 
@@ -104,11 +104,15 @@ export const clearForm = () => (dispatch) => {
     dispatch(reset('membership'));
 };
 
+export const changeName = (value) => (dispatch) => {
+    dispatch(change('buy', 'fullname', value));
+};
+
 export const clearMembership = () => (dispatch) => {
     dispatch({ type: actionTypes.CLEAR_MEMBERSHIP });
 };
 
-export const focusInput = (name) => {
+export const focusInput = (name) => (dispatch) => {
     document.getElementById(name).focus();
 };
 
@@ -150,4 +154,33 @@ export const addNewMembership = (data) => (dispatch) => {
             payload: response,
         });
     });
+};
+
+// LOGIN USER ACTION
+export const clearFormUser = () => (dispatch) => dispatch(reset('user'));
+export const clearAddForm = () => (dispatch) => dispatch(reset('add'));
+export const clearFindForm = () => (dispatch) => dispatch(reset('find'));
+export const clearBuyForm = () => (dispatch) => dispatch(reset('buy'));
+
+export const clearAccount = () => (dispatch) =>
+    dispatch({ type: actionTypes.CLEAR_ACCOUNT });
+
+export const login = (username, password, callback) => (dispatch) => {
+    ipcRenderer.send(channels.LOGIN_USER, { username, password });
+    ipcRenderer.on(
+        channels.LOGIN_USER,
+        (event, { error, user_id, username }) => {
+            ipcRenderer.removeAllListeners(channels.LOGIN_USER);
+
+            if (error) {
+                callback(error, null);
+            } else {
+                dispatch({
+                    type: actionTypes.AUTHENTICATED,
+                    payload: user_id,
+                });
+                callback(error, { user_id, username });
+            }
+        }
+    );
 };

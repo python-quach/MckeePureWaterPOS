@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
+import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
 function FindContainer(props) {
     const {
@@ -130,7 +131,11 @@ function FindContainer(props) {
                     />
                     <Divider hidden />
                     <Button
-                        // disabled={phone || account || firstName || lastName}
+                        disabled={
+                            phone || account || firstName || lastName
+                                ? true
+                                : false
+                        }
                         color='teal'
                         circular={true}
                         fluid={true}
@@ -158,6 +163,7 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
+                    <Debug />
                 </FindGrid>
             </Segment>
         </TransitionablePortal>

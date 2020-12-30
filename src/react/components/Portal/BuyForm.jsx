@@ -70,36 +70,78 @@ const BuyForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Field
+                    name='areaCode'
+                    id='areaCode'
+                    error={!props.edited ? false : true}
                     className='AreaCode'
                     inverted={true}
-                    name='areaCode'
                     width={1}
-                    readOnly
+                    readOnly={!props.edited}
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
+                    normalize={(value) => {
+                        if (value.length <= 3) {
+                            return value;
+                        }
+                    }}
                 />
                 <Field
-                    readOnly
+                    name='phone'
+                    id='phone'
+                    error={!props.edited ? false : true}
+                    readOnly={!props.edited}
                     className='PhoneNumber'
                     inverted={true}
-                    name='phone'
                     placeholder='xxx-xxxx'
                     width={2}
                     component={Form.Input}
                     label='Phone Number'
+                    normal={(value) => {
+                        if (value.length <= 8) {
+                            return value;
+                        }
+                    }}
                 />
+                {!props.edited ? (
+                    <Field
+                        className='Test'
+                        name='fullname'
+                        component={Form.Input}
+                        label='Customer Name'
+                        inverted
+                        width={3}
+                    />
+                ) : (
+                    <>
+                        <Field
+                            name='firstName'
+                            label='First Name'
+                            component={Form.Input}
+                            className='Test'
+                            error={props.edited}
+                            inverted
+                            width={3}
+                            normalize={(value) => {
+                                return value.toUpperCase();
+                            }}
+                        />
+                        <Field
+                            name='lastName'
+                            label='Last Name'
+                            component={Form.Input}
+                            className='Test'
+                            error={props.edited}
+                            inverted
+                            width={3}
+                            normalize={(value) => {
+                                return value.toUpperCase();
+                            }}
+                        />
+                    </>
+                )}
 
-                <Field
-                    className='Test'
-                    inverted={true}
-                    name='fullname'
-                    width={3}
-                    component={Form.Input}
-                    label='Customer Name'
-                />
-                {/* <Form.Input type='hidden' width={7} /> */}
-                <Form.Input type='hidden' width={6} />
+                <Form.Input type='hidden' width={!props.edited ? 6 : 3} />
                 <Form.Input
                     className='AreaCode'
                     width={1}
@@ -107,8 +149,7 @@ const BuyForm = (props) => {
                     inverted={true}
                     label='Current'
                     name='currentGallon'
-                    disabled={props.disableBuyInput}
-                    // value={props.currentGallon || 0}
+                    disabled={props.disableBuyInput || props.edited}
                     value={props.currentGallon < 0 ? 0 : props.currentGallon}
                 />
                 <Form.Input
@@ -117,7 +158,7 @@ const BuyForm = (props) => {
                     label='Buy'
                     className='AreaCode'
                     value={props.gallonBuy}
-                    disabled={props.disableBuyInput}
+                    disabled={props.disableBuyInput || props.edited}
                     inverted={true}
                     width={1}
                     onChange={props.handleBuyValue}
@@ -129,7 +170,6 @@ const BuyForm = (props) => {
                 />
 
                 <Form.Input
-                    // disabled={props.disableBuyInput}
                     className={
                         props.gallonBuy >= props.currentGallon
                             ? 'Remain'
@@ -140,6 +180,7 @@ const BuyForm = (props) => {
                     type='text'
                     inverted={true}
                     label='Remain'
+                    disabled={props.disableBuyInput || props.edited}
                     value={props.gallonAfterBuy || 0}
                 />
                 <Form.Button

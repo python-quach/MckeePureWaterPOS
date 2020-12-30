@@ -45,6 +45,15 @@ export function accountReducer(state = accountInitialState, action) {
                 ...state,
                 newMember: action.payload,
             };
+        case actionTypes.CLEAR_ACCOUNT:
+            return {
+                // ...state,
+                account: null,
+                invoices: null,
+                lastRecord: null,
+                lastAccount: null,
+                newMember: null,
+            };
         default:
             return state;
     }
@@ -94,6 +103,7 @@ export function membershipReducer(state = membershipInitialState, action) {
                 member: null,
                 error: null,
                 field: null,
+                data: null,
             };
         default:
             return state;
