@@ -9,3 +9,4 @@ export const CLEAR_ACCOUNT = 'CLEAR_ACCOUNT';
 export const LAST_RECORD = 'LAST_RECORD';
 export const GET_LAST_ACCOUNT = 'GET_LAST_ACCOUNT';
 export const ADD_NEW_MEMBER = 'ADD_NEW_MEMBER';
+export const UPDATE_MEMBER = 'UPDATE_MEMBER';
