@@ -97,7 +97,7 @@ const BuyForm = (props) => {
                     width={2}
                     component={Form.Input}
                     label='Phone Number'
-                    normal={(value) => {
+                    normalize={(value) => {
                         if (value.length <= 8) {
                             return value;
                         }

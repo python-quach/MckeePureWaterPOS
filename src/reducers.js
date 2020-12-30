@@ -10,6 +10,7 @@ const membershipInitialState = {
     error: null,
     field: null,
     data: null,
+    updatedMember: null,
 };
 
 const accountInitialState = {
@@ -22,6 +23,21 @@ const accountInitialState = {
 
 export function accountReducer(state = accountInitialState, action) {
     switch (action.type) {
+        case actionTypes.UPDATE_ACCOUNT:
+            return {
+                ...state,
+                areaCode: action.payload.areaCode,
+                phone: action.payload.phone,
+                fullname:
+                    action.payload.firstName + ' ' + action.payload.lastName,
+                firstName: action.payload.firstName,
+                lastName: action.payload.lastName,
+                newData: action.payload,
+                // account: {
+                //     test: action.payload,
+                // },
+            };
+
         case actionTypes.GET_ACCOUNT:
             return action.payload;
         // return { ...state, account: action.payload };
@@ -104,6 +120,11 @@ export function membershipReducer(state = membershipInitialState, action) {
                 error: null,
                 field: null,
                 data: null,
+            };
+        case actionTypes.UPDATE_MEMBER:
+            return {
+                ...state,
+                updatedMember: action.payload,
             };
         default:
             return state;

@@ -761,3 +761,48 @@ ipcMain.on(channels.FIND_MEMBERSHIP, (event, args) => {
         }
     });
 });
+
+// UPDATE MEMBERSHIP INFO
+ipcMain.on(channels.UPDATE_MEMBER, (event, args) => {
+    console.log(`Account update:`, { args });
+    const { firstName, lastName, areaCode, phone, account } = args;
+
+    const threeDigit = phone.slice(0, 3);
+    const fourDigit = phone.slice(4, 8);
+    const fullname = firstName + ' ' + lastName;
+
+    const data = [
+        areaCode,
+        phone,
+        firstName,
+        lastName,
+        fullname,
+        threeDigit,
+        fourDigit,
+        account,
+    ];
+
+    console.log(data);
+    const sql = `UPDATE 
+                    mckee 
+                SET 
+                    areaCode = ?,
+                    phone = ?,
+                    firstName = ?,
+                    lastName  = ?,
+                    fullname = ?,
+                    field6 = ?,
+                    field7 = ? 
+                WHERE account = ?`;
+
+    // console.log({ sql });
+
+    db.run(sql, data, function (err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log(`Row(s) updated: ${this.changes}`);
+        event.sender.send(channels.UPDATE_MEMBER, args);
+    });
+    // event.sender.send(channels.UPDATE_MEMBER, args);
+});

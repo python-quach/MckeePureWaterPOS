@@ -12,6 +12,7 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import BuyReceipt from './BuyReceipt';
 import RenewReceipt from './RenewReceipt';
+import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {
@@ -267,6 +268,15 @@ const BuyScreen = (props) => {
         changeName(formBuy.firstName + ' ' + formBuy.lastName);
     }, [changeName, formBuy.firstName, formBuy.lastName]);
 
+    // useEffect(() => {
+    //     if (edited) {
+    //         props.updateMembership({ formBuy }, (response) => {
+    //             console.log({ response });
+    //             setEdited(false);
+    //         });
+    //     }
+    // });
+
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
             <Segment
@@ -314,11 +324,27 @@ const BuyScreen = (props) => {
                             onClick={handleBackButton}
                         />
                         <Button
+                            loading={loading}
                             floated='right'
                             color={!edited ? 'vk' : 'google plus'}
                             content={!edited ? 'Edit Customer' : 'Save'}
                             onClick={() => {
-                                setEdited((prevState) => !prevState);
+                                if (edited) {
+                                    console.log(formBuy);
+                                    setLoading(true);
+                                    props.updateMembership(
+                                        formBuy,
+                                        (response) => {
+                                            console.log({ response });
+                                            setEdited(false);
+                                            setLoading(false);
+                                        }
+                                    );
+                                } else {
+                                    setEdited(true);
+                                }
+
+                                // setEdited((prevState) => !prevState);
                             }}
                         />
                         <Button
@@ -328,6 +354,7 @@ const BuyScreen = (props) => {
                             loading={loading}
                             onClick={handleGetInvoices}
                         />
+                        <Debug account={account} />
                     </Grid.Column>
                 </Grid>
             </Segment>

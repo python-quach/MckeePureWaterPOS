@@ -184,3 +184,32 @@ export const login = (username, password, callback) => (dispatch) => {
         }
     );
 };
+
+// UPDATE MEMBERSHIP INFO
+export const updateMembership = (
+    { areaCode, phone, firstName, lastName, account },
+    callback
+) => (dispatch) => {
+    console.log(areaCode, phone, firstName, lastName, account);
+    dispatch({
+        type: actionTypes.UPDATE_ACCOUNT,
+        payload: { areaCode, phone, firstName, lastName },
+    });
+    ipcRenderer.send(channels.UPDATE_MEMBER, {
+        areaCode,
+        phone,
+        firstName,
+        lastName,
+        account,
+    });
+    ipcRenderer.on(channels.UPDATE_MEMBER, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.UPDATE_MEMBER);
+        console.log({ response });
+        dispatch({ type: actionTypes.UPDATE_MEMBER, payload: response });
+        // dispatch({
+        //     type: actionTypes.UPDATE_ACCOUNT,
+        //     payload: { areaCode, phone, firstName, lastName, account },
+        // });
+        callback(response);
+    });
+};
