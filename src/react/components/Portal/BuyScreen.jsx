@@ -48,7 +48,7 @@ const BuyScreen = (props) => {
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
-    // const [invoices, setInvoices] = useState(null);
+    const [invoices, setInvoices] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currentGallon, setCurrentGallon] = useState(gallonRemain);
     const [gallonBuy, setGallonBuy] = useState(0);
@@ -154,7 +154,7 @@ const BuyScreen = (props) => {
         getAccountInvoices(account, (data) => {
             console.log(data);
             setLoading(false);
-            // setInvoices(data);
+            setInvoices(data);
         });
     };
     const handleBuyValue = (e, { value }) => {
@@ -243,7 +243,6 @@ const BuyScreen = (props) => {
         if (!edited) {
             document.getElementById('buy').focus();
         }
-        // document.getElementById('buy').focus();
     });
 
     useEffect(() => {
@@ -268,15 +267,6 @@ const BuyScreen = (props) => {
     useEffect(() => {
         changeName(formBuy.firstName + ' ' + formBuy.lastName);
     }, [changeName, formBuy.firstName, formBuy.lastName]);
-
-    // useEffect(() => {
-    //     if (edited) {
-    //         props.updateMembership({ formBuy }, (response) => {
-    //             console.log({ response });
-    //             setEdited(false);
-    //         });
-    //     }
-    // });
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
@@ -325,7 +315,7 @@ const BuyScreen = (props) => {
                             onClick={handleBackButton}
                         />
                         <Button
-                            loading={loading}
+                            loading={loadingEdited}
                             floated='right'
                             color={!edited ? 'vk' : 'google plus'}
                             content={!edited ? 'Edit Customer' : 'Save'}
@@ -353,7 +343,6 @@ const BuyScreen = (props) => {
                             loading={loading}
                             onClick={handleGetInvoices}
                         />
-                        {/* <Debug account={account} /> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -384,12 +373,9 @@ const mapStateToProps = (state) => {
         initialValues: {
             account,
             areaCode,
-            // firstName,
             firstName: firstName || '',
             phone,
             fullname,
-            // fullname: firstName + ' ' + lastName,
-            // fullname:
             gallonBuy,
             gallonCurrent,
             gallonRemain,
