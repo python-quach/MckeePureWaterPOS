@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
+import { normalizeAreaCode, normalizeInput } from '../../helpers/helpers';
 
 const BuyForm = (props) => {
     return (
@@ -80,11 +81,12 @@ const BuyForm = (props) => {
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
-                    normalize={(value) => {
-                        if (value.length <= 3) {
-                            return value;
-                        }
-                    }}
+                    normalize={normalizeAreaCode}
+                    // normalize={(value) => {
+                    //     if (value.length <= 3) {
+                    //         return value;
+                    //     }
+                    // }}
                 />
                 <Field
                     name='phone'
@@ -97,14 +99,16 @@ const BuyForm = (props) => {
                     width={2}
                     component={Form.Input}
                     label='Phone Number'
-                    normalize={(value) => {
-                        if (value.length <= 8) {
-                            return value;
-                        }
-                    }}
+                    normalize={normalizeInput}
+                    // normalize={(value) => {
+                    //     if (value.length <= 8) {
+                    //         return value;
+                    //     }
+                    // }}
                 />
                 {!props.edited ? (
                     <Field
+                        readOnly
                         className='Test'
                         name='fullname'
                         component={Form.Input}
@@ -115,6 +119,7 @@ const BuyForm = (props) => {
                 ) : (
                     <>
                         <Field
+                            id='firstName'
                             name='firstName'
                             label='First Name'
                             component={Form.Input}
@@ -122,9 +127,20 @@ const BuyForm = (props) => {
                             error={props.edited}
                             inverted
                             width={3}
-                            normalize={(value) => {
-                                return value.toUpperCase();
+                            normalize={(value, prev) => {
+                                if (value.match(/^[a-zA-Z]+$/g))
+                                    return value.toUpperCase();
+                                else {
+                                    if (value === '') {
+                                        return '';
+                                    } else {
+                                        return prev;
+                                    }
+                                }
                             }}
+                            // normalize={(value) => {
+                            //     return value.toUpperCase();
+                            // }}
                         />
                         <Field
                             name='lastName'
@@ -134,9 +150,20 @@ const BuyForm = (props) => {
                             error={props.edited}
                             inverted
                             width={3}
-                            normalize={(value) => {
-                                return value.toUpperCase();
+                            normalize={(value, prev) => {
+                                if (value.match(/^[a-zA-Z]+$/g))
+                                    return value.toUpperCase();
+                                else {
+                                    if (value === '') {
+                                        return '';
+                                    } else {
+                                        return prev;
+                                    }
+                                }
                             }}
+                            // normalize={(value) => {
+                            //     return value.toUpperCase();
+                            // }}
                         />
                     </>
                 )}
@@ -180,7 +207,8 @@ const BuyForm = (props) => {
                     type='text'
                     inverted={true}
                     label='Remain'
-                    disabled={props.disableBuyInput || props.edited}
+                    disabled={props.edited}
+                    // disabled={props.disableBuyInput || props.edited}
                     value={props.gallonAfterBuy || 0}
                 />
                 <Form.Button

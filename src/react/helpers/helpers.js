@@ -41,7 +41,7 @@ export const normalizeInput = (value, previousValue) => {
     console.log({ value, previousValue });
     if (value.match(/^\d+$/g) && value.length <= 7) {
         if (value.length === 7 && value.length > previousValue.length) {
-            document.getElementById('firstName').focus();
+            // document.getElementById('firstName').focus();
             return value.slice(0, 3) + '-' + value.slice(3, 7);
         }
         if (value.length === 0) return '';

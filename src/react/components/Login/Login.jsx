@@ -71,12 +71,12 @@ function Login(props) {
                 focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
             />
-            <LoginDebug
+            {/* <LoginDebug
                 username={username}
                 password={password}
                 errorMessage={errorMessage}
                 submitSucceeded={submitSucceeded}
-            />
+            /> */}
         </LoginGrid>
     );
 }

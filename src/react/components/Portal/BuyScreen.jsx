@@ -44,6 +44,7 @@ const BuyScreen = (props) => {
     };
 
     const [edited, setEdited] = useState(false);
+    const [loadingEdited, setLoadingEdited] = useState(false);
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
@@ -331,20 +332,18 @@ const BuyScreen = (props) => {
                             onClick={() => {
                                 if (edited) {
                                     console.log(formBuy);
-                                    setLoading(true);
+                                    setLoadingEdited(true);
                                     props.updateMembership(
                                         formBuy,
                                         (response) => {
                                             console.log({ response });
                                             setEdited(false);
-                                            setLoading(false);
+                                            setLoadingEdited(false);
                                         }
                                     );
                                 } else {
                                     setEdited(true);
                                 }
-
-                                // setEdited((prevState) => !prevState);
                             }}
                         />
                         <Button
@@ -354,7 +353,7 @@ const BuyScreen = (props) => {
                             loading={loading}
                             onClick={handleGetInvoices}
                         />
-                        <Debug account={account} />
+                        {/* <Debug account={account} /> */}
                     </Grid.Column>
                 </Grid>
             </Segment>

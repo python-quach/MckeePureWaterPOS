@@ -163,7 +163,7 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
-                    <Debug />
+                    {/* <Debug /> */}
                 </FindGrid>
             </Segment>
         </TransitionablePortal>
