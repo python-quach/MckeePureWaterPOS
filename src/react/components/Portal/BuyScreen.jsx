@@ -5,6 +5,8 @@ import {
     TransitionablePortal,
     Segment,
     Grid,
+    Header,
+    Modal,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -12,8 +14,9 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import BuyReceipt from './BuyReceipt';
 import RenewReceipt from './RenewReceipt';
-import Debug from '../Debug/DebugMessage';
+// import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
+import InvoiceButton from './Invoice';
 
 const BuyScreen = (props) => {
     const [open, setOpenPortal] = useState(true);
@@ -42,6 +45,8 @@ const BuyScreen = (props) => {
         setOpenPortal(false);
         history.push('/find');
     };
+    const [openMe, setOpenMe] = useState(false);
+    const [openHistory, setOpenHistory] = useState(false);
 
     const [edited, setEdited] = useState(false);
     const [loadingEdited, setLoadingEdited] = useState(false);
@@ -269,14 +274,23 @@ const BuyScreen = (props) => {
     }, [changeName, formBuy.firstName, formBuy.lastName]);
 
     return (
-        <TransitionablePortal onClose={handleClose} open={open}>
+        <TransitionablePortal
+            onClose={handleClose}
+            open={open}
+            closeOnTriggerClick
+            closeOnDocumentClick={false}
+            closeOnEscape={false}
+            closeOnDimmerClick={false}
+            closeOnPortalMouseLeave={false}
+            openOnTriggerClick>
             <Segment
                 style={{
                     width: '100%',
                     height: '100%',
                     position: 'fixed',
-                    bottom: '1%',
-                    zIndex: 5000,
+                    // bottom: '1%',
+                    // zIndex: 5000,
+                    zIndex: 1000,
                     backgroundColor: '#002b487d',
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
@@ -336,13 +350,64 @@ const BuyScreen = (props) => {
                                 }
                             }}
                         />
-                        <Button
+                        {/* <Button
                             floated='right'
                             color='twitter'
                             content='Invoices'
                             loading={loading}
                             onClick={handleGetInvoices}
-                        />
+                        /> */}
+
+                        {/* <InvoiceButton /> */}
+                        <TransitionablePortal
+                            closeOnTriggerClick
+                            closeOnDocumentClick={false}
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            closeOnPortalMouseLeave={false}
+                            openOnTriggerClick
+                            onOpen={() => {
+                                console.log('onOpen');
+                                setOpenHistory(true);
+                            }}
+                            onClose={() => {
+                                console.log('onClose');
+                                setOpenHistory(false);
+                            }}
+                            onHide={() => {
+                                setOpenPortal(true);
+                            }}
+                            trigger={
+                                <Button
+                                    floated='right'
+                                    content={
+                                        openHistory
+                                            ? 'Close Invoices'
+                                            : 'Show Invoices'
+                                    }
+                                    negative={openHistory}
+                                    positive={!openHistory}
+                                    loading={loading}
+                                    onClick={() => {
+                                        if (!openHistory) handleGetInvoices();
+                                    }}
+                                />
+                            }>
+                            <Segment
+                                style={{
+                                    left: '40%',
+                                    position: 'fixed',
+                                    top: '40%',
+                                    zIndex: 1001,
+                                }}>
+                                <Header>This is an example portal</Header>
+                                {/* <Button
+                                    content='Close'
+                                    onClick={() => setOpenHistory(false)}
+                                /> */}
+                                <pre>{JSON.stringify(invoices, null, 2)}</pre>
+                            </Segment>
+                        </TransitionablePortal>
                     </Grid.Column>
                 </Grid>
             </Segment>

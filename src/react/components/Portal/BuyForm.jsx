@@ -138,9 +138,6 @@ const BuyForm = (props) => {
                                     }
                                 }
                             }}
-                            // normalize={(value) => {
-                            //     return value.toUpperCase();
-                            // }}
                         />
                         <Field
                             name='lastName'
@@ -161,9 +158,6 @@ const BuyForm = (props) => {
                                     }
                                 }
                             }}
-                            // normalize={(value) => {
-                            //     return value.toUpperCase();
-                            // }}
                         />
                     </>
                 )}
@@ -208,7 +202,6 @@ const BuyForm = (props) => {
                     inverted={true}
                     label='Remain'
                     disabled={props.edited}
-                    // disabled={props.disableBuyInput || props.edited}
                     value={props.gallonAfterBuy || 0}
                 />
                 <Form.Button
@@ -258,7 +251,6 @@ const BuyForm = (props) => {
                     size='large'
                     disabled={props.disableRenewButton}
                     onClick={props.renewWaterGallon}
-                    // width={1}
                 />
             </Form.Group>
         </Form>
