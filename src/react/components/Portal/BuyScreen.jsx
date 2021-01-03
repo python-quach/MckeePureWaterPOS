@@ -331,11 +331,12 @@ const BuyScreen = (props) => {
     });
 
     useEffect(() => {
-        if (open && loading)
+        if (open)
             getAccountInvoices(account, limit, offset, (data) => {
                 setInvoices(data);
+                // setLoading(false);
             });
-    }, [offset, account, limit, getAccountInvoices, open, loading]);
+    }, [offset, account, limit, getAccountInvoices, open]);
 
     useEffect(() => {
         if (!test) {
