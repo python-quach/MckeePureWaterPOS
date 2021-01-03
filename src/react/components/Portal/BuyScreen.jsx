@@ -396,11 +396,11 @@ const BuyScreen = (props) => {
         }
     });
 
-    // useEffect(() => {
-    //     if (!account) {
-    //         props.history.push('/find');
-    //     }
-    // });
+    useEffect(() => {
+        if (!account) {
+            props.history.push('/find');
+        }
+    });
 
     useEffect(() => {
         if (invoices) {
