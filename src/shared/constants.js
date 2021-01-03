@@ -14,5 +14,6 @@ module.exports = {
         GET_LAST_ACCOUNT: 'GET_LAST_ACCOUNT',
         ADD_NEW_MEMBER: 'ADD_NEW_MEMBER',
         UPDATE_MEMBER: 'UPDATE_MEMBER',
+        GET_TOTAL_INVOICE: 'GET_TOTAL_INVOICE',
     },
 };

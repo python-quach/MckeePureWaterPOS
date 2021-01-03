@@ -146,6 +146,8 @@ function FindContainer(props) {
                         content='Add New Membership'
                         onClick={() => {
                             console.log('Add New MemberShip');
+                            // props.clearMembership();
+                            // props.clearAccount();
                             props.getLastAccount(() => {
                                 props.getLastRecord(() => {
                                     props.history.push('/add');

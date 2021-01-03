@@ -11,12 +11,15 @@ import {
 const AddForm = (props) => {
     const {
         add,
+        find,
+        getAccount,
         getLastRecord,
         account,
         record,
         firstName,
         lastName,
         addNewMembership,
+        history,
     } = props;
     const [currentGallon, setCurrentGallon] = useState(0);
     const [buyGallon, setBuyGallon] = useState(0);
@@ -35,28 +38,51 @@ const AddForm = (props) => {
         setCurrentGallon(gallonAmount);
         setRemainGallon(gallonAmount);
         setAdded(true);
-        addNewMembership({
-            record_id: record + 1,
-            account: account + 1,
-            firstName: firstName,
-            lastName: lastName,
-            fullname: fullname,
-            memberSince: add.memberSince,
-            phone: add.phone,
-            prevGallon: gallonAmount,
-            buyGallon: 0,
-            gallonLeft: gallonAmount,
-            overGallon: gallonAmount,
-            preOver: gallonAmount,
-            renew: parseInt(gallonAmount),
-            renewFee: parseInt(fee),
-            lastRenewGallon: parseInt(gallonAmount),
-            invoiceDate: currentDate(),
-            invoiceTime: getCurrentTime(),
-            areaCode: add.areaCode,
-            threeDigit: add.phone.slice(0, 3),
-            fourDigit: add.phone.slice(4, 8),
-        });
+        addNewMembership(
+            {
+                record_id: record + 1,
+                account: account + 1,
+                firstName: firstName,
+                lastName: lastName,
+                fullname: fullname,
+                memberSince: add.memberSince,
+                phone: add.phone,
+                prevGallon: gallonAmount,
+                buyGallon: 0,
+                gallonLeft: gallonAmount,
+                overGallon: gallonAmount,
+                preOver: gallonAmount,
+                renew: parseInt(gallonAmount),
+                renewFee: parseInt(fee),
+                lastRenewGallon: parseInt(gallonAmount),
+                invoiceDate: currentDate(),
+                invoiceTime: getCurrentTime(),
+                areaCode: add.areaCode,
+                threeDigit: add.phone.slice(0, 3),
+                fourDigit: add.phone.slice(4, 8),
+            },
+            () => {
+                // props.clearMembership();
+                // props.clearAccount();
+
+                // console.log(account);
+                // history.push('/account');
+                // getAccount(account + 1, () => {
+                //     history.push('/account');
+                // });
+                find({ account: account + 1 }, (data) => {
+                    // props.clearMembership();
+                    // props.clearAccount();
+                    // console.log(data.membership);
+                    getAccount(data.membership[0].account, () => {
+                        props.clearMembership();
+                        // props.clearAccount();
+                        // props.clearAccount();
+                        history.push('/account');
+                    });
+                });
+            }
+        );
     };
 
     useEffect(() => {
@@ -75,17 +101,17 @@ const AddForm = (props) => {
         console.log({ newMember });
     }, [newMember]);
 
-    useEffect(() => {
-        if (added) {
-            setRemainGallon(currentGallon - buyGallon);
-            document.getElementById('buy').focus();
-            getLastRecord((lastRecord) => {
-                console.log('getting last record:', lastRecord);
-                document.getElementById('buy').focus();
-                // setAdded(false);
-            });
-        }
-    }, [added, getLastRecord, currentGallon, buyGallon]);
+    // useEffect(() => {
+    //     if (added) {
+    //         setRemainGallon(currentGallon - buyGallon);
+    //         document.getElementById('buy').focus();
+    //         getLastRecord((lastRecord) => {
+    //             console.log('getting last record:', lastRecord);
+    //             document.getElementById('buy').focus();
+    //             // setAdded(false);
+    //         });
+    //     }
+    // }, [added, getLastRecord, currentGallon, buyGallon]);
 
     return (
         <Form size='large'>
@@ -270,7 +296,7 @@ const AddForm = (props) => {
                     }}
                 />
             </Form.Group>
-            <Form.Group>
+            {/* <Form.Group>
                 <Form.Input type='hidden' width={12} />
                 <Form.Input
                     name='currentGallon'
@@ -352,7 +378,7 @@ const AddForm = (props) => {
                     onClick={props.buyWaterGallon}
                     width={1}
                 />
-            </Form.Group>
+            </Form.Group> */}
         </Form>
     );
 };

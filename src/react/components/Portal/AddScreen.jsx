@@ -21,6 +21,7 @@ const AddScreen = (props) => {
         getLastRecord,
         firstName,
         lastName,
+        history,
     } = props;
     const [open, setOpenPortal] = useState(true);
 
@@ -74,7 +75,7 @@ const AddScreen = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        <DebugMessage addForm={addForm} />
+                        {/* <DebugMessage addForm={addForm} /> */}
                         <AddForm
                             date={currentDate}
                             time={getCurrentTime}
@@ -84,6 +85,11 @@ const AddScreen = (props) => {
                             getLastRecord={getLastRecord}
                             account={lastAccount}
                             add={addForm}
+                            history={history}
+                            find={props.find}
+                            clearAccount={props.clearAccount}
+                            clearMembership={props.clearMembership}
+                            getAccount={props.getAccount}
                             addNewMembership={props.addNewMembership}
                         />
                         <Divider hidden />

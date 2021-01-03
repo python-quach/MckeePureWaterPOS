@@ -48,9 +48,23 @@ export const getAccount = (account, callback) => (dispatch) => {
     });
 };
 
-export const getAccountInvoices = (account, callback) => (dispatch) => {
+export const totalInvoice = (account, callback) => (dispatch) => {
+    console.log(account);
+    ipcRenderer.send(channels.GET_TOTAL_INVOICE, { account });
+    ipcRenderer.on(channels.GET_TOTAL_INVOICE, (event, args) => {
+        ipcRenderer.removeAllListeners(channels.GET_TOTAL_INVOICE);
+        console.log({ args });
+        callback(args);
+    });
+};
+
+export const getAccountInvoices = (account, limit, offset, callback) => (
+    dispatch
+) => {
     ipcRenderer.send(channels.GET_MEMBER_INVOICES, {
         account,
+        limit,
+        offset,
     });
     ipcRenderer.on(channels.GET_MEMBER_INVOICES, (event, args) => {
         ipcRenderer.removeAllListeners(channels.GET_MEMBER_INVOICES);
@@ -143,7 +157,7 @@ export const find = ({ phone, account, firstName, lastName }, callback) => (
     });
 };
 
-export const addNewMembership = (data) => (dispatch) => {
+export const addNewMembership = (data, callback) => (dispatch) => {
     console.log(data);
     ipcRenderer.send(channels.ADD_NEW_MEMBER, data);
     ipcRenderer.on(channels.ADD_NEW_MEMBER, (event, response) => {
@@ -153,6 +167,7 @@ export const addNewMembership = (data) => (dispatch) => {
             type: actionTypes.ADD_NEW_MEMBER,
             payload: response,
         });
+        callback();
     });
 };
 

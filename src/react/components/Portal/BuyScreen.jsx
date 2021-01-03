@@ -6,7 +6,9 @@ import {
     Segment,
     Grid,
     Header,
-    Modal,
+    Pagination,
+    Table,
+    Label,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -14,9 +16,111 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import BuyReceipt from './BuyReceipt';
 import RenewReceipt from './RenewReceipt';
-// import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
-import InvoiceButton from './Invoice';
+
+const Row = (props) => {
+    const checkRenew = () => {
+        if (props.renew === null || props.gallonBuy === null) {
+            return props.gallonRemain;
+        } else if (props.renew === props.gallonBuy) {
+            return 0;
+        } else {
+            return props.renew;
+        }
+    };
+
+    const checkRenewFee = () => {
+        if (props.renew === null) {
+            return props.renewFee;
+        } else if (
+            parseInt(props.gallonBuy) === 0 ||
+            props.gallonBuy === null
+        ) {
+            return props.renewFee;
+        } else {
+            return 0;
+        }
+    };
+
+    const checkGallonCurrent = () => {
+        if (parseInt(props.gallonBuy) === 0) {
+            return parseInt(props.gallonRemain) - parseInt(props.renew);
+        } else if (props.renew === null) {
+            return parseInt(props.overGallon);
+        } else {
+            return props.gallonCurrent;
+        }
+    };
+
+    const checkGallonBuy = () => {
+        if (parseInt(props.gallonBuy) === 0 || props.gallonBuy === null) {
+            return 'RENEW';
+        } else if (props.renew === null) {
+            return 'RENEW';
+        } else {
+            return props.gallonBuy;
+        }
+    };
+
+    return (
+        <Table.Row
+            positive={
+                props.renew === null ||
+                parseInt(props.gallonBuy) === 0 ||
+                props.gallonBuy === null
+            }>
+            <Table.Cell>
+                {props.renew === null ||
+                parseInt(props.gallonBuy) === 0 ||
+                props.gallonBuy === null ? (
+                    <Label color='green' ribbon>
+                        {props.record_id}
+                    </Label>
+                ) : (
+                    props.record_id
+                )}
+            </Table.Cell>
+            <Table.Cell>{props.account}</Table.Cell>
+            <Table.Cell>{props.memberSince}</Table.Cell>
+            <Table.Cell>{props.fullname}</Table.Cell>
+            <Table.Cell>
+                {props.invoiceDate + '@' + props.invoiceTime}
+            </Table.Cell>
+            <Table.Cell textAlign='center'>{checkRenewFee()}</Table.Cell>
+            <Table.Cell textAlign='center'>{checkRenew()}</Table.Cell>
+            <Table.Cell textAlign='center'>{checkGallonCurrent()}</Table.Cell>
+            <Table.Cell textAlign='center'>{checkGallonBuy()}</Table.Cell>
+            <Table.Cell textAlign='center'>{props.gallonRemain}</Table.Cell>
+        </Table.Row>
+    );
+};
+
+const InvoiceTable = (props) => {
+    const { invoices } = props;
+    return invoices ? (
+        <Table celled>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell content='Invoice' />
+                    <Table.HeaderCell content='Membership' />
+                    <Table.HeaderCell content='Member Since' />
+                    <Table.HeaderCell content='Name' />
+                    <Table.HeaderCell content='Purchase Date' />
+                    <Table.HeaderCell content='Renew Fee' />
+                    <Table.HeaderCell content='Gallon Renew' />
+                    <Table.HeaderCell content='Gallon Prev' />
+                    <Table.HeaderCell content='Gallon Buy' />
+                    <Table.HeaderCell content='Gallon Remain' />
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {invoices.map((invoice, index) => {
+                    return <Row {...invoice} key={index} />;
+                })}
+            </Table.Body>
+        </Table>
+    ) : null;
+};
 
 const BuyScreen = (props) => {
     const [open, setOpenPortal] = useState(true);
@@ -34,6 +138,7 @@ const BuyScreen = (props) => {
         history,
         changeName,
         formBuy,
+        totalInvoice,
     } = props;
 
     const { gallonRemain } = detail;
@@ -45,8 +150,13 @@ const BuyScreen = (props) => {
         setOpenPortal(false);
         history.push('/find');
     };
-    const [openMe, setOpenMe] = useState(false);
     const [openHistory, setOpenHistory] = useState(false);
+
+    // Pagination
+    const [test, setTest] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [offset, setOffset] = useState(0);
+    const [activePage, setActivePage] = useState(1);
 
     const [edited, setEdited] = useState(false);
     const [loadingEdited, setLoadingEdited] = useState(false);
@@ -153,15 +263,11 @@ const BuyScreen = (props) => {
         }
     };
 
-    const handleGetInvoices = () => {
-        console.log(account);
-        setLoading(true);
-        getAccountInvoices(account, (data) => {
-            console.log(data);
-            setLoading(false);
-            setInvoices(data);
-        });
+    const onChange = (e, pageInfo) => {
+        setActivePage(pageInfo.activePage);
+        setOffset(pageInfo.activePage * 10 - 10);
     };
+
     const handleBuyValue = (e, { value }) => {
         if (isNaN(parseInt(value))) {
             setGallonBuy(0);
@@ -205,6 +311,40 @@ const BuyScreen = (props) => {
             props.history.push('/find');
         }
     };
+
+    const handleGetInvoices = () => {
+        console.log(account);
+        setLoading(true);
+
+        // Get Total Number of account first
+
+        getAccountInvoices(account, limit, offset, (data) => {
+            console.log(data);
+            setLoading(false);
+            setInvoices(data);
+            setOpenHistory(true);
+        });
+    };
+
+    useEffect(() => {
+        console.log('BuyForm Debug', { props });
+    });
+
+    useEffect(() => {
+        if (open && loading)
+            getAccountInvoices(account, limit, offset, (data) => {
+                setInvoices(data);
+            });
+    }, [offset, account, limit, getAccountInvoices, open, loading]);
+
+    useEffect(() => {
+        if (!test) {
+            totalInvoice(account, (count) => {
+                console.log({ count });
+                setTest(count.count);
+            });
+        }
+    }, [test, account, totalInvoice]);
 
     useEffect(() => {
         console.log(`Purchase Data:`, {
@@ -256,11 +396,17 @@ const BuyScreen = (props) => {
         }
     });
 
+    // useEffect(() => {
+    //     if (!account) {
+    //         props.history.push('/find');
+    //     }
+    // });
+
     useEffect(() => {
-        if (!account) {
-            props.history.push('/find');
+        if (invoices) {
+            console.log('invoice', invoices.length);
         }
-    });
+    }, [invoices]);
 
     useEffect(() => {
         console.log({ edited });
@@ -275,8 +421,8 @@ const BuyScreen = (props) => {
 
     return (
         <TransitionablePortal
-            onClose={handleClose}
             open={open}
+            onClose={handleClose}
             closeOnTriggerClick
             closeOnDocumentClick={false}
             closeOnEscape={false}
@@ -288,8 +434,6 @@ const BuyScreen = (props) => {
                     width: '100%',
                     height: '100%',
                     position: 'fixed',
-                    // bottom: '1%',
-                    // zIndex: 5000,
                     zIndex: 1000,
                     backgroundColor: '#002b487d',
                 }}>
@@ -350,33 +494,27 @@ const BuyScreen = (props) => {
                                 }
                             }}
                         />
-                        {/* <Button
-                            floated='right'
-                            color='twitter'
-                            content='Invoices'
-                            loading={loading}
-                            onClick={handleGetInvoices}
-                        /> */}
 
-                        {/* <InvoiceButton /> */}
                         <TransitionablePortal
-                            closeOnTriggerClick
+                            size='large'
+                            open={openHistory}
+                            // closeOnTriggerClick
                             closeOnDocumentClick={false}
                             closeOnEscape={false}
                             closeOnDimmerClick={false}
                             closeOnPortalMouseLeave={false}
-                            openOnTriggerClick
-                            onOpen={() => {
-                                console.log('onOpen');
-                                setOpenHistory(true);
-                            }}
-                            onClose={() => {
-                                console.log('onClose');
-                                setOpenHistory(false);
-                            }}
-                            onHide={() => {
-                                setOpenPortal(true);
-                            }}
+                            // openOnTriggerClick
+                            // onOpen={() => {
+                            //     console.log('onOpen');
+                            //     setOpenHistory(true);
+                            // }}
+                            // onClose={() => {
+                            //     console.log('onClose');
+                            //     setOpenHistory(false);
+                            // }}
+                            // onHide={() => {
+                            //     // setOpenPortal(true);
+                            // }}
                             trigger={
                                 <Button
                                     floated='right'
@@ -389,23 +527,38 @@ const BuyScreen = (props) => {
                                     positive={!openHistory}
                                     loading={loading}
                                     onClick={() => {
-                                        if (!openHistory) handleGetInvoices();
+                                        if (!openHistory) {
+                                            handleGetInvoices();
+                                        } else {
+                                            setLimit(10);
+                                            setOffset(0);
+                                        }
                                     }}
                                 />
                             }>
                             <Segment
                                 style={{
-                                    left: '40%',
+                                    left: '15%',
                                     position: 'fixed',
-                                    top: '40%',
+                                    top: '20%',
                                     zIndex: 1001,
                                 }}>
                                 <Header>This is an example portal</Header>
-                                {/* <Button
+                                <InvoiceTable invoices={invoices} />
+                                <Button
+                                    floated='right'
+                                    color='red'
                                     content='Close'
-                                    onClick={() => setOpenHistory(false)}
-                                /> */}
-                                <pre>{JSON.stringify(invoices, null, 2)}</pre>
+                                    onClick={() => {
+                                        console.log('close');
+                                        setOpenHistory(false);
+                                    }}></Button>
+                                <Pagination
+                                    activePage={activePage}
+                                    onPageChange={onChange}
+                                    totalPages={Math.ceil(test / 10)}
+                                    ellipsisItem={null}
+                                />
                             </Segment>
                         </TransitionablePortal>
                     </Grid.Column>
@@ -415,7 +568,7 @@ const BuyScreen = (props) => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
     const {
         account,
         areaCode,

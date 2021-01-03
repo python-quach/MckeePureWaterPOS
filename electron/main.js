@@ -13,6 +13,96 @@ const dbFile = path.resolve(userData, 'db.sqlite3');
 
 let db;
 
+const sqlSum = `SELECT SUM(lastRenewGallon) FROM (
+
+SELECT 
+	record_id, 
+	account, 
+	firstName, 
+	lastName, 
+	fullname, 
+	memberSince, 
+	areaCode, 
+	field6, 
+	field7, 
+	phone, 
+	gallonCurrent,
+	gallonBuy, 
+	gallonRemain, 
+	renewFee, 
+	invoiceDate, 
+	renew, 
+	lastRenewGallon, 
+	invoiceTime, 
+	overGallon
+FROM 
+	mckee
+WHERE account = '45403' 
+ORDER BY 
+	record_id
+DESC 
+) WHERE renew IS NULL OR gallonBuy IS NULL ORDER BY record_id ASC `;
+
+const sqlFee = `SELECT SUM(renewFee) FROM (
+
+SELECT 
+	record_id, 
+	account, 
+	firstName, 
+	lastName, 
+	fullname, 
+	memberSince, 
+	areaCode, 
+	field6, 
+	field7, 
+	phone, 
+	gallonCurrent,
+	gallonBuy, 
+	gallonRemain, 
+	renewFee, 
+	invoiceDate, 
+	renew, 
+	lastRenewGallon, 
+	invoiceTime, 
+	overGallon
+FROM 
+	mckee
+WHERE account = '45403' 
+ORDER BY 
+	record_id
+DESC 
+) WHERE renew IS NULL OR gallonBuy IS NULL ORDER BY record_id ASC `;
+
+const sqlGallonbuy = `SELECT SUM(gallonBuy) FROM (
+
+SELECT 
+	record_id, 
+	account, 
+	firstName, 
+	lastName, 
+	fullname, 
+	memberSince, 
+	areaCode, 
+	field6, 
+	field7, 
+	phone, 
+	gallonCurrent,
+	gallonBuy, 
+	gallonRemain, 
+	renewFee, 
+	invoiceDate, 
+	renew, 
+	lastRenewGallon, 
+	invoiceTime, 
+	overGallon
+FROM 
+	mckee
+WHERE account = '45403' 
+ORDER BY 
+	record_id
+DESC 
+) ORDER BY record_id ASC `;
+
 // ESC-POS PRINTER SETUP
 const escpos = require('escpos');
 escpos.USB = require('escpos-usb');
@@ -172,13 +262,27 @@ ipcMain.on(channels.GET_ACCOUNT, (event, { account }) => {
 
 // GET ACCOUNT INVOICES:
 ipcMain.on(channels.GET_MEMBER_INVOICES, (event, args) => {
-    const { account } = args;
+    console.log('get invoices');
+    const { account, limit, offset } = args;
     console.log(`get invoice`, account);
-    const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account}`;
+    const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT ${limit} OFFSET ${offset}`;
     db.all(getAccountInvoices, (err, row) => {
         console.log(row);
 
         event.sender.send(channels.GET_MEMBER_INVOICES, row);
+    });
+});
+
+// GET TOTAL INVOICE
+ipcMain.on(channels.GET_TOTAL_INVOICE, (event, args) => {
+    console.log('get total', args);
+    const { account } = args;
+    const sql = `SELECT COUNT(*) as count FROM mckee WHERE account = ?`;
+    db.get(sql, account, (err, count) => {
+        if (err) return console.log(err.message);
+        event.sender.send(channels.GET_TOTAL_INVOICE, {
+            count: count.count,
+        });
     });
 });
 
