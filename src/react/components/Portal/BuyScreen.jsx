@@ -44,9 +44,12 @@ const Row = (props) => {
 
     const checkGallonCurrent = () => {
         if (parseInt(props.gallonBuy) === 0) {
+            // if (parseInt(props.gallonBuy) === 0 || props.gallonBuy === nul) {
             return parseInt(props.gallonRemain) - parseInt(props.renew);
         } else if (props.renew === null) {
             return parseInt(props.overGallon);
+        } else if (props.gallonBuy === null) {
+            return parseInt(props.overGallon) - parseInt(props.gallonRemain);
         } else {
             return props.gallonCurrent;
         }
@@ -64,6 +67,7 @@ const Row = (props) => {
 
     return (
         <Table.Row
+            negative={props.gallonRemain <= 0}
             positive={
                 props.renew === null ||
                 parseInt(props.gallonBuy) === 0 ||
@@ -82,15 +86,27 @@ const Row = (props) => {
             </Table.Cell>
             <Table.Cell>{props.account}</Table.Cell>
             <Table.Cell>{props.memberSince}</Table.Cell>
+            <Table.Cell>{'(' + props.areaCode + ') ' + props.phone}</Table.Cell>
             <Table.Cell>{props.fullname}</Table.Cell>
             <Table.Cell>
                 {props.invoiceDate + '@' + props.invoiceTime}
             </Table.Cell>
             <Table.Cell textAlign='center'>{checkRenewFee()}</Table.Cell>
             <Table.Cell textAlign='center'>{checkRenew()}</Table.Cell>
-            <Table.Cell textAlign='center'>{checkGallonCurrent()}</Table.Cell>
+            <Table.Cell
+                textAlign='center'
+                negative={
+                    props.gallonCurrent - props.renew < 0 ? true : false
+                    // props.renew < props.gallonRemain ? true : false
+                }>
+                {checkGallonCurrent()}
+            </Table.Cell>
             <Table.Cell textAlign='center'>{checkGallonBuy()}</Table.Cell>
-            <Table.Cell textAlign='center'>{props.gallonRemain}</Table.Cell>
+            <Table.Cell
+                textAlign='center'
+                negative={props.gallonRemain < 0 ? true : false}>
+                {props.gallonRemain}
+            </Table.Cell>
         </Table.Row>
     );
 };
@@ -104,6 +120,7 @@ const InvoiceTable = (props) => {
                     <Table.HeaderCell content='Invoice' />
                     <Table.HeaderCell content='Membership' />
                     <Table.HeaderCell content='Member Since' />
+                    <Table.HeaderCell content='Phone Number' />
                     <Table.HeaderCell content='Name' />
                     <Table.HeaderCell content='Purchase Date' />
                     <Table.HeaderCell content='Renew Fee' />
