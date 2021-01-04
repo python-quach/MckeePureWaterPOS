@@ -67,7 +67,7 @@ const Row = (props) => {
 
     return (
         <Table.Row
-            negative={props.gallonRemain <= 0}
+            // negative={props.gallonRemain <= 0}
             positive={
                 props.renew === null ||
                 parseInt(props.gallonBuy) === 0 ||
@@ -77,7 +77,7 @@ const Row = (props) => {
                 {props.renew === null ||
                 parseInt(props.gallonBuy) === 0 ||
                 props.gallonBuy === null ? (
-                    <Label color='green' ribbon>
+                    <Label color='green' size='large' ribbon>
                         {props.record_id}
                     </Label>
                 ) : (
@@ -88,9 +88,6 @@ const Row = (props) => {
             <Table.Cell>{props.memberSince}</Table.Cell>
             <Table.Cell>{'(' + props.areaCode + ') ' + props.phone}</Table.Cell>
             <Table.Cell>{props.fullname}</Table.Cell>
-            <Table.Cell>
-                {props.invoiceDate + '@' + props.invoiceTime}
-            </Table.Cell>
             <Table.Cell textAlign='center'>{checkRenewFee()}</Table.Cell>
             <Table.Cell textAlign='center'>{checkRenew()}</Table.Cell>
             <Table.Cell
@@ -104,9 +101,21 @@ const Row = (props) => {
             <Table.Cell textAlign='center'>{checkGallonBuy()}</Table.Cell>
             <Table.Cell
                 textAlign='center'
-                negative={props.gallonRemain < 0 ? true : false}>
+                negative={props.gallonRemain <= 0 ? true : false}>
                 {props.gallonRemain}
             </Table.Cell>
+            <Table.Cell>
+                {props.invoiceDate + '@' + props.invoiceTime}
+            </Table.Cell>
+            {/* <Table.Cell>
+                <Button
+                    color='red'
+                    content='Void'
+                    onClick={() => {
+                        console.log('Delete invoice', props.record_id);
+                    }}
+                />
+            </Table.Cell> */}
         </Table.Row>
     );
 };
@@ -114,7 +123,7 @@ const Row = (props) => {
 const InvoiceTable = (props) => {
     const { invoices } = props;
     return invoices ? (
-        <Table celled>
+        <Table celled color='blue' size='small'>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell content='Invoice' />
@@ -122,12 +131,13 @@ const InvoiceTable = (props) => {
                     <Table.HeaderCell content='Member Since' />
                     <Table.HeaderCell content='Phone Number' />
                     <Table.HeaderCell content='Name' />
-                    <Table.HeaderCell content='Purchase Date' />
                     <Table.HeaderCell content='Renew Fee' />
                     <Table.HeaderCell content='Gallon Renew' />
                     <Table.HeaderCell content='Gallon Prev' />
                     <Table.HeaderCell content='Gallon Buy' />
                     <Table.HeaderCell content='Gallon Remain' />
+                    <Table.HeaderCell content='Purchase Date' />
+                    {/* <Table.HeaderCell content='Action' /> */}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -490,6 +500,16 @@ const BuyScreen = (props) => {
                             floated='right'
                             onClick={handleBackButton}
                         />
+                        {edited ? (
+                            <Button
+                                floated='right'
+                                content='Cancel Edit'
+                                color='primary'
+                                onClick={() => {
+                                    setEdited(false);
+                                }}
+                            />
+                        ) : null}
                         <Button
                             loading={loadingEdited}
                             floated='right'
@@ -556,7 +576,7 @@ const BuyScreen = (props) => {
                             }>
                             <Segment
                                 style={{
-                                    left: '15%',
+                                    left: '13%',
                                     position: 'fixed',
                                     top: '20%',
                                     zIndex: 1001,
