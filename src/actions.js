@@ -1,6 +1,7 @@
 import { channels } from './shared/constants';
 import * as actionTypes from './types';
 import { reset, change } from 'redux-form';
+import actions from 'redux-form/lib/actions';
 
 const { ipcRenderer } = window;
 
@@ -226,5 +227,33 @@ export const updateMembership = (
         //     payload: { areaCode, phone, firstName, lastName, account },
         // });
         callback(response);
+    });
+};
+// GET TOTAL RENEWAL FEE
+export const getTotalRenewalFee = (account, callback) => (dispatch) => {
+    console.log(`getTotalRenewFee`, { account });
+    ipcRenderer.send(channels.GET_TOTAL_FEE, { account });
+    ipcRenderer.on(channels.GET_TOTAL_FEE, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.GET_TOTAL_FEE);
+        const { totalRenewalFee } = response;
+        console.log(`getTotalRenewalFee`, { response });
+        dispatch({ type: actionTypes.GET_TOTAL_FEE, payload: totalRenewalFee });
+        callback(totalRenewalFee);
+    });
+};
+
+// GET TOTAL RENEWAL GALLON
+export const getTotalRenewalGallon = (account, callback) => (dispatch) => {
+    console.log(`getTotalRenewalGallon`, { account });
+    ipcRenderer.send(channels.GET_TOTAL_RENEW_GALLON, { account });
+    ipcRenderer.on(channels.GET_TOTAL_RENEW_GALLON, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.GET_TOTAL_RENEW_GALLON);
+        const { totalRenewalGallon } = response;
+        console.log(`getTotalRenewalGallon`, { response });
+        dispatch({
+            type: actionTypes.GET_TOTAL_RENEW_GALLON,
+            payload: totalRenewalGallon,
+        });
+        callback(totalRenewalGallon);
     });
 };

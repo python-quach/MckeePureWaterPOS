@@ -9,6 +9,9 @@ import {
     Pagination,
     Table,
     Label,
+    Statistic,
+    Icon,
+    Image,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -121,7 +124,7 @@ const Row = (props) => {
 };
 
 const InvoiceTable = (props) => {
-    const { invoices } = props;
+    const { invoices, totalRenewalFee, totalRenewalAmount } = props;
     return invoices ? (
         <Table celled color='blue' size='small'>
             <Table.Header>
@@ -145,6 +148,47 @@ const InvoiceTable = (props) => {
                     return <Row {...invoice} key={index} />;
                 })}
             </Table.Body>
+            <Table.Footer>
+                <Table.Row>
+                    <Table.HeaderCell colSpan='4'></Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>
+                        <Statistic color='blue' size='mini'>
+                            <Statistic.Value>TOTAL</Statistic.Value>
+                            {/* <Statistic.Label>Fee Total</Statistic.Label> */}
+                        </Statistic>
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>
+                        <Statistic color='green' size='mini'>
+                            <Statistic.Value>
+                                ${totalRenewalFee}
+                            </Statistic.Value>
+                            {/* <Statistic.Label>Fee Total</Statistic.Label> */}
+                        </Statistic>
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>
+                        <Statistic color='green' size='mini'>
+                            <Statistic.Value>
+                                {totalRenewalAmount}
+                            </Statistic.Value>
+                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
+                        </Statistic>
+                    </Table.HeaderCell>
+                    <Table.HeaderCell content=''></Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>
+                        <Statistic color='green' size='mini'>
+                            <Statistic.Value>14</Statistic.Value>
+                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
+                        </Statistic>
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>
+                        <Statistic color='green' size='mini'>
+                            <Statistic.Value>14</Statistic.Value>
+                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
+                        </Statistic>
+                    </Table.HeaderCell>
+                    <Table.HeaderCell colSpan='1'></Table.HeaderCell>
+                </Table.Row>
+            </Table.Footer>
         </Table>
     ) : null;
 };
@@ -166,6 +210,7 @@ const BuyScreen = (props) => {
         changeName,
         formBuy,
         totalInvoice,
+        getTotalRenewalGallon,
     } = props;
 
     const { gallonRemain } = detail;
@@ -187,6 +232,8 @@ const BuyScreen = (props) => {
 
     const [edited, setEdited] = useState(false);
     const [loadingEdited, setLoadingEdited] = useState(false);
+    const [totalRenewalFee, setTotalRenewalFee] = useState(0);
+    const [totalRenewalAmount, setTotalRenewalAmount] = useState(0);
 
     const [date, setCurrentDate] = useState(currentDate());
     const [time, setCurrentTime] = useState(getCurrentTime());
@@ -250,7 +297,34 @@ const BuyScreen = (props) => {
 
             renew(renewData, () => {
                 getAccount(account, (currentRecord) => {
-                    resetRenewData(currentRecord);
+                    // Update Renew Gallon
+                    // props.getTotalRenewalFee(account, (data) => {
+                    getAccountInvoices(account, limit, offset, (data) => {
+                        setInvoices(data);
+                        resetRenewData(currentRecord);
+                        // props.getTotalRenewalFee(account, (data) => {
+                        //     setTotalRenewalFee(data);
+                        //     props.getTotalRenewalGallon(account, (data) => {
+                        //         console.log(data);
+                        //         setTotalRenewalAmount(data);
+                        //     });
+                        //     resetRenewData(currentRecord);
+                        // });
+                        // props.getTotalRenewalGallon(account, (data) => {
+                        //     console.log(data);
+                        //     setTotalRenewalAmount(data);
+                        //     setTotalRenewalFee(data);
+                        //     // resetRenewData(currentRecord);
+                        // });
+
+                        // props.getTotalRenewalGallon(account, (data) => {
+                        //     console.log('TotalGallon', data);
+                        // });
+                    });
+                    // });
+                    // props.getTotalRenewalGallon(account, (data) => {
+
+                    // })
                 });
             });
         });
@@ -350,6 +424,12 @@ const BuyScreen = (props) => {
             setLoading(false);
             setInvoices(data);
             setOpenHistory(true);
+            props.getTotalRenewalFee(account, (data) => {
+                setTotalRenewalFee(data);
+            });
+            props.getTotalRenewalGallon(account, (data) => {
+                setTotalRenewalAmount(data);
+            });
         });
     };
 
@@ -447,6 +527,15 @@ const BuyScreen = (props) => {
         changeName(formBuy.firstName + ' ' + formBuy.lastName);
     }, [changeName, formBuy.firstName, formBuy.lastName]);
 
+    // Get invoice Total
+    // useEffect(() => {
+    //     if (account) {
+    //         getTotalRenewalGallon(account, (data) => {
+    //             setTotalRenewalAmount(data);
+    //         });
+    //     }
+    // }, [setTotalRenewalAmount, getTotalRenewalGallon, account]);
+
     return (
         <TransitionablePortal
             open={open}
@@ -495,6 +584,15 @@ const BuyScreen = (props) => {
                             <BuyReceipt detail={detail} />
                         )}
                         <Divider hidden />
+                        <Button
+                            content='Test'
+                            onClick={() => {
+                                console.log('test');
+                                props.getTotalRenewalGallon(account, (data) => {
+                                    console.log({ data });
+                                });
+                            }}
+                        />
                         <Button
                             content='Back'
                             floated='right'
@@ -582,7 +680,11 @@ const BuyScreen = (props) => {
                                     zIndex: 1001,
                                 }}>
                                 <Header>This is an example portal</Header>
-                                <InvoiceTable invoices={invoices} />
+                                <InvoiceTable
+                                    invoices={invoices}
+                                    totalRenewalFee={totalRenewalFee}
+                                    totalRenewalAmount={totalRenewalAmount}
+                                />
                                 <Button
                                     floated='right'
                                     color='red'
@@ -591,6 +693,7 @@ const BuyScreen = (props) => {
                                         console.log('close');
                                         setOpenHistory(false);
                                     }}></Button>
+
                                 <Pagination
                                     activePage={activePage}
                                     onPageChange={onChange}

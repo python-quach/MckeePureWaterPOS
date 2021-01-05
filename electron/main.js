@@ -43,36 +43,6 @@ ORDER BY
 DESC 
 ) WHERE renew IS NULL OR gallonBuy IS NULL ORDER BY record_id ASC `;
 
-const sqlFee = `SELECT SUM(renewFee) FROM (
-
-SELECT 
-	record_id, 
-	account, 
-	firstName, 
-	lastName, 
-	fullname, 
-	memberSince, 
-	areaCode, 
-	field6, 
-	field7, 
-	phone, 
-	gallonCurrent,
-	gallonBuy, 
-	gallonRemain, 
-	renewFee, 
-	invoiceDate, 
-	renew, 
-	lastRenewGallon, 
-	invoiceTime, 
-	overGallon
-FROM 
-	mckee
-WHERE account = '45403' 
-ORDER BY 
-	record_id
-DESC 
-) WHERE renew IS NULL OR gallonBuy IS NULL ORDER BY record_id ASC `;
-
 const sqlGallonbuy = `SELECT SUM(gallonBuy) FROM (
 
 SELECT 
@@ -267,7 +237,7 @@ ipcMain.on(channels.GET_MEMBER_INVOICES, (event, args) => {
     console.log(`get invoice`, account);
     const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT ${limit} OFFSET ${offset}`;
     db.all(getAccountInvoices, (err, row) => {
-        console.log(row);
+        // console.log(row);
 
         event.sender.send(channels.GET_MEMBER_INVOICES, row);
     });
@@ -909,4 +879,43 @@ ipcMain.on(channels.UPDATE_MEMBER, (event, args) => {
         event.sender.send(channels.UPDATE_MEMBER, args);
     });
     // event.sender.send(channels.UPDATE_MEMBER, args);
+});
+
+// GET TOTAL RENEW FEE
+ipcMain.on(channels.GET_TOTAL_FEE, (event, request) => {
+    const sql = `SELECT SUM(renewFee) totalRenewalFee 
+                    FROM 
+                        (SELECT * FROM mckee WHERE account = ?) 
+                WHERE gallonBuy IS NULL OR gallonBuy = 0 OR renew IS NULL`;
+    const { account } = request;
+    console.log(`getTotalRenewFee from `, { account });
+
+    db.get(sql, account, (err, row) => {
+        if (err) {
+            return console.log(err.message);
+        }
+        const { totalRenewalFee } = row;
+        console.log(row);
+        event.sender.send(channels.GET_TOTAL_FEE, { totalRenewalFee });
+    });
+});
+
+// GET TOTAL RENEW GALLON
+ipcMain.on(channels.GET_TOTAL_RENEW_GALLON, (event, request) => {
+    const sql = `SELECT SUM(lastRenewGallon) totalRenewalGallon FROM 
+                    (SELECT * FROM mckee WHERE account = ?) 
+                WHERE gallonBuy IS NULL OR gallonBuy = 0 OR renew IS NULL`;
+    const { account } = request;
+    console.log(`getTotalRenewalGallon`, { account });
+    db.get(sql, account, (err, row) => {
+        if (err) {
+            ipcMain.removeAllListeners(channels.GET_TOTAL_RENEW_GALLON);
+            return console.log(err.message);
+        }
+        const { totalRenewalGallon } = row;
+        console.log(row);
+        event.sender.send(channels.GET_TOTAL_RENEW_GALLON, {
+            totalRenewalGallon,
+        });
+    });
 });
