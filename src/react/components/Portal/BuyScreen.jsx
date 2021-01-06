@@ -297,34 +297,10 @@ const BuyScreen = (props) => {
 
             renew(renewData, () => {
                 getAccount(account, (currentRecord) => {
-                    // Update Renew Gallon
-                    // props.getTotalRenewalFee(account, (data) => {
                     getAccountInvoices(account, limit, offset, (data) => {
                         setInvoices(data);
                         resetRenewData(currentRecord);
-                        // props.getTotalRenewalFee(account, (data) => {
-                        //     setTotalRenewalFee(data);
-                        //     props.getTotalRenewalGallon(account, (data) => {
-                        //         console.log(data);
-                        //         setTotalRenewalAmount(data);
-                        //     });
-                        //     resetRenewData(currentRecord);
-                        // });
-                        // props.getTotalRenewalGallon(account, (data) => {
-                        //     console.log(data);
-                        //     setTotalRenewalAmount(data);
-                        //     setTotalRenewalFee(data);
-                        //     // resetRenewData(currentRecord);
-                        // });
-
-                        // props.getTotalRenewalGallon(account, (data) => {
-                        //     console.log('TotalGallon', data);
-                        // });
                     });
-                    // });
-                    // props.getTotalRenewalGallon(account, (data) => {
-
-                    // })
                 });
             });
         });
@@ -418,7 +394,6 @@ const BuyScreen = (props) => {
         setLoading(true);
 
         // Get Total Number of account first
-
         getAccountInvoices(account, limit, offset, (data) => {
             console.log(data);
             setLoading(false);
@@ -584,15 +559,6 @@ const BuyScreen = (props) => {
                             <BuyReceipt detail={detail} />
                         )}
                         <Divider hidden />
-                        <Button
-                            content='Test'
-                            onClick={() => {
-                                console.log('test');
-                                props.getTotalRenewalGallon(account, (data) => {
-                                    console.log({ data });
-                                });
-                            }}
-                        />
                         <Button
                             content='Back'
                             floated='right'
