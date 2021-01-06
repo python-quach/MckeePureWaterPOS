@@ -618,25 +618,29 @@ const BuyScreen = (props) => {
                             //     // setOpenPortal(true);
                             // }}
                             trigger={
-                                <Button
-                                    floated='right'
-                                    content={
-                                        openHistory
-                                            ? 'Close Invoices'
-                                            : 'Show Invoices'
-                                    }
-                                    negative={openHistory}
-                                    positive={!openHistory}
-                                    loading={loading}
-                                    onClick={() => {
-                                        if (!openHistory) {
-                                            handleGetInvoices();
-                                        } else {
-                                            setLimit(10);
-                                            setOffset(0);
+                                !openHistory ? (
+                                    <Button
+                                        floated='right'
+                                        content={
+                                            openHistory
+                                                ? 'Close Invoices'
+                                                : 'Show Invoices'
                                         }
-                                    }}
-                                />
+                                        negative={openHistory}
+                                        positive={!openHistory}
+                                        loading={loading}
+                                        onClick={() => {
+                                            if (!openHistory) {
+                                                // setLimit(10);
+                                                // setOffset(0);
+                                                handleGetInvoices();
+                                            } else {
+                                                setLimit(10);
+                                                setOffset(0);
+                                            }
+                                        }}
+                                    />
+                                ) : null
                             }>
                             <Segment
                                 style={{
@@ -657,7 +661,10 @@ const BuyScreen = (props) => {
                                     content='Close'
                                     onClick={() => {
                                         console.log('close');
+                                        // setLimit(10);
+                                        // setOffset(0);
                                         setOpenHistory(false);
+                                        setActivePage(1);
                                     }}></Button>
 
                                 <Pagination
