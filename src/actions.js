@@ -1,7 +1,6 @@
 import { channels } from './shared/constants';
 import * as actionTypes from './types';
 import { reset, change } from 'redux-form';
-import actions from 'redux-form/lib/actions';
 
 const { ipcRenderer } = window;
 
@@ -255,5 +254,21 @@ export const getTotalRenewalGallon = (account, callback) => (dispatch) => {
             payload: totalRenewalGallon,
         });
         callback(totalRenewalGallon);
+    });
+};
+
+// GET TOTAL BUY GALLON
+export const getTotalBuyGallon = (account, callback) => (dispatch) => {
+    console.log(`getTotalBuyGallon`, { account });
+    ipcRenderer.send(channels.GET_TOTAL_BUY_GALLON, { account });
+    ipcRenderer.on(channels.GET_TOTAL_BUY_GALLON, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.GET_TOTAL_BUY_GALLON);
+        const { totalBuyGallon } = response;
+        console.log(`getTotalBuyGallon`, { response });
+        dispatch({
+            type: actionTypes.GET_TOTAL_BUY_GALLON,
+            payload: totalBuyGallon,
+        });
+        callback(totalBuyGallon);
     });
 };

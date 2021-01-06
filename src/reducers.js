@@ -20,16 +20,18 @@ const accountInitialState = {
     lastAccount: null,
     newMember: null,
     totalFee: null,
+    totalBuyGallon: null,
 };
 
 export function accountReducer(state = accountInitialState, action) {
     switch (action.type) {
-        case actionTypes.GET_TOTAL_FEE: {
+        case actionTypes.GET_TOTAL_FEE:
             return {
                 ...state,
                 totalFee: action.payload,
             };
-        }
+        case actionTypes.GET_TOTAL_BUY_GALLON:
+            return { ...state, totalBuyGallon: action.payload };
         case actionTypes.UPDATE_ACCOUNT:
             return {
                 ...state,

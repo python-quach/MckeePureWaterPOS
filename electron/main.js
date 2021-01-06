@@ -902,9 +902,14 @@ ipcMain.on(channels.GET_TOTAL_FEE, (event, request) => {
 
 // GET TOTAL RENEW GALLON
 ipcMain.on(channels.GET_TOTAL_RENEW_GALLON, (event, request) => {
-    const sql = `SELECT SUM(lastRenewGallon) totalRenewalGallon FROM 
-                    (SELECT * FROM mckee WHERE account = ?) 
+    const sql = `SELECT SUM(lastRenewGallon) totalRenewalGallon FROM
+                    (SELECT * FROM mckee WHERE account = ?)
                 WHERE gallonBuy IS NULL OR gallonBuy = 0 OR renew IS NULL`;
+
+    //     const sql = `SELECT SUM(renewGallon) totalRenewalGallon
+    //     FROM(SELECT * FROM mckee WHERE account = ?)WHERE renew IS NULL
+    // `;
+
     const { account } = request;
     console.log(`getTotalRenewalGallon`, { account });
     db.get(sql, account, (err, row) => {
@@ -912,10 +917,39 @@ ipcMain.on(channels.GET_TOTAL_RENEW_GALLON, (event, request) => {
             ipcMain.removeAllListeners(channels.GET_TOTAL_RENEW_GALLON);
             return console.log(err.message);
         }
+
+        // db.get(
+        //     `SELECT gallonRemain FROM mckee WHERE account = ? LIMIT 1 `,
+        //     account,
+        //     (err, row) => {
+        //         const
+        //     }
+        // );
         const { totalRenewalGallon } = row;
+
         console.log(row);
         event.sender.send(channels.GET_TOTAL_RENEW_GALLON, {
             totalRenewalGallon,
+        });
+    });
+});
+
+// GET TOTAL BUY GALLON
+ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
+    const sql = `SELECT SUM(gallonBuy) totalBuyGallon FROM 
+                (SELECT * FROM mckee WHERE account= ?) 
+                WHERE gallonBuy IS NOT NULL AND gallonBuy != 0 AND renew IS NOT NULL`;
+    const { account } = request;
+    console.log(`getTotalBuyGallon`, { account });
+    db.get(sql, account, (err, row) => {
+        if (err) {
+            ipcMain.removeAllListeners(channels.GET_TOTAL_BUY_GALLON);
+            return console.log(err.message);
+        }
+        const { totalBuyGallon } = row;
+        console.log(row);
+        event.sender.send(channels.GET_TOTAL_BUY_GALLON, {
+            totalBuyGallon,
         });
     });
 });

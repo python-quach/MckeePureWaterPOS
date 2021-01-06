@@ -7,11 +7,9 @@ import {
     Grid,
     Header,
     Pagination,
-    Table,
-    Label,
-    Statistic,
-    Icon,
-    Image,
+    // Table,
+    // Label,
+    // Statistic,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -19,179 +17,171 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import BuyReceipt from './BuyReceipt';
 import RenewReceipt from './RenewReceipt';
+import InvoiceTable from './InvoiceTable';
+// import InvoiceRow from './InvoiceRow';
 import * as actions from '../../../actions';
 
-const Row = (props) => {
-    const checkRenew = () => {
-        if (props.renew === null || props.gallonBuy === null) {
-            return props.gallonRemain;
-        } else if (props.renew === props.gallonBuy) {
-            return 0;
-        } else {
-            return props.renew;
-        }
-    };
+// const Row = (props) => {
+//     const checkRenew = () => {
+//         if (props.renew === null || props.gallonBuy === null) {
+//             return props.gallonRemain;
+//         } else if (props.renew === props.gallonBuy) {
+//             return 0;
+//         } else {
+//             return props.renew;
+//         }
+//     };
 
-    const checkRenewFee = () => {
-        if (props.renew === null) {
-            return props.renewFee;
-        } else if (
-            parseInt(props.gallonBuy) === 0 ||
-            props.gallonBuy === null
-        ) {
-            return props.renewFee;
-        } else {
-            return 0;
-        }
-    };
+//     const checkRenewFee = () => {
+//         if (props.renew === null) {
+//             return props.renewFee;
+//         } else if (
+//             parseInt(props.gallonBuy) === 0 ||
+//             props.gallonBuy === null
+//         ) {
+//             return props.renewFee;
+//         } else {
+//             return 0;
+//         }
+//     };
 
-    const checkGallonCurrent = () => {
-        if (parseInt(props.gallonBuy) === 0) {
-            // if (parseInt(props.gallonBuy) === 0 || props.gallonBuy === nul) {
-            return parseInt(props.gallonRemain) - parseInt(props.renew);
-        } else if (props.renew === null) {
-            return parseInt(props.overGallon);
-        } else if (props.gallonBuy === null) {
-            return parseInt(props.overGallon) - parseInt(props.gallonRemain);
-        } else {
-            return props.gallonCurrent;
-        }
-    };
+//     const checkGallonCurrent = () => {
+//         if (parseInt(props.gallonBuy) === 0) {
+//             return parseInt(props.gallonRemain) - parseInt(props.renew);
+//         } else if (props.renew === null) {
+//             return parseInt(props.overGallon);
+//         } else if (props.gallonBuy === null) {
+//             return parseInt(props.overGallon) - parseInt(props.gallonRemain);
+//         } else {
+//             return props.gallonCurrent;
+//         }
+//     };
 
-    const checkGallonBuy = () => {
-        if (parseInt(props.gallonBuy) === 0 || props.gallonBuy === null) {
-            return 'RENEW';
-        } else if (props.renew === null) {
-            return 'RENEW';
-        } else {
-            return props.gallonBuy;
-        }
-    };
+//     const checkGallonBuy = () => {
+//         if (parseInt(props.gallonBuy) === 0 || props.gallonBuy === null) {
+//             return 'RENEW';
+//         } else if (props.renew === null) {
+//             return 'RENEW';
+//         } else {
+//             return props.gallonBuy;
+//         }
+//     };
 
-    return (
-        <Table.Row
-            // negative={props.gallonRemain <= 0}
-            positive={
-                props.renew === null ||
-                parseInt(props.gallonBuy) === 0 ||
-                props.gallonBuy === null
-            }>
-            <Table.Cell>
-                {props.renew === null ||
-                parseInt(props.gallonBuy) === 0 ||
-                props.gallonBuy === null ? (
-                    <Label color='green' size='large' ribbon>
-                        {props.record_id}
-                    </Label>
-                ) : (
-                    props.record_id
-                )}
-            </Table.Cell>
-            <Table.Cell>{props.account}</Table.Cell>
-            <Table.Cell>{props.memberSince}</Table.Cell>
-            <Table.Cell>{'(' + props.areaCode + ') ' + props.phone}</Table.Cell>
-            <Table.Cell>{props.fullname}</Table.Cell>
-            <Table.Cell textAlign='center'>{checkRenewFee()}</Table.Cell>
-            <Table.Cell textAlign='center'>{checkRenew()}</Table.Cell>
-            <Table.Cell
-                textAlign='center'
-                negative={
-                    props.gallonCurrent - props.renew < 0 ? true : false
-                    // props.renew < props.gallonRemain ? true : false
-                }>
-                {checkGallonCurrent()}
-            </Table.Cell>
-            <Table.Cell textAlign='center'>{checkGallonBuy()}</Table.Cell>
-            <Table.Cell
-                textAlign='center'
-                negative={props.gallonRemain <= 0 ? true : false}>
-                {props.gallonRemain}
-            </Table.Cell>
-            <Table.Cell>
-                {props.invoiceDate + '@' + props.invoiceTime}
-            </Table.Cell>
-            {/* <Table.Cell>
-                <Button
-                    color='red'
-                    content='Void'
-                    onClick={() => {
-                        console.log('Delete invoice', props.record_id);
-                    }}
-                />
-            </Table.Cell> */}
-        </Table.Row>
-    );
-};
+//     return (
+//         <Table.Row
+//             positive={
+//                 props.renew === null ||
+//                 parseInt(props.gallonBuy) === 0 ||
+//                 props.gallonBuy === null
+//             }>
+//             <Table.Cell>
+//                 {props.renew === null ||
+//                 parseInt(props.gallonBuy) === 0 ||
+//                 props.gallonBuy === null ? (
+//                     <Label color='green' size='large' ribbon>
+//                         {props.record_id}
+//                     </Label>
+//                 ) : (
+//                     props.record_id
+//                 )}
+//             </Table.Cell>
+//             <Table.Cell>{props.account}</Table.Cell>
+//             <Table.Cell>{props.memberSince}</Table.Cell>
+//             <Table.Cell>{'(' + props.areaCode + ') ' + props.phone}</Table.Cell>
+//             <Table.Cell>{props.fullname}</Table.Cell>
+//             <Table.Cell textAlign='center'>{checkRenewFee()}</Table.Cell>
+//             <Table.Cell textAlign='center'>{checkRenew()}</Table.Cell>
+//             <Table.Cell
+//                 textAlign='center'
+//                 negative={props.gallonCurrent - props.renew < 0 ? true : false}>
+//                 {checkGallonCurrent()}
+//             </Table.Cell>
+//             <Table.Cell textAlign='center'>{checkGallonBuy()}</Table.Cell>
+//             <Table.Cell
+//                 textAlign='center'
+//                 negative={props.gallonRemain <= 0 ? true : false}>
+//                 {props.gallonRemain}
+//             </Table.Cell>
+//             <Table.Cell>
+//                 {props.invoiceDate + '@' + props.invoiceTime}
+//             </Table.Cell>
+//         </Table.Row>
+//     );
+// };
 
-const InvoiceTable = (props) => {
-    const { invoices, totalRenewalFee, totalRenewalAmount } = props;
-    return invoices ? (
-        <Table celled color='blue' size='small'>
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell content='Invoice' />
-                    <Table.HeaderCell content='Membership' />
-                    <Table.HeaderCell content='Member Since' />
-                    <Table.HeaderCell content='Phone Number' />
-                    <Table.HeaderCell content='Name' />
-                    <Table.HeaderCell content='Renew Fee' />
-                    <Table.HeaderCell content='Gallon Renew' />
-                    <Table.HeaderCell content='Gallon Prev' />
-                    <Table.HeaderCell content='Gallon Buy' />
-                    <Table.HeaderCell content='Gallon Remain' />
-                    <Table.HeaderCell content='Purchase Date' />
-                    {/* <Table.HeaderCell content='Action' /> */}
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {invoices.map((invoice, index) => {
-                    return <Row {...invoice} key={index} />;
-                })}
-            </Table.Body>
-            <Table.Footer>
-                <Table.Row>
-                    <Table.HeaderCell colSpan='4'></Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>
-                        <Statistic color='blue' size='mini'>
-                            <Statistic.Value>TOTAL</Statistic.Value>
-                            {/* <Statistic.Label>Fee Total</Statistic.Label> */}
-                        </Statistic>
-                    </Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>
-                        <Statistic color='green' size='mini'>
-                            <Statistic.Value>
-                                ${totalRenewalFee}
-                            </Statistic.Value>
-                            {/* <Statistic.Label>Fee Total</Statistic.Label> */}
-                        </Statistic>
-                    </Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>
-                        <Statistic color='green' size='mini'>
-                            <Statistic.Value>
-                                {totalRenewalAmount}
-                            </Statistic.Value>
-                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
-                        </Statistic>
-                    </Table.HeaderCell>
-                    <Table.HeaderCell content=''></Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>
-                        <Statistic color='green' size='mini'>
-                            <Statistic.Value>14</Statistic.Value>
-                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
-                        </Statistic>
-                    </Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>
-                        <Statistic color='green' size='mini'>
-                            <Statistic.Value>14</Statistic.Value>
-                            {/* <Statistic.Label>Renew Total</Statistic.Label> */}
-                        </Statistic>
-                    </Table.HeaderCell>
-                    <Table.HeaderCell colSpan='1'></Table.HeaderCell>
-                </Table.Row>
-            </Table.Footer>
-        </Table>
-    ) : null;
-};
+// const InvoiceTable = (props) => {
+//     const {
+//         invoices,
+//         totalRenewalFee,
+//         totalRenewalAmount,
+//         totalBuyGallon,
+//     } = props;
+//     return invoices ? (
+//         <Table celled color='blue' size='small'>
+//             <Table.Header>
+//                 <Table.Row>
+//                     <Table.HeaderCell content='Invoice' />
+//                     <Table.HeaderCell content='Membership' />
+//                     <Table.HeaderCell content='Member Since' />
+//                     <Table.HeaderCell content='Phone Number' />
+//                     <Table.HeaderCell content='Name' />
+//                     <Table.HeaderCell content='Renew Fee' />
+//                     <Table.HeaderCell content='Gallon Renew' />
+//                     <Table.HeaderCell content='Gallon Prev' />
+//                     <Table.HeaderCell content='Gallon Buy' />
+//                     <Table.HeaderCell content='Gallon Remain' />
+//                     <Table.HeaderCell content='Purchase Date' />
+//                 </Table.Row>
+//             </Table.Header>
+//             <Table.Body>
+//                 {/* {invoices.map((invoice, index) => {
+//                     return <Row {...invoice} key={index} />;
+//                 })} */}
+//                 {invoices.map((invoice, index) => (
+//                     <InvoiceRow {...invoice} key={index} />
+//                 ))}
+//             </Table.Body>
+//             <Table.Footer>
+//                 <Table.Row>
+//                     <Table.HeaderCell colSpan='4'></Table.HeaderCell>
+//                     <Table.HeaderCell textAlign='center'>
+//                         <Statistic color='blue' size='mini'>
+//                             <Statistic.Value>TOTAL</Statistic.Value>
+//                         </Statistic>
+//                     </Table.HeaderCell>
+//                     <Table.HeaderCell textAlign='center'>
+//                         <Statistic color='green' size='mini'>
+//                             <Statistic.Value>
+//                                 ${totalRenewalFee}
+//                             </Statistic.Value>
+//                         </Statistic>
+//                     </Table.HeaderCell>
+//                     <Table.HeaderCell textAlign='center'>
+//                         <Statistic color='green' size='mini'>
+//                             <Statistic.Value>
+//                                 {totalRenewalAmount}
+//                             </Statistic.Value>
+//                         </Statistic>
+//                     </Table.HeaderCell>
+//                     <Table.HeaderCell content=''></Table.HeaderCell>
+//                     <Table.HeaderCell textAlign='center'>
+//                         <Statistic color='green' size='mini'>
+//                             <Statistic.Value>{totalBuyGallon}</Statistic.Value>
+//                         </Statistic>
+//                     </Table.HeaderCell>
+//                     <Table.HeaderCell textAlign='center'>
+//                         <Statistic color='green' size='mini'>
+//                             <Statistic.Value>
+//                                 {totalRenewalAmount - totalBuyGallon}
+//                             </Statistic.Value>
+//                         </Statistic>
+//                     </Table.HeaderCell>
+//                     <Table.HeaderCell colSpan='1'></Table.HeaderCell>
+//                 </Table.Row>
+//             </Table.Footer>
+//         </Table>
+//     ) : null;
+// };
 
 const BuyScreen = (props) => {
     const [open, setOpenPortal] = useState(true);
@@ -211,6 +201,8 @@ const BuyScreen = (props) => {
         formBuy,
         totalInvoice,
         getTotalRenewalGallon,
+        getTotalRenewalFee,
+        getTotalBuyGallon,
     } = props;
 
     const { gallonRemain } = detail;
@@ -375,35 +367,38 @@ const BuyScreen = (props) => {
 
     const handleBackButton = () => {
         if (props.membership.members) {
-            props.clearAccount();
-            props.clearMembership();
-            props.clearFindForm();
+            clearAccount();
+            clearMembership();
+            clearFindForm();
             setOpenPortal(false);
-            props.history.push('/find');
+            history.push('/find');
         } else {
-            props.clearAccount();
-            props.clearMembership();
-            props.clearFindForm();
+            clearAccount();
+            clearMembership();
+            clearFindForm();
             setOpenPortal(false);
-            props.history.push('/find');
+            history.push('/find');
         }
     };
 
+    const [totalBuyGallon, setTotalBuyGallon] = useState(0);
+
     const handleGetInvoices = () => {
-        console.log(account);
         setLoading(true);
 
         // Get Total Number of account first
         getAccountInvoices(account, limit, offset, (data) => {
-            console.log(data);
             setLoading(false);
             setInvoices(data);
             setOpenHistory(true);
-            props.getTotalRenewalFee(account, (data) => {
+            getTotalRenewalFee(account, (data) => {
                 setTotalRenewalFee(data);
             });
-            props.getTotalRenewalGallon(account, (data) => {
+            getTotalRenewalGallon(account, (data) => {
                 setTotalRenewalAmount(data);
+            });
+            getTotalBuyGallon(account, (data) => {
+                setTotalBuyGallon(data);
             });
         });
     };
@@ -416,7 +411,6 @@ const BuyScreen = (props) => {
         if (open)
             getAccountInvoices(account, limit, offset, (data) => {
                 setInvoices(data);
-                // setLoading(false);
             });
     }, [offset, account, limit, getAccountInvoices, open]);
 
@@ -481,18 +475,11 @@ const BuyScreen = (props) => {
 
     useEffect(() => {
         if (!account) {
-            props.history.push('/find');
+            history.push('/find');
         }
     });
 
     useEffect(() => {
-        if (invoices) {
-            console.log('invoice', invoices.length);
-        }
-    }, [invoices]);
-
-    useEffect(() => {
-        console.log({ edited });
         if (edited) {
             document.getElementById('areaCode').focus();
         }
@@ -501,15 +488,6 @@ const BuyScreen = (props) => {
     useEffect(() => {
         changeName(formBuy.firstName + ' ' + formBuy.lastName);
     }, [changeName, formBuy.firstName, formBuy.lastName]);
-
-    // Get invoice Total
-    // useEffect(() => {
-    //     if (account) {
-    //         getTotalRenewalGallon(account, (data) => {
-    //             setTotalRenewalAmount(data);
-    //         });
-    //     }
-    // }, [setTotalRenewalAmount, getTotalRenewalGallon, account]);
 
     return (
         <TransitionablePortal
@@ -631,8 +609,6 @@ const BuyScreen = (props) => {
                                         loading={loading}
                                         onClick={() => {
                                             if (!openHistory) {
-                                                // setLimit(10);
-                                                // setOffset(0);
                                                 handleGetInvoices();
                                             } else {
                                                 setLimit(10);
@@ -654,6 +630,8 @@ const BuyScreen = (props) => {
                                     invoices={invoices}
                                     totalRenewalFee={totalRenewalFee}
                                     totalRenewalAmount={totalRenewalAmount}
+                                    totalBuyGallon={totalBuyGallon}
+                                    gallonRemain={gallonRemain}
                                 />
                                 <Button
                                     floated='right'
