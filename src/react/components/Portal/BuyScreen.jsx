@@ -288,9 +288,6 @@ const BuyScreen = (props) => {
         if (!edited) {
             document.getElementById('buy').focus();
         }
-    });
-
-    useEffect(() => {
         if (disabledBuyButton && renewAmount === 0) {
             document.getElementById('renew').focus();
         }
