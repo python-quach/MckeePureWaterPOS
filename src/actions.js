@@ -118,6 +118,11 @@ export const clearForm = () => (dispatch) => {
     dispatch(reset('membership'));
 };
 
+export const resetBuyForm = () => (dispatch) => {
+    console.log('reset buy edit');
+    dispatch(reset('buy'));
+};
+
 export const changeName = (value) => (dispatch) => {
     dispatch(change('buy', 'fullname', value));
 };

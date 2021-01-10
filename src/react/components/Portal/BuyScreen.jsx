@@ -18,7 +18,6 @@ import InvoiceTable from './InvoiceTable';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {
-    const [open, setOpenPortal] = useState(true);
     const {
         getAccountInvoices,
         account,
@@ -27,6 +26,7 @@ const BuyScreen = (props) => {
         getAccount,
         buy,
         renew,
+        resetBuyForm,
         clearAccount,
         clearMembership,
         clearFindForm,
@@ -40,6 +40,9 @@ const BuyScreen = (props) => {
         updateMembership,
     } = props;
 
+    const [open, setOpenPortal] = useState(true);
+    const [openHistory, setOpenHistory] = useState(false);
+
     const { gallonRemain } = detail;
 
     const handleClose = () => {
@@ -49,7 +52,6 @@ const BuyScreen = (props) => {
         setOpenPortal(false);
         history.push('/find');
     };
-    const [openHistory, setOpenHistory] = useState(false);
 
     // Pagination
     const [test, setTest] = useState(0);
@@ -291,9 +293,6 @@ const BuyScreen = (props) => {
         if (disabledBuyButton && renewAmount === 0) {
             document.getElementById('renew').focus();
         }
-    });
-
-    useEffect(() => {
         if (!account) {
             history.push('/find');
         }
@@ -368,6 +367,7 @@ const BuyScreen = (props) => {
                                 content='Cancel Edit'
                                 color='primary'
                                 onClick={() => {
+                                    resetBuyForm();
                                     setEdited(false);
                                 }}
                             />
