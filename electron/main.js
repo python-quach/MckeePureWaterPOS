@@ -74,15 +74,15 @@ DESC
 ) ORDER BY record_id ASC `;
 
 // ESC-POS PRINTER SETUP
-// const escpos = require('escpos');
-// escpos.USB = require('escpos-usb');
+const escpos = require('escpos');
+escpos.USB = require('escpos-usb');
 
-// const device = new escpos.USB();
-// const options = { encoding: 'GB18030' /* default */ };
-// const printer = new escpos.Printer(device, options);
+const device = new escpos.USB();
+const options = { encoding: 'GB18030' /* default */ };
+const printer = new escpos.Printer(device, options);
 
-const device = {};
-const printer = {};
+// const device = {};
+// const printer = {};
 
 let mainWindow;
 
