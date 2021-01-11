@@ -93,7 +93,9 @@ const Row = (props) => {
             <Table.Cell textAlign='center' content={checkRenew()} />
             <Table.Cell
                 textAlign='center'
-                negative={gallonCurrent - renew < 0 ? true : false}
+                // negative={gallonRemain <= 0 ? true : false}
+                // negative={gallonCurrent - renew < 0 ? true : false}
+                // negative={gallonCurrent - renew <= 0 ? true : false}
                 content={checkGallonCurrent()}
             />
             <Table.Cell textAlign='center' content={checkGallonBuy()} />
