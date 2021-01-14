@@ -316,27 +316,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
         threeDigit,
         fourDigit,
     } = args;
-    //     const sql = `INSERT INTO mckee (
-    // 	record_id,
-    // 	account,
-    // 	firstName,
-    // 	lastName,
-    // 	fullname,
-    // 	memberSince,
-    // 	phone,
-    // 	gallonCurrent,
-    // 	gallonBuy,
-    // 	gallonRemain,
-    // 	overGallon,
-    // 	renew,
-    // 	renewFee,
-    // 	lastRenewGallon,
-    // 	invoiceDate,
-    // 	invoiceTime,
-    // 	areaCode,
-    // 	field6,
-    // 	field7
-    // ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
     db.run(
         sql.buy,
         [
@@ -369,19 +349,13 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
                     console.log(row);
-                    // const fullname = `${row.fullname} -- ${row.field7}`;
                     const fullname = `${row.field4} -- ${row.field7}`;
-                    // const account = `[Account #: ${row.account}]`;
                     const account = `[Account #: ${row.field22}]`;
-                    // const prevGallon = `Gallon Prev: ${row.gallonCurrent}`;
                     const prevGallon = `Gallon Prev: ${row.field31}`;
-                    // const gallonBuy = `Gallon Buy:  ${row.gallonBuy}`;
                     const gallonBuy = `Gallon Buy:  ${row.field19}`;
-                    // const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
                     const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
                     const renew2 =
-                        // row.overGallon <= 0
                         row.field12 <= 0
                             ? `=> [Please Renew Membership!!!]`
                             : '';
@@ -401,8 +375,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                             .text(prevGallon)
                             .text(gallonBuy)
                             .text(gallonLeft)
-                            // .text(row.invoiceDate + '@' + row.invoiceTime)
-                            .text(row.field15 + '@' + row.field32)
+                            .text(row.field15 + ' ' + row.field32)
                             .text(blank)
                             .text(invoice)
                             .text(blank)
@@ -411,6 +384,7 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                         event.sender.send(channels.BUY_WATER, {
                             ...row,
                             lastRecord: last,
+                            // lastRecord: this.lastID,
                         });
                     });
                 }
@@ -445,27 +419,7 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
         threeDigit,
         fourDigit,
     } = args;
-    // const sql = `INSERT INTO mckee (
-    // record_id,
-    // account,
-    // firstName,
-    // lastName,
-    // fullname,
-    // memberSince,
-    // phone,
-    // gallonCurrent,
-    // gallonBuy,
-    // gallonRemain,
-    // overGallon,
-    // renew,
-    // renewFee,
-    // lastRenewGallon,
-    // invoiceDate,
-    // invoiceTime,
-    // areaCode,
-    // field6,
-    // field7
-    // ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
     db.run(
         sql.add,
         [
@@ -490,84 +444,49 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
             fourDigit,
         ],
         function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-
+            if (err) return console.log(err.message);
             const last = this.lastID;
 
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
+                    if (err) return console.log(err.message);
                     console.log(row);
-                    // const renewFee = `Membership Fee: $${row.renewFee}`;
                     const renewFee = `Membership Fee: $${row.field9}`;
-                    // const renewGallon = `Total Gallon: ${row.renew}`;
-                    // const fullname = `${row.fullname} -- ${row.field7}`;
                     const fullname = `${row.field4} -- ${row.field7}`;
-                    // const account = `[Account #: ${row.account}]`;
                     const account = `[Account #: ${row.field22}]`;
                     const prevGallon = `Gallon Total: ${row.field31}`;
                     const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
-                    if (args.preOver < 0) {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                .text(blank)
-                                .text(fullname)
-                                .text(account)
-                                .text(renewFee)
-                                .text(prevGallon)
-                                .text(row.invoiceDate + '@' + row.invoiceTime)
-                                .text(blank)
-                                .text(invoice)
-                                .text(blank)
-                                .cut()
-                                .close();
-                            event.sender.send(channels.RENEW_WATER, {
-                                ...row,
-                                lastRecord: last,
-                            });
+
+                    device.open(function (error) {
+                        printer
+                            .font('a')
+                            .align('lt')
+                            .text('Thank You')
+                            .text('Mckee Pure Water')
+                            .text('2349 McKee Rd')
+                            .text('San Jose, CA 95116')
+                            .text('(408) 729-1319')
+                            .text(blank)
+                            .text(fullname)
+                            .text(account)
+                            .text(renewFee)
+                            .text(prevGallon)
+                            .text(row.field15 + ' ' + row.field32)
+                            .text(blank)
+                            .text(invoice)
+                            .text(blank)
+                            .cut()
+                            .close();
+                        event.sender.send(channels.ADD_NEW_MEMBER, {
+                            ...row,
+                            // lastRecord: this.lastID,
+                            lastRecord: last,
                         });
-                    } else {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                .text(blank)
-                                .text(fullname)
-                                .text(account)
-                                .text(renewFee)
-                                .text(prevGallon)
-                                // .text(row.invoiceDate + '@' + row.invoiceTime)
-                                .text(row.field15 + '@' + row.field32)
-                                .text(blank)
-                                .text(invoice)
-                                .text(blank)
-                                .cut()
-                                .close();
-                            // event.sender.send(channels.RENEW_WATER, {
-                            event.sender.send(channels.ADD_NEW_MEMBER, {
-                                ...row,
-                                lastRecord: last,
-                            });
-                        });
-                    }
+                    });
                 }
             );
-
             console.log(`A row has been inserted with rowid ${this.lastID}`);
         }
     );

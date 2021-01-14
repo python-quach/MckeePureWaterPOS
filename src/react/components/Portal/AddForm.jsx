@@ -101,18 +101,6 @@ const AddForm = (props) => {
         console.log({ newMember });
     }, [newMember]);
 
-    // useEffect(() => {
-    //     if (added) {
-    //         setRemainGallon(currentGallon - buyGallon);
-    //         document.getElementById('buy').focus();
-    //         getLastRecord((lastRecord) => {
-    //             console.log('getting last record:', lastRecord);
-    //             document.getElementById('buy').focus();
-    //             // setAdded(false);
-    //         });
-    //     }
-    // }, [added, getLastRecord, currentGallon, buyGallon]);
-
     return (
         <Form size='large'>
             <Form.Group>
@@ -289,6 +277,7 @@ const AddForm = (props) => {
                         !add.phone ||
                         !add.lastName ||
                         !add.firstName ||
+                        add.phone.length < 8 ||
                         added
                     }
                     onClick={(e) => {
