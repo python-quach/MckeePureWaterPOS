@@ -3,13 +3,13 @@ import { Table, Statistic } from 'semantic-ui-react';
 import InvoiceRow from './InvoiceRow';
 
 const InvoiceTable = (props) => {
-    console.log(props);
+    // console.log(props);
     const {
         invoices,
-        totalRenewalFee,
-        totalRenewalAmount,
-        totalBuyGallon,
-        gallonRemain,
+        // totalRenewalFee,
+        // totalRenewalAmount,
+        // totalBuyGallon,
+        // gallonRemain,
     } = props;
     return invoices ? (
         <Table celled color='blue' size='small'>
@@ -33,7 +33,7 @@ const InvoiceTable = (props) => {
                     <InvoiceRow {...invoice} key={index} />
                 ))}
             </Table.Body>
-            <Table.Footer>
+            {/* <Table.Footer>
                 <Table.Row>
                     <Table.HeaderCell colSpan='4'></Table.HeaderCell>
                     <Table.HeaderCell textAlign='center'>
@@ -68,7 +68,7 @@ const InvoiceTable = (props) => {
                     </Table.HeaderCell>
                     <Table.HeaderCell colSpan='1'></Table.HeaderCell>
                 </Table.Row>
-            </Table.Footer>
+            </Table.Footer> */}
         </Table>
     ) : null;
 };

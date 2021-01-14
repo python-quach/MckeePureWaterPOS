@@ -25,7 +25,7 @@ function FindForm({
 
     useEffect(() => {
         if (membership.error) {
-            console.log(membership.field);
+            // console.log(membership.field);
 
             if (membership.field) {
                 document.getElementById(membership.field).focus();
@@ -42,7 +42,7 @@ function FindForm({
                 find(values, (data) => {
                     if (data.memberships) history.push('/member');
                     if (data.membership) {
-                        console.log(data.membership);
+                        // console.log(data.membership);
                         getAccount(data.membership[0].account, () => {
                             history.push('/account');
                         });

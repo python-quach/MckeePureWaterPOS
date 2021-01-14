@@ -82,11 +82,6 @@ const BuyForm = (props) => {
                     component={Form.Input}
                     label='Area Code'
                     normalize={normalizeAreaCode}
-                    // normalize={(value) => {
-                    //     if (value.length <= 3) {
-                    //         return value;
-                    //     }
-                    // }}
                 />
                 <Field
                     name='phone'
@@ -100,11 +95,6 @@ const BuyForm = (props) => {
                     component={Form.Input}
                     label='Phone Number'
                     normalize={normalizeInput}
-                    // normalize={(value) => {
-                    //     if (value.length <= 8) {
-                    //         return value;
-                    //     }
-                    // }}
                 />
                 {!props.edited ? (
                     <Field

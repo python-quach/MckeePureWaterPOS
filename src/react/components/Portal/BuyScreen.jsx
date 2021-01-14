@@ -7,6 +7,8 @@ import {
     Grid,
     Header,
     Pagination,
+    Step,
+    Icon,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -189,7 +191,7 @@ const BuyScreen = (props) => {
         } else {
             setGallonBuy(parseInt(value));
             setGallonAfterBuy(parseInt(gallonRemain) - parseInt(value));
-            console.log('afterBuyGallon', gallonAfterBuy);
+            // console.log('afterBuyGallon', gallonAfterBuy);
         }
     };
 
@@ -436,7 +438,34 @@ const BuyScreen = (props) => {
                                     top: '20%',
                                     zIndex: 1001,
                                 }}>
-                                <Header>This is an example portal</Header>
+                                <Header>
+                                    <Step.Group size='mini'>
+                                        <Step>
+                                            <Icon name='info' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    Invoice History
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                        <Step active>
+                                            <Icon name='user' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    {detail.fullname}
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                        <Step active>
+                                            <Icon name='address card' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    Account# {account}
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                    </Step.Group>
+                                </Header>
                                 <InvoiceTable
                                     invoices={invoices}
                                     totalRenewalFee={totalRenewalFee}
@@ -449,7 +478,7 @@ const BuyScreen = (props) => {
                                     color='red'
                                     content='Close'
                                     onClick={() => {
-                                        console.log('close');
+                                        // console.log('close');
                                         setOpenHistory(false);
                                         setActivePage(1);
                                     }}></Button>

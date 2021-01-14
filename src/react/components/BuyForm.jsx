@@ -59,7 +59,7 @@ const BuyForm = (props) => {
                         width: 2,
                     }}
                     normalize={(value, preValue) => {
-                        console.log(value);
+                        // console.log(value);
                         if (value.length < 6) {
                             return value;
                         } else {
@@ -80,7 +80,7 @@ const BuyForm = (props) => {
                         width: 2,
                     }}
                     normalize={(value, preValue) => {
-                        console.log(value);
+                        // console.log(value);
                         if (value.length < 6) {
                             return value;
                         } else {

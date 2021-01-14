@@ -22,7 +22,7 @@ export const currentDate = () => {
 };
 
 export const normalizeAreaCode = (value, previousValue) => {
-    console.log(value);
+    // console.log(value);
     if (value.length <= 3 && value.match(/^\d+$/g)) {
         if (value.length === 3) {
             // document.getElementById('Phone').focus();
@@ -38,7 +38,7 @@ export const normalizeAreaCode = (value, previousValue) => {
     }
 };
 export const normalizeInput = (value, previousValue) => {
-    console.log({ value, previousValue });
+    // console.log({ value, previousValue });
     if (value.match(/^\d+$/g) && value.length <= 7) {
         if (value.length === 7 && value.length > previousValue.length) {
             // document.getElementById('firstName').focus();
@@ -61,7 +61,7 @@ export const normalizeInput = (value, previousValue) => {
         previousValue.length < value.length &&
         value.length < 9
     ) {
-        console.log('match second if', value);
+        // console.log('match second if', value);
         if (value.match(/^\d+$/g) || value.charAt(3) === '-') {
             return value;
         }

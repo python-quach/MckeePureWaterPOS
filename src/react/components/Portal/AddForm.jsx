@@ -13,6 +13,7 @@ const AddForm = (props) => {
         add,
         find,
         getAccount,
+        // getLastRecord,
         account,
         record,
         firstName,
@@ -20,13 +21,22 @@ const AddForm = (props) => {
         addNewMembership,
         history,
     } = props;
+    const [currentGallon, setCurrentGallon] = useState(0);
+    const [buyGallon, setBuyGallon] = useState(0);
+    const [remain, setRemainGallon] = useState(0);
     const [fee, setFee] = useState(0);
     const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
+    const [newMember, setNewMember] = useState(null);
     const [added, setAdded] = useState(false);
+
+    const [errorAreaCodeMessage, setErrorAreaCodeMessage] = useState(null);
+    const [errorPhone, setErrorPhone] = useState(null);
 
     const addNew = (e) => {
         e.preventDefault();
+        setCurrentGallon(gallonAmount);
+        setRemainGallon(gallonAmount);
         setAdded(true);
         addNewMembership(
             {
@@ -63,12 +73,20 @@ const AddForm = (props) => {
     };
 
     useEffect(() => {
+        console.log({ add });
+    }, [add]);
+
+    useEffect(() => {
         console.log(props.add);
         const { firstName, lastName } = props.add;
         if (firstName && lastName) {
             setFullName(firstName + ' ' + lastName);
         }
     }, [props.add]);
+
+    useEffect(() => {
+        console.log({ newMember });
+    }, [newMember]);
 
     return (
         <Form size='large'>
@@ -143,6 +161,7 @@ const AddForm = (props) => {
                     className='AreaCode'
                     inverted={true}
                     name='areaCode'
+                    error={errorAreaCodeMessage}
                     width={1}
                     placeholder='xxx'
                     component={Form.Input}
@@ -151,6 +170,7 @@ const AddForm = (props) => {
                 />
                 <Field
                     readOnly={added}
+                    error={errorPhone}
                     id='phone'
                     className='PhoneNumber'
                     inverted={true}

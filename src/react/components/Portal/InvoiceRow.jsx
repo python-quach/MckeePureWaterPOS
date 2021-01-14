@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Table, Label } from 'semantic-ui-react';
 
 const Row = (props) => {
-    console.log(props);
+    // console.log(props);
     const {
         renew,
         gallonBuy,
         gallonRemain,
         renewFee,
-        overGallon,
         gallonCurrent,
         record_id,
         account,
@@ -31,17 +30,9 @@ const Row = (props) => {
         } else {
             return 0;
         }
-        // if (renew === null || gallonBuy === null) {
-        //     return gallonRemain;
-        // } else if (renew === gallonBuy) {
-        //     return 0;
-        // } else {
-        //     return renew;
-        // }
     };
 
     const checkRenewFee = () => {
-        // if (renew === null) {
         if (renew !== null) {
             return renewFee;
         } else if (parseInt(gallonBuy) === 0 || gallonBuy === null) {
@@ -52,35 +43,8 @@ const Row = (props) => {
     };
 
     const checkGallonCurrent = () => {
-        // if (parseInt(gallonBuy) === 0) {
-        //     if (renew === null) {
-        //         // return gallonCurrent;
-        //         return 0;
-        //     }
-        //     return parseInt(gallonRemain) - parseInt(renew);
-        // } else if (renew === null) {
-        //     return parseInt(overGallon);
-        // } else if (gallonBuy === null) {
-        //     return parseInt(overGallon) - parseInt(gallonRemain);
-        // } else {
-        //     return gallonCurrent;
-        // }
-        // console.log(overGallon);
-
-        // if (overGallon < 0) {
-        //     console.log(overGallon);
-        //     return overGallon;
-        // } else {
-        //     return gallonCurrent;
-        // }
-
-        // if (gallonBuy === null || renew === null) {
-        //     return 0;
-        // }
-
         if (parseInt(gallonBuy) === 0) {
             if (renew === null) {
-                // return gallonCurrent;
                 return 0;
             }
             return parseInt(gallonRemain) - parseInt(renew);
@@ -93,14 +57,6 @@ const Row = (props) => {
     };
 
     const checkGallonBuy = () => {
-        // if (parseInt(gallonBuy) === 0 || gallonBuy === null) {
-        //     return 'RENEW';
-        // } else if (renew === null) {
-        //     return 'RENEW';
-        // } else {
-        //     return gallonBuy;
-        // }
-
         if (gallonBuy === null) {
             return 'RENEW';
         } else if (parseInt(gallonBuy) === 0) {
@@ -109,10 +65,6 @@ const Row = (props) => {
             return gallonBuy;
         }
     };
-
-    const [positive, setPositive] = useState(
-        renew === null || parseInt(gallonBuy) === 0 || gallonBuy === null
-    );
 
     const RecordID = (props) => {
         const { positive, record_id } = props;
@@ -123,17 +75,9 @@ const Row = (props) => {
         );
     };
 
-    useEffect(() => {
-        setPositive(
-            renew === null || parseInt(gallonBuy) === 0 || gallonBuy === null
-        );
-    }, [renew, gallonBuy]);
-
     return (
         <Table.Row positive={!checkRenewFee() ? false : true}>
-            {/* <Table.Row> */}
             <Table.Cell>
-                {/* <RecordID positive={positive} record_id={record_id} /> */}
                 <RecordID
                     positive={!checkRenewFee() ? false : true}
                     record_id={record_id}
@@ -144,12 +88,9 @@ const Row = (props) => {
             <Table.Cell content={'(' + areaCode + ') ' + phone} />
             <Table.Cell content={fullname} />
             <Table.Cell textAlign='center' content={checkRenewFee()} />
-            {/* <Table.Cell textAlign='center' content={renewFee} /> */}
             <Table.Cell textAlign='center' content={checkRenew()} />
-            {/* <Table.Cell textAlign='center' content={renew} /> */}
             <Table.Cell
                 textAlign='center'
-                // negative={gallonCurrent - renew < 0 ? true : false}
                 negative={
                     parseInt(gallonRemain) - parseInt(renew) < 0 ? true : false
                 }
@@ -160,7 +101,6 @@ const Row = (props) => {
                 textAlign='center'
                 negative={gallonRemain <= 0 ? true : false}
                 content={gallonRemain}
-                // content={gallonCurrent - gallonBuy}
             />
             <Table.Cell content={invoiceDate + '@' + invoiceTime} />
         </Table.Row>
