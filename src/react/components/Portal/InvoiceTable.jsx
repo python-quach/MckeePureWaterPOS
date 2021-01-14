@@ -3,6 +3,7 @@ import { Table, Statistic } from 'semantic-ui-react';
 import InvoiceRow from './InvoiceRow';
 
 const InvoiceTable = (props) => {
+    console.log(props);
     const {
         invoices,
         totalRenewalFee,

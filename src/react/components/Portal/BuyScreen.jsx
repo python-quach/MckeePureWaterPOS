@@ -100,6 +100,7 @@ const BuyScreen = (props) => {
     const renewWaterGallon = (e) => {
         e.preventDefault();
         getLastRecord((lastRecord) => {
+            console.log(detail);
             const updateGallon = parseInt(gallonRemain) + parseInt(renewAmount);
             const renewData = {
                 record_id: parseInt(lastRecord.record_id) + 1,
@@ -120,8 +121,11 @@ const BuyScreen = (props) => {
                 invoiceDate: currentDate(),
                 invoiceTime: getCurrentTime(),
                 areaCode: detail.areaCode,
-                threeDigit: detail.field6,
-                fourDigit: detail.field7,
+                // threeDigit: detail.field6,
+                // fourDigit: detail.field7,
+                threeDigit: detail.phone.slice(0, 3),
+                // fourDigit: detail.field7,
+                fourDigit: detail.phone.slice(4, 8),
             };
 
             renew(renewData, () => {
@@ -139,6 +143,7 @@ const BuyScreen = (props) => {
         if (gallonBuy > 0) {
             e.preventDefault();
             getLastRecord((lastRecord) => {
+                console.log(detail);
                 const insertData = {
                     record_id: parseInt(lastRecord.record_id) + 1,
                     account: detail.account,
@@ -151,14 +156,17 @@ const BuyScreen = (props) => {
                     buyGallon: parseInt(gallonBuy),
                     gallonLeft: parseInt(gallonAfterBuy),
                     overGallon: parseInt(gallonAfterBuy),
-                    renew: 0,
+                    // renew: 0,
+                    renew: null,
                     renewFee: 0,
                     lastRenewGallon: detail.lastRenewGallon,
                     invoiceDate: currentDate(),
                     invoiceTime: getCurrentTime(),
                     areaCode: detail.areaCode,
-                    threeDigit: detail.field6,
-                    fourDigit: detail.field7,
+                    // threeDigit: detail.field6,
+                    threeDigit: detail.phone.slice(0, 3),
+                    // fourDigit: detail.field7,
+                    fourDigit: detail.phone.slice(4, 8),
                 };
                 buy(insertData, () => {
                     getAccount(account, (data) => {
@@ -365,7 +373,8 @@ const BuyScreen = (props) => {
                             <Button
                                 floated='right'
                                 content='Cancel Edit'
-                                color='primary'
+                                color='blue'
+                                // color='primary'
                                 onClick={() => {
                                     resetBuyForm();
                                     setEdited(false);

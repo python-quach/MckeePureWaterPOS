@@ -12,6 +12,7 @@ export const printReceipt = (receipt, callback) => (dispatch) => {
 };
 
 export const buy = (data, callback) => (dispatch) => {
+    console.log(data);
     ipcRenderer.send(channels.BUY_WATER, data);
     ipcRenderer.on(channels.BUY_WATER, (event, args) => {
         ipcRenderer.removeAllListeners(channels.BUY_WATER);

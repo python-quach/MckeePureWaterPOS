@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { reduxForm, formValueSelector } from 'redux-form';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import AddForm from './AddForm';
-import DebugMessage from '../../components/Debug/DebugMessage';
 import * as actions from '../../../actions';
 
 const AddScreen = (props) => {
@@ -46,14 +45,6 @@ const AddScreen = (props) => {
         }
     });
 
-    // useEffect(() => {
-    //     if (!lastRecord && !lastAccount) {
-    //         props.getLastAccount(() => {
-    //             props.getLastRecord(() => {});
-    //         });
-    //     }
-    // });
-
     useEffect(() => {
         if (lastRecord && lastAccount) console.log({ lastRecord, lastAccount });
     }, [lastRecord, lastAccount]);
@@ -75,7 +66,6 @@ const AddScreen = (props) => {
                 }}>
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
-                        {/* <DebugMessage addForm={addForm} /> */}
                         <AddForm
                             date={currentDate}
                             time={getCurrentTime}
