@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Message, Divider } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { formValueSelector } from 'redux-form';
+// import { formValueSelector } from 'redux-form';
 
 const DebugMessage = (props) => (
     <Form.Group>

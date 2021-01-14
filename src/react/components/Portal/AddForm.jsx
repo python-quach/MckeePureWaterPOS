@@ -13,7 +13,6 @@ const AddForm = (props) => {
         add,
         find,
         getAccount,
-        getLastRecord,
         account,
         record,
         firstName,
@@ -21,22 +20,13 @@ const AddForm = (props) => {
         addNewMembership,
         history,
     } = props;
-    const [currentGallon, setCurrentGallon] = useState(0);
-    const [buyGallon, setBuyGallon] = useState(0);
-    const [remain, setRemainGallon] = useState(0);
     const [fee, setFee] = useState(0);
     const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
-    const [newMember, setNewMember] = useState(null);
     const [added, setAdded] = useState(false);
-
-    const [errorAreaCodeMessage, setErrorAreaCodeMessage] = useState(null);
-    const [errorPhone, setErrorPhone] = useState(null);
 
     const addNew = (e) => {
         e.preventDefault();
-        setCurrentGallon(gallonAmount);
-        setRemainGallon(gallonAmount);
         setAdded(true);
         addNewMembership(
             {
@@ -62,22 +52,9 @@ const AddForm = (props) => {
                 fourDigit: add.phone.slice(4, 8),
             },
             () => {
-                // props.clearMembership();
-                // props.clearAccount();
-
-                // console.log(account);
-                // history.push('/account');
-                // getAccount(account + 1, () => {
-                //     history.push('/account');
-                // });
                 find({ account: account + 1 }, (data) => {
-                    // props.clearMembership();
-                    // props.clearAccount();
-                    // console.log(data.membership);
                     getAccount(data.membership[0].account, () => {
                         props.clearMembership();
-                        // props.clearAccount();
-                        // props.clearAccount();
                         history.push('/account');
                     });
                 });
@@ -86,20 +63,12 @@ const AddForm = (props) => {
     };
 
     useEffect(() => {
-        console.log({ add });
-    }, [add]);
-
-    useEffect(() => {
         console.log(props.add);
         const { firstName, lastName } = props.add;
         if (firstName && lastName) {
             setFullName(firstName + ' ' + lastName);
         }
     }, [props.add]);
-
-    useEffect(() => {
-        console.log({ newMember });
-    }, [newMember]);
 
     return (
         <Form size='large'>
@@ -174,7 +143,6 @@ const AddForm = (props) => {
                     className='AreaCode'
                     inverted={true}
                     name='areaCode'
-                    error={errorAreaCodeMessage}
                     width={1}
                     placeholder='xxx'
                     component={Form.Input}
@@ -183,7 +151,6 @@ const AddForm = (props) => {
                 />
                 <Field
                     readOnly={added}
-                    error={errorPhone}
                     id='phone'
                     className='PhoneNumber'
                     inverted={true}
@@ -285,89 +252,6 @@ const AddForm = (props) => {
                     }}
                 />
             </Form.Group>
-            {/* <Form.Group>
-                <Form.Input type='hidden' width={12} />
-                <Form.Input
-                    name='currentGallon'
-                    className='AreaCode'
-                    value={currentGallon}
-                    disabled={!currentGallon && !added}
-                    width={1}
-                    readOnly
-                    inverted={true}
-                    label='Current'
-                    onChange={(e, { value }) => {
-                        if (isNaN(parseInt(value))) {
-                            setCurrentGallon(0);
-                        } else {
-                            setCurrentGallon(parseInt(value));
-                        }
-                    }}
-                />
-                <Form.Input
-                    name='gallonBuy'
-                    className='AreaCode'
-                    id='buy'
-                    label='Buy'
-                    value={buyGallon}
-                    disabled={!added}
-                    inverted={true}
-                    width={1}
-                    onChange={(e, { value }) => {
-                        if (isNaN(parseInt(value))) {
-                            setBuyGallon(0);
-                            setRemainGallon(currentGallon);
-                        } else {
-                            if (value <= currentGallon) {
-                                setBuyGallon(parseInt(value));
-                                setRemainGallon(
-                                    parseInt(currentGallon) - parseInt(value)
-                                );
-                            }
-                        }
-                    }}
-                    onKeyPress={(e) =>
-                        e.key === 'Enter' || e.keyCode === 13
-                            ? props.buyWaterGallon(e)
-                            : null
-                    }
-                />
-
-                <Form.Input
-                    name='remain'
-                    label='Remain'
-                    className={
-                        props.gallonBuy > props.currentGallon
-                            ? 'Remain'
-                            : 'AreaCode'
-                    }
-                    width={1}
-                    readOnly
-                    type='text'
-                    inverted={true}
-                    disabled={!remain}
-                    value={remain}
-                    onChange={(e, { value }) => {
-                        if (isNaN(parseInt(value))) {
-                            setRemainGallon(0);
-                        } else {
-                            setRemainGallon(parseInt(value));
-                        }
-                    }}
-                />
-                <Form.Button
-                    content='Buy'
-                    size='large'
-                    style={{
-                        marginTop: '30px',
-                    }}
-                    color='green'
-                    // disabled={!currentGallon && !buyGallon}
-                    disabled={!currentGallon || !buyGallon}
-                    onClick={props.buyWaterGallon}
-                    width={1}
-                />
-            </Form.Group> */}
         </Form>
     );
 };

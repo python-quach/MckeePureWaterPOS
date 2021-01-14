@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
-import Debug from '../Debug/DebugMessage';
+// import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
 function FindContainer(props) {
     const {

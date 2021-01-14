@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Header, Icon, Divider } from 'semantic-ui-react';
-import LoginDebug from './LoginDebug';
+// import LoginDebug from './LoginDebug';
 import LoginForm from './LoginForm';
 import LoginGrid from '../Grid/Grid';
 import { reduxForm, formValueSelector } from 'redux-form';
