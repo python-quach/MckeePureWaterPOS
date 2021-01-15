@@ -18,5 +18,6 @@ module.exports = {
         GET_TOTAL_FEE: 'GET_TOTAL_FEE',
         GET_TOTAL_RENEW_GALLON: 'GET_TOTAL_RENEW_GALLON',
         GET_TOTAL_BUY_GALLON: 'GET_TOTAL_BUY_GALLON',
+        CLOSE_APP: 'CLOSE_APP',
     },
 };

@@ -6,74 +6,9 @@ const { channels } = require('../src/shared/constants');
 const { sql } = require('./query');
 
 const userData = app.getPath('userData');
-// const dbFile = path.resolve(userData, 'db.sqlite3');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
-// const db = new sqlite3.Database(dbFile, (err) => {
-//     if (err) console.error('Database opening error', err);
-//     console.log(`sqlite debug:`, { err, dbFile, userData });
-// });
 
 let db;
-
-// const sqlSum = `SELECT SUM(lastRenewGallon) FROM (
-
-// SELECT
-// 	record_id,
-// 	account,
-// 	firstName,
-// 	lastName,
-// 	fullname,
-// 	memberSince,
-// 	areaCode,
-// 	field6,
-// 	field7,
-// 	phone,
-// 	gallonCurrent,
-// 	gallonBuy,
-// 	gallonRemain,
-// 	renewFee,
-// 	invoiceDate,
-// 	renew,
-// 	lastRenewGallon,
-// 	invoiceTime,
-// 	overGallon
-// FROM
-// 	mckee
-// WHERE account = '45403'
-// ORDER BY
-// 	record_id
-// DESC
-// ) WHERE renew IS NULL OR gallonBuy IS NULL ORDER BY record_id ASC `;
-
-// const sqlGallonbuy = `SELECT SUM(gallonBuy) FROM (
-
-// SELECT
-// 	record_id,
-// 	account,
-// 	firstName,
-// 	lastName,
-// 	fullname,
-// 	memberSince,
-// 	areaCode,
-// 	field6,
-// 	field7,
-// 	phone,
-// 	gallonCurrent,
-// 	gallonBuy,
-// 	gallonRemain,
-// 	renewFee,
-// 	invoiceDate,
-// 	renew,
-// 	lastRenewGallon,
-// 	invoiceTime,
-// 	overGallon
-// FROM
-// 	mckee
-// WHERE account = '45403'
-// ORDER BY
-// 	record_id
-// DESC
-// ) ORDER BY record_id ASC `;
 
 // ESC-POS PRINTER SETUP
 const escpos = require('escpos');
@@ -81,9 +16,6 @@ escpos.USB = require('escpos-usb');
 const device = new escpos.USB();
 const options = { encoding: 'GB18030' /* default */ };
 const printer = new escpos.Printer(device, options);
-
-// const device = {};
-// const printer = {};
 
 let mainWindow;
 
@@ -142,8 +74,9 @@ app.on('window-all-closed', function () {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
+            app.quit();
         });
-        app.quit();
+        // app.quit();
     }
 });
 
@@ -151,6 +84,13 @@ app.on('activate', function () {
     if (mainWindow === null) {
         createWindow();
     }
+});
+
+// Close Application
+ipcMain.on(channels.CLOSE_APP, (event, _) => {
+    ipcMain.removeAllListeners(channels.CLOSE_APP);
+    console.log('Closing App');
+    app.quit();
 });
 
 // LOGIN USER SQL

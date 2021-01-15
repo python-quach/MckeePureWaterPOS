@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Button } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
 import Field from './LoginField';
 import { string } from 'prop-types';
@@ -15,6 +15,7 @@ function LoginForm(props) {
         submitSucceeded,
         handleSubmit,
         size,
+        closeApp,
     } = props;
     return (
         <Form onSubmit={handleSubmit} size={size}>
@@ -33,6 +34,20 @@ function LoginForm(props) {
                 focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
             />
+            <Button
+                className='LoginButton'
+                circular
+                fluid={true}
+                size='massive'
+                color='black'
+                icon='close'
+                labelPosition='right'
+                content='Close'
+                onClick={(e) => {
+                    e.preventDefault();
+                    console.log('close');
+                    closeApp();
+                }}></Button>
         </Form>
     );
 }

@@ -4,6 +4,10 @@ import { reset, change } from 'redux-form';
 
 const { ipcRenderer } = window;
 
+export const closeApp = () => (dispatch) => {
+    ipcRenderer.send(channels.CLOSE_APP);
+};
+
 export const printReceipt = (receipt, callback) => (dispatch) => {
     ipcRenderer.send(channels.PRINT_RECEIPT, { receipt });
     ipcRenderer.on(channels.PRINT_RECEIPT, (event, args) => {
@@ -12,7 +16,6 @@ export const printReceipt = (receipt, callback) => (dispatch) => {
 };
 
 export const buy = (data, callback) => (dispatch) => {
-    // console.log(data);
     ipcRenderer.send(channels.BUY_WATER, data);
     ipcRenderer.on(channels.BUY_WATER, (event, args) => {
         ipcRenderer.removeAllListeners(channels.BUY_WATER);
