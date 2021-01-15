@@ -76,14 +76,14 @@ let db;
 // ) ORDER BY record_id ASC `;
 
 // ESC-POS PRINTER SETUP
-// const escpos = require('escpos');
-// escpos.USB = require('escpos-usb');
-// const device = new escpos.USB();
-// const options = { encoding: 'GB18030' /* default */ };
-// const printer = new escpos.Printer(device, options);
+const escpos = require('escpos');
+escpos.USB = require('escpos-usb');
+const device = new escpos.USB();
+const options = { encoding: 'GB18030' /* default */ };
+const printer = new escpos.Printer(device, options);
 
-const device = {};
-const printer = {};
+// const device = {};
+// const printer = {};
 
 let mainWindow;
 
@@ -155,7 +155,6 @@ app.on('activate', function () {
 
 // LOGIN USER SQL
 ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
-    // console.log(`verify login:`, { username, password });
     db.get(sql.login, [username, password], (err, row) => {
         if (!row) {
             event.sender.send(channels.LOGIN_USER, {
@@ -163,7 +162,6 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
                 error: `Invalid Credential`,
             });
         } else {
-            // console.log('found user', row);
             const { user_id, username } = row;
             event.sender.send(channels.LOGIN_USER, {
                 user_id,
@@ -177,12 +175,9 @@ ipcMain.on(channels.LOGIN_USER, (event, { username, password }) => {
 ipcMain.on(
     channels.FIND_MEMBERSHIP,
     (event, { phone, account, firstName, lastName }) => {
-        // console.log('find membership', { phone, account, firstName, lastName });
-
         const first = firstName || '';
         const last = lastName || '';
         const fullname = phone || account ? '' : first + '%' + last;
-
         const values = [phone, account, fullname];
 
         let selection;
@@ -202,10 +197,8 @@ ipcMain.on(
         }
 
         db.all(sql.find, values, (err, rows) => {
-            // console.log(rows);
             if (err) console.log({ err });
             if (!rows.length) {
-                // console.log('Unable to find User');
                 event.sender.send(channels.FIND_MEMBERSHIP, {
                     error: {
                         message: `Unable to locate Membership: ${selection} `,
@@ -213,7 +206,6 @@ ipcMain.on(
                     },
                 });
             } else {
-                // console.log(rows.length);
                 if (rows.length === 1) {
                     event.sender.send(channels.FIND_MEMBERSHIP, {
                         membership: rows,
@@ -230,9 +222,6 @@ ipcMain.on(
 
 // GET LAST ACCOUNT:
 ipcMain.on(channels.GET_LAST_ACCOUNT, (event, _) => {
-    // console.log('getting last account');
-    // const sql = `SELECT DISTINCT account FROM mckee ORDER BY record_id DESC LIMIT 1`;
-    // const sql = `SELECT DISTINCT field22 account FROM mckee ORDER BY field20  DESC LIMIT 1`;
     db.get(sql.lastAccount, (err, row) => {
         if (err) return console.log(err.message);
         event.sender.send(channels.GET_LAST_ACCOUNT, {
@@ -243,47 +232,30 @@ ipcMain.on(channels.GET_LAST_ACCOUNT, (event, _) => {
 
 // GET LAST RECORD ID:
 ipcMain.on(channels.LAST_RECORD, (event, args) => {
-    // console.log('getting last record');
-    // const sql = `SELECT MAX(rowid) barcode, field20 record_id FROM mckee`;
     db.get(sql.lastRecord, (err, row) => {
-        // console.log(row);
         event.sender.send(channels.LAST_RECORD, row);
     });
 });
 
 // GET ACCOUNT DETAIL
 ipcMain.on(channels.GET_ACCOUNT, (event, { account }) => {
-    // console.log(`account detail`, { account });
-    // const sql = `SELECT account, record_id, invoiceDate, invoiceTime, firstName, lastName, fullname, field6, field7, areaCode, phone, memberSince, gallonCurrent, gallonBuy, gallonRemain, afterBuyGallonTotal, overGallon, lastRenewGallon, renew, renewFee FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT 1`;
-
     db.get(sql.accountDetail, account, (err, row) => {
-        // console.log(row);
         event.sender.send(channels.GET_ACCOUNT, row);
     });
 });
 
 // GET ACCOUNT INVOICES:
 ipcMain.on(channels.GET_MEMBER_INVOICES, (event, args) => {
-    // console.log('get invoices');
     const { account, limit, offset } = args;
-    // console.log('get invoices', account, limit, offset);
-    // const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT ${limit} OFFSET ${offset}`;
-    // const getAccountInvoices = `SELECT * FROM mckee WHERE account = ${account} ORDER BY record_id DESC LIMIT ${limit} OFFSET ${offset}`;
     db.all(sql.getInvoices, [account, limit, offset], (err, rows) => {
-        // db.all(getAccountInvoices,  (err, row) => {
-        // console.log(rows);
         if (err) return console.log(err.message);
-
         event.sender.send(channels.GET_MEMBER_INVOICES, rows);
     });
 });
 
 // GET TOTAL INVOICE
 ipcMain.on(channels.GET_TOTAL_INVOICE, (event, args) => {
-    // console.log('get total', args);
     const { account } = args;
-    // const sql = `SELECT COUNT(*) as count FROM mckee WHERE account = ?`;
-    // db.get(sql, account, (err, count) => {
     db.get(sql.totalInvoice, account, (err, count) => {
         if (err) return console.log(err.message);
         event.sender.send(channels.GET_TOTAL_INVOICE, {
@@ -294,7 +266,6 @@ ipcMain.on(channels.GET_TOTAL_INVOICE, (event, args) => {
 
 // CUSTOMER WATER BUY UPDATE
 ipcMain.on(channels.BUY_WATER, (event, args) => {
-    // console.log(`add buy update`, args);
     const {
         record_id,
         account,
@@ -348,7 +319,6 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
-                    // console.log(row);
                     const fullname = `${row.field4} -- ${row.field7}`;
                     const account = `[Account #: ${row.field22}]`;
                     const prevGallon = `Gallon Prev: ${row.field31}`;
@@ -384,7 +354,6 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                         event.sender.send(channels.BUY_WATER, {
                             ...row,
                             lastRecord: last,
-                            // lastRecord: this.lastID,
                         });
                     });
                 }
@@ -397,7 +366,6 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
 
 // Add New Membership
 ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
-    // console.log('Add New Member', args);
     const {
         record_id,
         account,
@@ -451,7 +419,6 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
                     if (err) return console.log(err.message);
-                    // console.log(row);
                     const renewFee = `Membership Fee: $${row.field9}`;
                     const fullname = `${row.field4} -- ${row.field7}`;
                     const account = `[Account #: ${row.field22}]`;
@@ -481,7 +448,6 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                             .close();
                         event.sender.send(channels.ADD_NEW_MEMBER, {
                             ...row,
-                            // lastRecord: this.lastID,
                             lastRecord: last,
                         });
                     });
@@ -494,7 +460,6 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
 
 // RENEW
 ipcMain.on(channels.RENEW_WATER, (event, args) => {
-    console.log('renew', args);
     const {
         record_id,
         account,
@@ -516,27 +481,6 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
         threeDigit,
         fourDigit,
     } = args;
-    //     const sql = `INSERT INTO mckee (
-    // 	record_id,
-    // 	account,
-    // 	firstName,
-    // 	lastName,
-    // 	fullname,
-    // 	memberSince,
-    // 	phone,
-    // 	gallonCurrent,
-    // 	gallonBuy,
-    // 	gallonRemain,
-    // 	overGallon,
-    // 	renew,
-    // 	renewFee,
-    // 	lastRenewGallon,
-    // 	invoiceDate,
-    // 	invoiceTime,
-    // 	areaCode,
-    // 	field6,
-    // 	field7
-    // ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(
         sql.renew,
         [
@@ -570,28 +514,14 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
-                    console.log(row);
-                    // const renewGallon = `Renew Gallon: ${row.renew}`;
                     const renewGallon = `Renew Gallon: ${row.field28}`;
                     const overLimit = `Gallon Over: ${args.preOver}`;
-                    // const renewFee = `Renew Fee: $${row.renewFee}`;
                     const renewFee = `Renew Fee: $${row.field9}`;
-                    // const fullname = `${row.fullname} -- ${row.field7}`;
                     const fullname = `${row.field4} -- ${row.field7}`;
-                    // const account = `[Account #: ${row.account}]`;
                     const account = `[Account #: ${row.field22}]`;
-                    // const prevGallon = `Gallon Total: ${row.gallonCurrent}`;
                     const prevGallon = `Gallon Total: ${row.field31}`;
-                    // const gallonBuy = `Gallon Buy:  ${row.gallonBuy}`;
-                    // const invoice = `Invoice #: ${row.record_id}-${this.lastID}`;
                     const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
-                    // const renew2 =
-                    //     row.overGallon < 0
-                    //         ? `=> [Please Renew Membership!!!]`
-                    //         : '';
-                    // const gallonOver = `Gallon Over: ${row.overGallon} ${renew2}`;
-                    // const gallonLeft = `Gallon Left: ${row.gallonRemain}${renew2}`;
                     if (args.preOver < 0) {
                         device.open(function (error) {
                             printer
@@ -609,9 +539,6 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
                                 .text(renewGallon)
                                 .text(args.preOver < 0 ? overLimit : '')
                                 .text(prevGallon)
-                                // .text(gallonLeft)
-                                // .text(args.preOver)
-                                // .text(row.invoiceDate + '@' + row.invoiceTime)
                                 .text(row.field15 + '@' + row.field32)
                                 .text(blank)
                                 .text(invoice)
@@ -639,7 +566,6 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
                                 .text(renewFee)
                                 .text(renewGallon)
                                 .text(prevGallon)
-                                // .text(row.invoiceDate + '@' + row.invoiceTime)
                                 .text(row.field15 + '@' + row.field32)
                                 .text(blank)
                                 .text(invoice)
@@ -663,8 +589,6 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
 // Print Receipt
 ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
     const { receipt } = args;
-    // console.log('print receipt', receipt);
-
     const fullname = `${
         receipt.detail.fullname
     } -- ${receipt.detail.phone.slice(4, 8)} `;
@@ -707,12 +631,7 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
 });
 
 // GET CURRENT GALLON FOR MEMBER
-// WEE NEED TO TAKE IN ACCOUNT
 ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
-    // console.log('current gallon', args);
-    //     const sql = `SELECT account, firstName, lastName, fullname,  areaCode, phone, memberSince, gallonCurrent, gallonBuy, afterBuyGallonTotal, gallonRemain, overGallon, lastRenewGallon, renewFee, renewGallon, record_id, invoiceDate, invoiceTime FROM mckee WHERE account = '${args}' ORDER BY record_id DESC LIMIT 1;
-    // `;
-
     db.get(sql.currentGallon, (err, row) => {
         event.sender.send(channels.GET_CURRENT_GALLON, row);
     });
@@ -720,7 +639,6 @@ ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {
 
 // UPDATE MEMBERSHIP INFO
 ipcMain.on(channels.UPDATE_MEMBER, (event, args) => {
-    // console.log(`Account update:`, { args });
     const { firstName, lastName, areaCode, phone, account } = args;
 
     const threeDigit = phone.slice(0, 3);
@@ -738,101 +656,65 @@ ipcMain.on(channels.UPDATE_MEMBER, (event, args) => {
         account,
     ];
 
-    // console.log(data);
-    // const sql = `UPDATE
-    //                 mckee
-    //             SET
-    //                 areaCode = ?,
-    //                 phone = ?,
-    //                 firstName = ?,
-    //                 lastName  = ?,
-    //                 fullname = ?,
-    //                 field6 = ?,
-    //                 field7 = ?
-    //             WHERE account = ?`;
-
-    // console.log({ sql });
-
     db.run(sql.update, data, function (err) {
         if (err) {
             return console.error(err.message);
         }
-        // console.log(`Row(s) updated: ${this.changes}`);
         event.sender.send(channels.UPDATE_MEMBER, args);
     });
-    // event.sender.send(channels.UPDATE_MEMBER, args);
 });
 
 // GET TOTAL RENEW FEE
 ipcMain.on(channels.GET_TOTAL_FEE, (event, request) => {
-    // const sql = `SELECT SUM(renewFee) totalRenewalFee
-    //                 FROM
-    //                     (SELECT * FROM mckee WHERE account = ?)
-    //             WHERE gallonBuy IS NULL OR gallonBuy = 0 OR renew IS NULL`;
     const { account } = request;
-    // console.log(`getTotalRenewFee from `, { account });
 
-    db.get(sql.totalRenewFee, account, (err, row) => {
-        // db.get(sql, account, (err, row) => {
+    db.get(sql.totalFee, account, (err, row) => {
         if (err) {
+            ipcMain.removeAllListeners(channels.GET_TOTAL_FEE);
             return console.log(err.message);
         }
+
         const { totalRenewalFee } = row;
-        // console.log(row);
         event.sender.send(channels.GET_TOTAL_FEE, { totalRenewalFee });
     });
 });
 
 // GET TOTAL RENEW GALLON
 ipcMain.on(channels.GET_TOTAL_RENEW_GALLON, (event, request) => {
-    // const sql = `SELECT SUM(lastRenewGallon) totalRenewalGallon FROM
-    //                 (SELECT * FROM mckee WHERE account = ?)
-    //             WHERE gallonBuy IS NULL OR gallonBuy = 0 OR renew IS NULL`;
-
-    //     const sql = `SELECT SUM(renewGallon) totalRenewalGallon
-    //     FROM(SELECT * FROM mckee WHERE account = ?)WHERE renew IS NULL
-    // `;
-
     const { account } = request;
-    // console.log(`getTotalRenewalGallon`, { account });
-    // db.get(sql, account, (err, row) => {
-    db.get(sql.totalRenewGallon, account, (err, row) => {
+    db.all(sql.totalRenew, account, (err, row) => {
         if (err) {
             ipcMain.removeAllListeners(channels.GET_TOTAL_RENEW_GALLON);
             return console.log(err.message);
         }
+        let sum = 0;
+        row.forEach((data) => {
+            // console.log(data);
+            if (parseInt(data.field19) === 0 && data.field28 === null) {
+                sum = sum + parseInt(data.field31);
+                // console.log(sum);
+            } else {
+                if (data.field28 !== null) {
+                    sum = sum + parseInt(data.field28);
+                }
+            }
+        });
 
-        // db.get(
-        //     `SELECT gallonRemain FROM mckee WHERE account = ? LIMIT 1 `,
-        //     account,
-        //     (err, row) => {
-        //         const
-        //     }
-        // );
-        const { totalRenewalGallon } = row;
-
-        // console.log(row);
         event.sender.send(channels.GET_TOTAL_RENEW_GALLON, {
-            totalRenewalGallon,
+            totalRenewalGallon: sum,
         });
     });
 });
 
 // GET TOTAL BUY GALLON
 ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
-    // const sql = `SELECT SUM(gallonBuy) totalBuyGallon FROM
-    //             (SELECT * FROM mckee WHERE account= ?)
-    //             WHERE gallonBuy IS NOT NULL AND gallonBuy != 0 AND renew IS NOT NULL`;
     const { account } = request;
-    // console.log(`getTotalBuyGallon`, { account });
-    // db.get(sql, account, (err, row) => {
-    db.get(sql.totalBuyGallon, account, (err, row) => {
+    db.get(sql.totalBuy, account, (err, row) => {
         if (err) {
             ipcMain.removeAllListeners(channels.GET_TOTAL_BUY_GALLON);
             return console.log(err.message);
         }
         const { totalBuyGallon } = row;
-        // console.log(row);
         event.sender.send(channels.GET_TOTAL_BUY_GALLON, {
             totalBuyGallon,
         });

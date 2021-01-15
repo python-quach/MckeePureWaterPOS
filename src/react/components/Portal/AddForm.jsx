@@ -265,6 +265,7 @@ const AddForm = (props) => {
                         !add.lastName ||
                         !add.firstName ||
                         add.phone.length < 8 ||
+                        add.areaCode.length < 3 ||
                         added
                     }
                     onClick={(e) => {

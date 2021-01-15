@@ -44,7 +44,6 @@ const BuyScreen = (props) => {
 
     const [open, setOpenPortal] = useState(true);
     const [openHistory, setOpenHistory] = useState(false);
-
     const { gallonRemain } = detail;
 
     const handleClose = () => {
@@ -123,10 +122,7 @@ const BuyScreen = (props) => {
                 invoiceDate: currentDate(),
                 invoiceTime: getCurrentTime(),
                 areaCode: detail.areaCode,
-                // threeDigit: detail.field6,
-                // fourDigit: detail.field7,
                 threeDigit: detail.phone.slice(0, 3),
-                // fourDigit: detail.field7,
                 fourDigit: detail.phone.slice(4, 8),
             };
 
@@ -165,9 +161,7 @@ const BuyScreen = (props) => {
                     invoiceDate: currentDate(),
                     invoiceTime: getCurrentTime(),
                     areaCode: detail.areaCode,
-                    // threeDigit: detail.field6,
                     threeDigit: detail.phone.slice(0, 3),
-                    // fourDigit: detail.field7,
                     fourDigit: detail.phone.slice(4, 8),
                 };
                 buy(insertData, () => {
@@ -191,7 +185,6 @@ const BuyScreen = (props) => {
         } else {
             setGallonBuy(parseInt(value));
             setGallonAfterBuy(parseInt(gallonRemain) - parseInt(value));
-            // console.log('afterBuyGallon', gallonAfterBuy);
         }
     };
 
@@ -232,10 +225,9 @@ const BuyScreen = (props) => {
 
     const handleGetInvoices = () => {
         setLoading(true);
-
-        // Get Total Number of account first
-        getAccountInvoices(account, limit, offset, (data) => {
+        getAccountInvoices(account, 10, 0, (data) => {
             setLoading(false);
+            setActivePage(1);
             setInvoices(data);
             setOpenHistory(true);
             getTotalRenewalFee(account, (data) => {
@@ -251,10 +243,11 @@ const BuyScreen = (props) => {
     };
 
     useEffect(() => {
-        if (open)
-            getAccountInvoices(account, limit, offset, (data) => {
-                setInvoices(data);
-            });
+        // console.log({ open, offset, limit });
+        // if (open)
+        getAccountInvoices(account, limit, offset, (data) => {
+            setInvoices(data);
+        });
     }, [offset, account, limit, getAccountInvoices, open]);
 
     useEffect(() => {
@@ -367,7 +360,8 @@ const BuyScreen = (props) => {
                         )}
                         <Divider hidden />
                         <Button
-                            content='Back'
+                            // color='google plus'
+                            content='Done'
                             floated='right'
                             onClick={handleBackButton}
                         />
@@ -422,6 +416,9 @@ const BuyScreen = (props) => {
                                         loading={loading}
                                         onClick={() => {
                                             if (!openHistory) {
+                                                // setLimit(10);
+                                                // setOffset(0);
+                                                // setOpenHistory(true);
                                                 handleGetInvoices();
                                             } else {
                                                 setLimit(10);
@@ -433,7 +430,8 @@ const BuyScreen = (props) => {
                             }>
                             <Segment
                                 style={{
-                                    left: '13%',
+                                    // left: '13%',
+                                    left: '10%',
                                     position: 'fixed',
                                     top: '20%',
                                     zIndex: 1001,
@@ -480,7 +478,11 @@ const BuyScreen = (props) => {
                                     onClick={() => {
                                         // console.log('close');
                                         setOpenHistory(false);
-                                        setActivePage(1);
+                                        // setActivePage(1);
+                                        // setOffset(1 * 10 - 10);
+                                        // setActivePage(1);
+                                        // setLimit(10);
+                                        // setOffset(0);
                                     }}></Button>
 
                                 <Pagination

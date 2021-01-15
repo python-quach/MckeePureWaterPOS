@@ -3,7 +3,7 @@ import {
     TransitionablePortal,
     Segment,
     Grid,
-    Message,
+    // Message,
     Table,
     Pagination,
 } from 'semantic-ui-react';
@@ -82,7 +82,8 @@ const PortalMembership = (props) => {
                             selectable
                             color='blue'
                             inverted
-                            className='MemberTable'>
+                            className='MemberTable'
+                            size='large'>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell content='Account' />
@@ -101,11 +102,11 @@ const PortalMembership = (props) => {
                                 members ? Math.ceil(members.length / 10) : 0
                             }
                         />
-                        <Message>
+                        {/* <Message>
                             <Message.Content>
                                 <pre>{JSON.stringify(membership, null, 2)}</pre>
                             </Message.Content>
-                        </Message>
+                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>

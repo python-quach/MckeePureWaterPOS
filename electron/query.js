@@ -162,13 +162,6 @@ const sql = {
 					ORDER BY 
 						record_id 
 					DESC LIMIT 1`,
-    totalRenewFee: `SELECT SUM(field9) totalRenewalFee 
-                    FROM 
-                        (SELECT * FROM mckee WHERE field22 = ?) 
-					WHERE 
-						field19 IS NULL 
-						OR field19 = 0 
-						OR field28 IS NULL`,
     totalRenewGallon: `SELECT 
 						SUM(field28) totalRenewalGallon 
 					FROM
@@ -179,6 +172,35 @@ const sql = {
 						OR field28 IS NULL`,
     totalBuyGallon: `SELECT SUM(field19) totalBuyGallon FROM 
                 (SELECT * FROM mckee WHERE field22 = ?) 
-                WHERE field19 IS NOT NULL AND field19 != 0 AND field28 IS NOT NULL`,
+				WHERE field19 IS NOT NULL AND field19 != 0 AND field28 IS NOT NULL`,
+    totalFee: `SELECT SUM(fees) totalRenewalFee FROM
+(SELECT 
+	field19 buyGallon,
+	field28 renewAmount,
+	field31 currentGallon,
+	field9 fees
+FROM 
+	mckee 
+WHERE field22 = ?)
+WHERE buyGallon = 0 OR buyGallon IS NULL`,
+    totalRenew: `SELECT * FROM
+(SELECT 
+	field19 ,
+	field28 ,
+	field31,
+	field9 
+FROM 
+	mckee 
+WHERE field22 = ?)
+WHERE field19 = 0 OR field19 IS NULL`,
+    totalBuy: `SELECT SUM(field19) totalBuyGallon FROM
+(SELECT 
+	field19 ,
+	field28 ,
+	field31,
+	field9 
+FROM 
+	mckee 
+WHERE field22 = ?)`,
 };
 exports.sql = sql;
