@@ -129,7 +129,9 @@ function FindContainer(props) {
                         setIconColor={setIconColor}
                         setAnimation={setAnimation}
                     />
+
                     <Divider hidden />
+
                     <Button
                         disabled={
                             phone || account || firstName || lastName
@@ -155,6 +157,21 @@ function FindContainer(props) {
                             });
                         }}
                     />
+                    <Divider hidden />
+                    <Button
+                        color='pink'
+                        circular={true}
+                        fluid={true}
+                        size='massive'
+                        id='ReportButton'
+                        icon='add circle'
+                        labelPosition='right'
+                        content='Daily Report'
+                        onClick={() => {
+                            console.log('Daily Report');
+                        }}
+                    />
+
                     <Divider hidden />
                     <FindLogoutButton
                         hide={hideLogoutButton}
