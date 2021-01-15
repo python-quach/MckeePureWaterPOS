@@ -22,6 +22,7 @@ export const buy = (data, callback) => (dispatch) => {
         callback(args);
     });
 };
+
 export const renew = (data, callback) => (dispatch) => {
     ipcRenderer.send(channels.RENEW_WATER, data);
     ipcRenderer.on(channels.RENEW_WATER, (event, args) => {
@@ -94,18 +95,6 @@ export const getLastAccount = (callback) => (dispatch) => {
     });
 };
 
-// FIND FORM ACTIONS:
-
-// export const getAccount = (account, callback) => (dispatch) {
-//     ipcRenderer.send(channels.GET_ACCOUNT, { account });
-
-//     ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
-//         ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
-//         // console.log(response);
-//         dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
-//         callback();
-//     });
-// },
 export const getLast = (callback) => (dispatch) => {
     ipcRenderer.send(channels.LAST_RECORD);
     ipcRenderer.on(channels.LAST_RECORD, (event, lastRecord) => {
@@ -123,7 +112,6 @@ export const clearForm = () => (dispatch) => {
 };
 
 export const resetBuyForm = () => (dispatch) => {
-    // console.log('reset buy edit');
     dispatch(reset('buy'));
 };
 
@@ -214,7 +202,6 @@ export const updateMembership = (
     { areaCode, phone, firstName, lastName, account },
     callback
 ) => (dispatch) => {
-    // console.log(areaCode, phone, firstName, lastName, account);
     dispatch({
         type: actionTypes.UPDATE_ACCOUNT,
         payload: { areaCode, phone, firstName, lastName },
@@ -228,23 +215,16 @@ export const updateMembership = (
     });
     ipcRenderer.on(channels.UPDATE_MEMBER, (event, response) => {
         ipcRenderer.removeAllListeners(channels.UPDATE_MEMBER);
-        // console.log({ response });
         dispatch({ type: actionTypes.UPDATE_MEMBER, payload: response });
-        // dispatch({
-        //     type: actionTypes.UPDATE_ACCOUNT,
-        //     payload: { areaCode, phone, firstName, lastName, account },
-        // });
         callback(response);
     });
 };
 // GET TOTAL RENEWAL FEE
 export const getTotalRenewalFee = (account, callback) => (dispatch) => {
-    // console.log(`getTotalRenewFee`, { account });
     ipcRenderer.send(channels.GET_TOTAL_FEE, { account });
     ipcRenderer.on(channels.GET_TOTAL_FEE, (event, response) => {
         ipcRenderer.removeAllListeners(channels.GET_TOTAL_FEE);
         const { totalRenewalFee } = response;
-        // console.log(`getTotalRenewalFee`, { response });
         dispatch({ type: actionTypes.GET_TOTAL_FEE, payload: totalRenewalFee });
         callback(totalRenewalFee);
     });
@@ -252,12 +232,10 @@ export const getTotalRenewalFee = (account, callback) => (dispatch) => {
 
 // GET TOTAL RENEWAL GALLON
 export const getTotalRenewalGallon = (account, callback) => (dispatch) => {
-    // console.log(`getTotalRenewalGallon`, { account });
     ipcRenderer.send(channels.GET_TOTAL_RENEW_GALLON, { account });
     ipcRenderer.on(channels.GET_TOTAL_RENEW_GALLON, (event, response) => {
         ipcRenderer.removeAllListeners(channels.GET_TOTAL_RENEW_GALLON);
         const { totalRenewalGallon } = response;
-        // console.log(`getTotalRenewalGallon`, { response });
         dispatch({
             type: actionTypes.GET_TOTAL_RENEW_GALLON,
             payload: totalRenewalGallon,
@@ -268,12 +246,10 @@ export const getTotalRenewalGallon = (account, callback) => (dispatch) => {
 
 // GET TOTAL BUY GALLON
 export const getTotalBuyGallon = (account, callback) => (dispatch) => {
-    // console.log(`getTotalBuyGallon`, { account });
     ipcRenderer.send(channels.GET_TOTAL_BUY_GALLON, { account });
     ipcRenderer.on(channels.GET_TOTAL_BUY_GALLON, (event, response) => {
         ipcRenderer.removeAllListeners(channels.GET_TOTAL_BUY_GALLON);
         const { totalBuyGallon } = response;
-        // console.log(`getTotalBuyGallon`, { response });
         dispatch({
             type: actionTypes.GET_TOTAL_BUY_GALLON,
             payload: totalBuyGallon,

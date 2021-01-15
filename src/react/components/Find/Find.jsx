@@ -12,8 +12,8 @@ import { connect } from 'react-redux';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
-// import Debug from '../Debug/DebugMessage';
 import * as actions from '../../../actions';
+import { currentDate } from '../../helpers/helpers';
 function FindContainer(props) {
     const {
         submitSucceeded,
@@ -129,9 +129,7 @@ function FindContainer(props) {
                         setIconColor={setIconColor}
                         setAnimation={setAnimation}
                     />
-
                     <Divider hidden />
-
                     <Button
                         disabled={
                             phone || account || firstName || lastName
@@ -148,8 +146,6 @@ function FindContainer(props) {
                         content='Add New Membership'
                         onClick={() => {
                             console.log('Add New MemberShip');
-                            // props.clearMembership();
-                            // props.clearAccount();
                             props.getLastAccount(() => {
                                 props.getLastRecord(() => {
                                     props.history.push('/add');
@@ -168,7 +164,7 @@ function FindContainer(props) {
                         labelPosition='right'
                         content='Daily Report'
                         onClick={() => {
-                            console.log('Daily Report');
+                            console.log('Daily Report', currentDate());
                         }}
                     />
 

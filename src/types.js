@@ -15,3 +15,4 @@ export const GET_TOTAL_FEE = 'GET_TOTAL_FEE';
 export const GET_TOTAL_RENEW_GALLON = 'GET_TOTAL_RENEW_GALLON';
 export const GET_TOTAL_BUY_GALLON = 'GET_TOTAL_BUY_GALLON';
 export const CLOSE_APP = 'CLOSE_APP';
+export const REPORT = 'REPORT';
