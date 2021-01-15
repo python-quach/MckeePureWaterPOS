@@ -116,6 +116,9 @@ function FindForm({
                     icon='search'
                     fluid
                     labelPosition='right'
+                    onClick={(e) => {
+                        e.preventDefault();
+                    }}
                 />
             )}
         </Form>
