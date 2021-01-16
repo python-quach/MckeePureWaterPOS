@@ -7,13 +7,14 @@ import {
     Header,
     Icon,
     Button,
+    Input,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import FindGrid from '../Grid/Grid';
 import FindForm from './FindForm';
 import FindLogoutButton from './FindLogoutButton';
 import * as actions from '../../../actions';
-import { currentDate } from '../../helpers/helpers';
+import { currentDate, getCurrentTime } from '../../helpers/helpers';
 function FindContainer(props) {
     const {
         submitSucceeded,
@@ -30,6 +31,7 @@ function FindContainer(props) {
         membership,
         clearMembership,
         getAccount,
+        getDailyReport,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -40,6 +42,7 @@ function FindContainer(props) {
     const [closeMe, setCloseMe] = useState(false);
     const [hideLogoutButton, setHideLogoutButton] = useState(false);
     const [disableFindButton, setDisableFindButton] = useState(false);
+    const [reportDate, setReportDate] = useState(currentDate());
 
     useEffect(() => {
         if (!props.user_id) {
@@ -154,17 +157,26 @@ function FindContainer(props) {
                         }}
                     />
                     <Divider hidden />
+
                     <Button
                         color='pink'
                         circular={true}
                         fluid={true}
                         size='massive'
                         id='ReportButton'
-                        icon='add circle'
+                        icon='file outline'
                         labelPosition='right'
-                        content='Daily Report'
+                        content={`Daily Report: ${currentDate()}`}
                         onClick={() => {
                             console.log('Daily Report', currentDate());
+                            // getDailyReport('12/4/2020', (data) => {
+                            getDailyReport(
+                                currentDate(),
+                                getCurrentTime(),
+                                (data) => {
+                                    console.log({ data });
+                                }
+                            );
                         }}
                     />
 
@@ -178,6 +190,20 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
+                    {/* <Input
+                        action={{
+                            color: 'teal',
+                            labelPosition: 'left',
+                            icon: 'cart',
+                            content: 'Checkout',
+                            circular: true,
+                        }}
+                        type='date'
+                        actionPosition='left'
+                        placeholder='Sales Report'
+                        // value={reportDate}
+                        defaultValue={reportDate}
+                    /> */}
                     {/* <Debug /> */}
                 </FindGrid>
             </Segment>

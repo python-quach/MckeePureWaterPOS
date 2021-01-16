@@ -257,3 +257,14 @@ export const getTotalBuyGallon = (account, callback) => (dispatch) => {
         callback(totalBuyGallon);
     });
 };
+
+// GET DAILY REPORT
+export const getDailyReport = (date, time, callback) => (dispatch) => {
+    console.log({ date });
+    ipcRenderer.send(channels.REPORT, { date, time });
+    ipcRenderer.on(channels.REPORT, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.REPORT);
+        console.log({ response });
+        callback(response);
+    });
+};

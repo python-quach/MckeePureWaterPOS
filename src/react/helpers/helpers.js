@@ -10,6 +10,7 @@ export const getCurrentTime = () => {
 
 export const currentDate = () => {
     const currentdate = new Date();
+    // const currentdate = new Date(2019, 19, 5, 5, 23, 59);
     const datetime =
         currentdate.getMonth() +
         1 +

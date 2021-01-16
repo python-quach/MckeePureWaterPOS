@@ -660,3 +660,97 @@ ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
         });
     });
 });
+
+// GET DAILY REPORT
+ipcMain.on(channels.REPORT, (event, request) => {
+    const { date, time } = request;
+
+    console.log('daily report', { date });
+
+    const sql_renew = `SELECT SUM(renewAmount) totalRenewAmount, SUM(fee) totalFee FROM 
+                            (SELECT 
+	ROWID record_id,
+	field20 invoice_id,
+	field22 account,
+	field15 purchaseDate,
+	field32 purchaseTime,
+	field10 memberSince,
+	field1 firstName,
+	field2 lastName,
+	field4 fullname,
+	field5 areaCode,
+	field6 threeDigit,
+	field7 fourDigit,
+	field8 phone,
+	field31 currentGallon,
+	field19 buyGallon,
+	field12 remainGallon,
+	field28 renewAmount,
+	field9 fee,
+	field30 clerk
+FROM 
+	mckee 
+WHERE field15 = ?) 
+WHERE buyGallon IS NULL OR buyGallon = '0'`;
+    const sql_buy = `SELECT SUM(buyGallon) totalBuy FROM 
+(SELECT 
+	ROWID record_id,
+	field20 invoice_id,
+	field22 account,
+	field15 purchaseDate,
+	field32 purchaseTime,
+	field10 memberSince,
+	field1 firstName,
+	field2 lastName,
+	field4 fullname,
+	field5 areaCode,
+	field6 threeDigit,
+	field7 fourDigit,
+	field8 phone,
+	field31 currentGallon,
+	field19 buyGallon,
+	field12 remainGallon,
+	field28 renewAmount,
+	field9 fee,
+	field30 clerk
+FROM 
+	mckee 
+WHERE field15 = ?) 
+WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
+
+    db.get(sql_renew, date, (err, row) => {
+        const { totalFee, totalRenewAmount } = row;
+
+        console.log({ totalFee, totalRenewAmount });
+
+        db.get(sql_buy, date, (err, row) => {
+            const { totalBuy } = row;
+            console.log({ totalBuy });
+
+            const totalRenewFee = `Total Fee:  $${totalFee}`;
+            const totalRenew = `Total Renew: ${totalRenewAmount}`;
+            const totalBuyAmount = `Total Buy:   ${totalBuy}`;
+
+            device.open(function (error) {
+                printer
+                    .font('a')
+                    .align('lt')
+                    .text('Mckee Pure Water')
+                    .text(`Daily Report`)
+                    .text(`${date} - ${time}`)
+                    .text(totalRenewFee)
+                    .text(totalRenew)
+                    .text(totalBuyAmount)
+                    .text('')
+                    .text('')
+                    .cut()
+                    .close();
+                event.sender.send(channels.REPORT, {
+                    totalFee,
+                    totalRenewAmount,
+                    totalBuy,
+                });
+            });
+        });
+    });
+});
