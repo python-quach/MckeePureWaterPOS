@@ -5,6 +5,9 @@
         },
         {
             "path": "..\\MckeeWaterPos"
+        },
+        {
+            "path": "..\\node-api"
         }
     ],
     "settings": {}

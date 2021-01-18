@@ -202,5 +202,54 @@ WHERE field19 = 0 OR field19 IS NULL`,
 FROM 
 	mckee 
 WHERE field22 = ?)`,
+    reportRenew: `SELECT SUM(renewAmount) totalRenewAmount, SUM(fee) totalFee FROM 
+                          (SELECT ROWID record_id,
+	field20 invoice_id,
+	field22 account,
+	field15 purchaseDate,
+	field32 purchaseTime,
+	field10 memberSince,
+	field1 firstName,
+	field2 lastName,
+	field4 fullname,
+	field5 areaCode,
+	field6 threeDigit,
+	field7 fourDigit,
+	field8 phone,
+	field31 currentGallon,
+	field19 buyGallon,
+	field12 remainGallon,
+	field28 renewAmount,
+	field9 fee,
+	field30 clerk
+FROM 
+	mckee 
+WHERE field15 = ?) 
+WHERE buyGallon IS NULL OR buyGallon = '0'`,
+    reportBuy: `SELECT SUM(buyGallon) totalBuy FROM 
+(SELECT 
+	ROWID record_id,
+	field20 invoice_id,
+	field22 account,
+	field15 purchaseDate,
+	field32 purchaseTime,
+	field10 memberSince,
+	field1 firstName,
+	field2 lastName,
+	field4 fullname,
+	field5 areaCode,
+	field6 threeDigit,
+	field7 fourDigit,
+	field8 phone,
+	field31 currentGallon,
+	field19 buyGallon,
+	field12 remainGallon,
+	field28 renewAmount,
+	field9 fee,
+	field30 clerk
+FROM 
+	mckee 
+WHERE field15 = ?) 
+WHERE buyGallon IS NOT NULL OR buyGallon = '0'`,
 };
 exports.sql = sql;

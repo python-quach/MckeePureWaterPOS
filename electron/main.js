@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, crashReporter } = require('electron');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
@@ -9,6 +9,13 @@ const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
 
 let db;
+
+crashReporter.start({
+    productName: 'PureWater',
+    companyName: 'MckeePureWater',
+    submitURL: 'http://localhost:3000/api/app-crashes',
+    uploadToServer: true,
+});
 
 // ESC-POS PRINTER SETUP
 const escpos = require('escpos');
@@ -718,18 +725,20 @@ FROM
 WHERE field15 = ?) 
 WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
 
-    db.get(sql_renew, date, (err, row) => {
+    // db.get(sql_renew, date, (err, row) => {
+    db.get(sql.reportRenew, date, (err, row) => {
         const { totalFee, totalRenewAmount } = row;
 
         console.log({ totalFee, totalRenewAmount });
 
-        db.get(sql_buy, date, (err, row) => {
+        // db.get(sql_buy, date, (err, row) => {
+        db.get(sql.reportBuy, date, (err, row) => {
             const { totalBuy } = row;
             console.log({ totalBuy });
 
-            const totalRenewFee = `Total Fee:  $${totalFee}`;
-            const totalRenew = `Total Renew: ${totalRenewAmount}`;
-            const totalBuyAmount = `Total Buy:   ${totalBuy}`;
+            const totalRenewFee = `Total Fee:  $${totalFee || 0}`;
+            const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
+            const totalBuyAmount = `Total Buy:   ${totalBuy || 0}`;
 
             device.open(function (error) {
                 printer
