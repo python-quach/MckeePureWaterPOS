@@ -18,6 +18,7 @@ function Login(props) {
         focusInput,
         handleSubmit,
         closeApp,
+        showBackUpDialog,
     } = props;
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -72,6 +73,7 @@ function Login(props) {
                 focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
                 closeApp={closeApp}
+                backup={showBackUpDialog}
             />
             {/* <LoginDebug
                 username={username}

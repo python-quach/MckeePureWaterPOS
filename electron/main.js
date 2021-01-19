@@ -1,4 +1,13 @@
-const { app, BrowserWindow, ipcMain, crashReporter } = require('electron');
+const {
+    app,
+    BrowserWindow,
+    ipcMain,
+    crashReporter,
+    dialog,
+    Menu,
+    shell,
+} = require('electron');
+const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const sqlite3 = require('sqlite3');
@@ -7,6 +16,7 @@ const { sql } = require('./query');
 
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
+// const backupDb = path.resolve(userData, 'backup123.sqlite3');
 
 let db;
 
@@ -27,6 +37,7 @@ const printer = new escpos.Printer(device, options);
 let mainWindow;
 
 function createWindow() {
+    // Connect to Sqlite3 local database
     db = new sqlite3.Database(dbFile, (err) => {
         if (err) console.error('Database opening error', err);
         console.log(`sqlite debug:`, { err, dbFile, userData });
@@ -46,13 +57,18 @@ function createWindow() {
         darkTheme: true,
         backgroundColor: '#060b22',
         frame: true,
+        // frame: false,
         fullscreen: true,
         maximizable: true,
         transparent: false,
+        fullscreenable: true,
+        // transparent: true,
         autoHideMenuBar: true,
+        // autoHideMenuBar: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
+            // devTools: false,
         },
     });
     // mainWindow.removeMenu();
@@ -70,6 +86,51 @@ function createWindow() {
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
     });
+
+    var menu = Menu.buildFromTemplate([
+        {
+            label: 'Menu',
+            submenu: [
+                { label: 'Adjust Notification Value' },
+                {
+                    label: 'CoinMarketCap',
+                    click() {
+                        shell.openExternal('http://coinmarketcap.com');
+                    },
+                },
+                {
+                    label: 'Back Up Database',
+                    click() {
+                        console.log('backing up database');
+                    },
+                },
+                { type: 'separator' }, // Add this
+                {
+                    label: 'Exit',
+                    click() {
+                        app.quit();
+                    },
+                },
+            ],
+        },
+        {
+            label: 'Info',
+            submenu: [
+                {
+                    label: 'debug',
+                    click() {
+                        mainWindow.webContents.openDevTools();
+                    },
+                    accelerator: 'CmdOrCtrl+Shift+I',
+                },
+            ],
+        },
+    ]);
+    Menu.setApplicationMenu(menu);
+
+    // console.log(
+    //     dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+    // );
 }
 
 app.on('ready', createWindow);
@@ -762,4 +823,55 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
             });
         });
     });
+});
+
+ipcMain.on(channels.SHOW_BACKUP_DIALOG, (event, request) => {
+    console.log('open dialog box');
+    const currentdate = new Date();
+    // const currentdate = new Date(2019, 19, 5, 5, 23, 59);
+    const datetime =
+        currentdate.getMonth() +
+        1 +
+        '-' +
+        currentdate.getDate() +
+        '-' +
+        currentdate.getFullYear();
+    console.log(datetime);
+    const saveFile = dialog.showSaveDialog({
+        properties: ['openFile', 'multiSelections'],
+        defaultPath: `backup${datetime}.sqlite3`,
+        filters: [{ name: 'Sqlite3', extensions: ['sqlite3'] }],
+    });
+
+    console.log(saveFile);
+    if (saveFile) {
+        fs.copyFile(dbFile, saveFile, function (err) {
+            if (err) {
+                event.sender.send(channels.SHOW_BACKUP_DIALOG, { open: false });
+                throw err;
+            } else {
+                console.log(
+                    'Successfully copied and moved the file!',
+                    saveFile
+                );
+                event.sender.send(channels.SHOW_BACKUP_DIALOG, {
+                    open: `backup-${datetime}.sqlite3`,
+                });
+            }
+        });
+    } else {
+        event.sender.send(channels.SHOW_BACKUP_DIALOG, { open: false });
+    }
+
+    // fs.copyFile(dbFile, saveFile, function (err) {
+    //     if (err) {
+    //         event.sender.send(channels.SHOW_BACKUP_DIALOG, { open: false });
+    //         throw err;
+    //     } else {
+    //         console.log('Successfully copied and moved the file!', saveFile);
+    //         event.sender.send(channels.SHOW_BACKUP_DIALOG, {
+    //             open: `backup-${datetime}.sqlite3`,
+    //         });
+    //     }
+    // });
 });

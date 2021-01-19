@@ -268,3 +268,13 @@ export const getDailyReport = (date, time, callback) => (dispatch) => {
         callback(response);
     });
 };
+
+export const showBackUpDialog = (callback) => (dispatch) => {
+    console.log('show dialog box');
+    ipcRenderer.send(channels.SHOW_BACKUP_DIALOG);
+    ipcRenderer.on(channels.SHOW_BACKUP_DIALOG, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.SHOW_BACKUP_DIALOG);
+        console.log({ response });
+        callback(response);
+    });
+};
