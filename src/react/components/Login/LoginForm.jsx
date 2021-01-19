@@ -70,14 +70,9 @@ function LoginForm(props) {
                     console.log('Backup');
                     setSave(true);
                     backup((response) => {
-                        // if(!response.open) {
-
-                        // }
                         console.log(response);
                         setSave(false);
-                        // setInfo(response.open);
                     });
-                    // console.log(dialog);
                 }}
             />
         </Form>
