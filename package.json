@@ -1,8 +1,8 @@
 {
     "name": "electron-cra-example-master",
     "author": "Hung Quach",
-    "version": "0.1.0",
-    "productName": "KAKA",
+    "version": "1.0.0",
+    "productName": "MckeePureWater",
     "main": "electron/main.js",
     "private": true,
     "dependencies": {
