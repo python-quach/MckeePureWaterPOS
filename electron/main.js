@@ -839,7 +839,7 @@ ipcMain.on(channels.SHOW_BACKUP_DIALOG, (event, request) => {
     console.log(datetime);
     const saveFile = dialog.showSaveDialog({
         properties: ['openFile', 'multiSelections'],
-        defaultPath: `backup${datetime}.sqlite3`,
+        defaultPath: `backup-${datetime}.sqlite3`,
         filters: [{ name: 'Sqlite3', extensions: ['sqlite3'] }],
     });
 
