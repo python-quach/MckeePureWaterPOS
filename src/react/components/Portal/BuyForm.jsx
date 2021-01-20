@@ -104,7 +104,7 @@ const BuyForm = (props) => {
                         component={Form.Input}
                         label='Customer Name'
                         inverted
-                        width={3}
+                        width={4}
                     />
                 ) : (
                     <>
@@ -151,7 +151,8 @@ const BuyForm = (props) => {
                         />
                     </>
                 )}
-                <Form.Input type='hidden' width={11} />
+                <Form.Input type='hidden' width={10} />
+                {/* <Form.Input type='hidden' width={!props.edited ? 6 : 3} /> */}
                 <Form.Input type='hidden' width={!props.edited ? 6 : 3} />
                 <Form.Input
                     className='AreaCode'
@@ -207,7 +208,7 @@ const BuyForm = (props) => {
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Input type='hidden' width={13} />
+                <Form.Input type='hidden' width={14} />
                 <Form.Input
                     id='renew'
                     label='Renew Fee'

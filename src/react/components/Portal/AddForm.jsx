@@ -162,11 +162,11 @@ const AddForm = (props) => {
                     inverted={true}
                     name='areaCode'
                     error={errorAreaCodeMessage}
-                    width={1}
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
                     normalize={normalizeAreaCode}
+                    width={1}
                 />
                 <Field
                     readOnly={added}
@@ -218,7 +218,8 @@ const AddForm = (props) => {
                 <Form.Input
                     readOnly={added}
                     id='renew'
-                    label='Renew Fee'
+                    // label='Renew Fee'
+                    label='Fee'
                     name='renewalFee'
                     className='AreaCode'
                     value={fee}

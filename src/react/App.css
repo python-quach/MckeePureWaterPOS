@@ -316,6 +316,17 @@
     background-color: #d5c1c124;
 }
 
+.four.wide.field.Test label {
+    color: #fff;
+    margin-bottom: 10px;
+}
+.four.wide.field.four.wide.field.Test div.ui.inverted.input input {
+    /* background-color: black; */
+    color: white;
+    /* background-color: #002b487d; */
+    background-color: #d5c1c124;
+}
+
 /* Area Code */
 .two.wide.field.AreaCode label {
     color: #fff;

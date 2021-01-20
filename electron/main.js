@@ -57,19 +57,17 @@ function createWindow() {
         darkTheme: true,
         backgroundColor: '#060b22',
         frame: true,
-        // frame: false,
-        // fullscreen: true,
         fullscreen: false,
+        // fullscreen: true,
         maximizable: true,
         transparent: false,
         fullscreenable: true,
-        // transparent: true,
         autoHideMenuBar: true,
-        // autoHideMenuBar: false,
+        resizable: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            // devTools: false,
+            devTools: false,
         },
     });
     // mainWindow.removeMenu();
@@ -88,46 +86,46 @@ function createWindow() {
         mainWindow.show();
     });
 
-    var menu = Menu.buildFromTemplate([
-        {
-            label: 'Menu',
-            submenu: [
-                { label: 'Adjust Notification Value' },
-                {
-                    label: 'CoinMarketCap',
-                    click() {
-                        shell.openExternal('http://coinmarketcap.com');
-                    },
-                },
-                {
-                    label: 'Back Up Database',
-                    click() {
-                        console.log('backing up database');
-                    },
-                },
-                { type: 'separator' }, // Add this
-                {
-                    label: 'Exit',
-                    click() {
-                        app.quit();
-                    },
-                },
-            ],
-        },
-        {
-            label: 'Info',
-            submenu: [
-                {
-                    label: 'debug',
-                    click() {
-                        mainWindow.webContents.openDevTools();
-                    },
-                    accelerator: 'CmdOrCtrl+Shift+I',
-                },
-            ],
-        },
-    ]);
-    Menu.setApplicationMenu(menu);
+    // var menu = Menu.buildFromTemplate([
+    //     {
+    //         label: 'Menu',
+    //         submenu: [
+    //             { label: 'Adjust Notification Value' },
+    //             {
+    //                 label: 'CoinMarketCap',
+    //                 click() {
+    //                     shell.openExternal('http://coinmarketcap.com');
+    //                 },
+    //             },
+    //             {
+    //                 label: 'Back Up Database',
+    //                 click() {
+    //                     console.log('backing up database');
+    //                 },
+    //             },
+    //             { type: 'separator' }, // Add this
+    //             {
+    //                 label: 'Exit',
+    //                 click() {
+    //                     app.quit();
+    //                 },
+    //             },
+    //         ],
+    //     },
+    //     {
+    //         label: 'Info',
+    //         submenu: [
+    //             {
+    //                 label: 'debug',
+    //                 click() {
+    //                     mainWindow.webContents.openDevTools();
+    //                 },
+    //                 accelerator: 'CmdOrCtrl+Shift+I',
+    //             },
+    //         ],
+    //     },
+    // ]);
+    // Menu.setApplicationMenu(menu);
 
     // console.log(
     //     dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
