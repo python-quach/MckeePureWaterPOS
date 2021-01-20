@@ -14,6 +14,9 @@ const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
 const { sql } = require('./query');
 
+var usbDetect = require('usb-detection');
+usbDetect.startMonitoring();
+
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
 // const backupDb = path.resolve(userData, 'backup123.sqlite3');
@@ -35,6 +38,14 @@ const options = { encoding: 'GB18030' /* default */ };
 const printer = new escpos.Printer(device, options);
 
 let mainWindow;
+
+usbDetect.on('remove', function (device) {
+    console.log('remove', device);
+});
+
+usbDetect.on('add', function (device) {
+    console.log('add', device);
+});
 
 function createWindow() {
     // Connect to Sqlite3 local database
