@@ -75,12 +75,6 @@ function Login(props) {
                 closeApp={closeApp}
                 backup={showBackUpDialog}
             />
-            {/* <LoginDebug
-                username={username}
-                password={password}
-                errorMessage={errorMessage}
-                submitSucceeded={submitSucceeded}
-            /> */}
         </LoginGrid>
     );
 }

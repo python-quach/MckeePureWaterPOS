@@ -7,7 +7,6 @@ import {
     Header,
     Icon,
     Button,
-    Input,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import FindGrid from '../Grid/Grid';
@@ -42,7 +41,6 @@ function FindContainer(props) {
     const [closeMe, setCloseMe] = useState(false);
     const [hideLogoutButton, setHideLogoutButton] = useState(false);
     const [disableFindButton, setDisableFindButton] = useState(false);
-    const [reportDate, setReportDate] = useState(currentDate());
 
     useEffect(() => {
         if (!props.user_id) {
@@ -132,7 +130,9 @@ function FindContainer(props) {
                         setIconColor={setIconColor}
                         setAnimation={setAnimation}
                     />
+
                     <Divider hidden />
+
                     <Button
                         disabled={
                             phone || account || firstName || lastName
@@ -142,11 +142,11 @@ function FindContainer(props) {
                         color='teal'
                         circular={true}
                         fluid={true}
-                        size='massive'
+                        size='huge'
                         id='AddButton'
                         icon='add circle'
                         labelPosition='right'
-                        content='Add New Membership'
+                        content='New Membership'
                         onClick={() => {
                             console.log('Add New MemberShip');
                             props.getLastAccount(() => {
@@ -159,17 +159,16 @@ function FindContainer(props) {
                     <Divider hidden />
 
                     <Button
-                        color='pink'
+                        color='yellow'
                         circular={true}
                         fluid={true}
-                        size='massive'
+                        size='huge'
                         id='ReportButton'
                         icon='file outline'
                         labelPosition='right'
                         content={`Daily Report: ${currentDate()}`}
                         onClick={() => {
-                            console.log('Daily Report', currentDate());
-                            // getDailyReport('12/4/2020', (data) => {
+                            console.log('Daily Sales Report', currentDate());
                             getDailyReport(
                                 currentDate(),
                                 getCurrentTime(),
@@ -190,21 +189,6 @@ function FindContainer(props) {
                             history.push('/');
                         }}
                     />
-                    {/* <Input
-                        action={{
-                            color: 'teal',
-                            labelPosition: 'left',
-                            icon: 'cart',
-                            content: 'Checkout',
-                            circular: true,
-                        }}
-                        type='date'
-                        actionPosition='left'
-                        placeholder='Sales Report'
-                        // value={reportDate}
-                        defaultValue={reportDate}
-                    /> */}
-                    {/* <Debug /> */}
                 </FindGrid>
             </Segment>
         </TransitionablePortal>

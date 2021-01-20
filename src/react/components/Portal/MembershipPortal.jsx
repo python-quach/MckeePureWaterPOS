@@ -3,7 +3,6 @@ import {
     TransitionablePortal,
     Segment,
     Grid,
-    // Message,
     Table,
     Pagination,
 } from 'semantic-ui-react';
@@ -14,7 +13,7 @@ import { channels } from '../../../shared/constants';
 const { ipcRenderer } = window;
 
 const PortalMembership = (props) => {
-    const { membership, clearMembership, members, getAccount } = props;
+    const { clearMembership, members, getAccount } = props;
     const [open, setOpenPortal] = useState(true);
     const [offset, setOffset] = useState(0);
     const [activePage, setActivePage] = useState(1);
@@ -40,13 +39,8 @@ const PortalMembership = (props) => {
 
     const Row = ({ account, firstName, lastName, fullname, phone }) => (
         <Table.Row
-            // onClick={() => props.history.push('/account')}
             onClick={() => {
                 getAccount(account, () => {
-                    // We will also grab invoice too
-                    // getAccountInvoices(account, () =>
-                    //     props.history.push('/account')
-                    // );
                     props.history.push('/account');
                 });
             }}
@@ -102,11 +96,6 @@ const PortalMembership = (props) => {
                                 members ? Math.ceil(members.length / 10) : 0
                             }
                         />
-                        {/* <Message>
-                            <Message.Content>
-                                <pre>{JSON.stringify(membership, null, 2)}</pre>
-                            </Message.Content>
-                        </Message> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -124,13 +113,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         clearMembership: () => dispatch({ type: actionTypes.CLEAR_MEMBERSHIP }),
-
         getAccount: (account, callback) => {
             ipcRenderer.send(channels.GET_ACCOUNT, { account });
-
             ipcRenderer.on(channels.GET_ACCOUNT, (event, response) => {
                 ipcRenderer.removeAllListeners(channels.GET_ACCOUNT);
-                // console.log(response);
                 dispatch({ type: actionTypes.GET_ACCOUNT, payload: response });
                 callback();
             });

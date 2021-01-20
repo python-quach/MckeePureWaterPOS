@@ -21,22 +21,13 @@ const AddForm = (props) => {
         addNewMembership,
         history,
     } = props;
-    const [currentGallon, setCurrentGallon] = useState(0);
-    const [buyGallon, setBuyGallon] = useState(0);
-    const [remain, setRemainGallon] = useState(0);
     const [fee, setFee] = useState(0);
     const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
-    const [newMember, setNewMember] = useState(null);
     const [added, setAdded] = useState(false);
-
-    const [errorAreaCodeMessage, setErrorAreaCodeMessage] = useState(null);
-    const [errorPhone, setErrorPhone] = useState(null);
 
     const addNew = (e) => {
         e.preventDefault();
-        setCurrentGallon(gallonAmount);
-        setRemainGallon(gallonAmount);
         setAdded(true);
         addNewMembership(
             {
@@ -83,10 +74,6 @@ const AddForm = (props) => {
             setFullName(firstName + ' ' + lastName);
         }
     }, [props.add]);
-
-    useEffect(() => {
-        console.log({ newMember });
-    }, [newMember]);
 
     return (
         <Form size='large'>
@@ -161,7 +148,6 @@ const AddForm = (props) => {
                     className='AreaCode'
                     inverted={true}
                     name='areaCode'
-                    error={errorAreaCodeMessage}
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
@@ -170,7 +156,6 @@ const AddForm = (props) => {
                 />
                 <Field
                     readOnly={added}
-                    error={errorPhone}
                     id='phone'
                     className='PhoneNumber'
                     inverted={true}
@@ -213,12 +198,10 @@ const AddForm = (props) => {
                             return value.toUpperCase();
                     }}
                 />
-                {/* <Form.Input type='hidden' width={5} /> */}
                 <Form.Input type='hidden' width={7} />
                 <Form.Input
                     readOnly={added}
                     id='renew'
-                    // label='Renew Fee'
                     label='Fee'
                     name='renewalFee'
                     className='AreaCode'
@@ -255,7 +238,6 @@ const AddForm = (props) => {
                     width={1}
                 />
                 <Form.Button
-                    // content='Add Membership'
                     content='Add'
                     style={{ marginTop: '30px' }}
                     color='blue'

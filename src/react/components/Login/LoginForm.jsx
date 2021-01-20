@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Button, Divider } from 'semantic-ui-react';
+// import { Form, Button, Divider } from 'semantic-ui-react';
+import { Form, Button } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
 import Field from './LoginField';
 import { string } from 'prop-types';
@@ -21,7 +22,6 @@ function LoginForm(props) {
         backup,
     } = props;
     const [save, setSave] = useState(false);
-    const [info, setInfo] = useState('');
     return (
         <Form onSubmit={handleSubmit} size={size}>
             <Field.Username
@@ -39,42 +39,44 @@ function LoginForm(props) {
                 focusInput={focusInput}
                 submitSucceeded={submitSucceeded}
             />
-            <Button
-                className='LoginButton'
-                circular
-                fluid={true}
-                size='massive'
-                color='black'
-                icon='close'
-                labelPosition='right'
-                content='Close'
-                onClick={(e) => {
-                    e.preventDefault();
-                    console.log('close');
-                    closeApp();
-                }}
-            />
-            <Divider hidden />
-            <Button
-                className='LoginButton'
-                circular
-                fluid={true}
-                size='massive'
-                color='pink'
-                icon='save'
-                labelPosition='right'
-                content={info || 'Backup'}
-                loading={save}
-                onClick={(e) => {
-                    e.preventDefault();
-                    console.log('Backup');
-                    setSave(true);
-                    backup((response) => {
-                        console.log(response);
-                        setSave(false);
-                    });
-                }}
-            />
+
+            <Form.Group>
+                <Button
+                    className='LoginButton'
+                    circular
+                    fluid={true}
+                    size='huge'
+                    color='black'
+                    icon='close'
+                    labelPosition='right'
+                    content='Close'
+                    onClick={(e) => {
+                        e.preventDefault();
+                        console.log('close');
+                        closeApp();
+                    }}
+                />
+                <Button
+                    className='LoginButton'
+                    circular
+                    fluid={true}
+                    size='huge'
+                    color='pink'
+                    icon='save'
+                    labelPosition='right'
+                    content='Backup'
+                    loading={save}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        console.log('Backup');
+                        setSave(true);
+                        backup((response) => {
+                            console.log(response);
+                            setSave(false);
+                        });
+                    }}
+                />
+            </Form.Group>
         </Form>
     );
 }
