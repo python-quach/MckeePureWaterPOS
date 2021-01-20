@@ -151,7 +151,7 @@ const BuyForm = (props) => {
                         />
                     </>
                 )}
-
+                <Form.Input type='hidden' width={11} />
                 <Form.Input type='hidden' width={!props.edited ? 6 : 3} />
                 <Form.Input
                     className='AreaCode'

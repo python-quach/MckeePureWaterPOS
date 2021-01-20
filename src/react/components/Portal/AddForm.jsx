@@ -213,7 +213,8 @@ const AddForm = (props) => {
                             return value.toUpperCase();
                     }}
                 />
-                <Form.Input type='hidden' width={5} />
+                {/* <Form.Input type='hidden' width={5} /> */}
+                <Form.Input type='hidden' width={7} />
                 <Form.Input
                     readOnly={added}
                     id='renew'
@@ -253,7 +254,8 @@ const AddForm = (props) => {
                     width={1}
                 />
                 <Form.Button
-                    content='Add Membership'
+                    // content='Add Membership'
+                    content='Add'
                     style={{ marginTop: '30px' }}
                     color='blue'
                     size='large'
