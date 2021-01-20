@@ -19,7 +19,6 @@ usbDetect.startMonitoring();
 
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
-// const backupDb = path.resolve(userData, 'backup123.sqlite3');
 
 let db;
 
@@ -37,14 +36,30 @@ const device = new escpos.USB();
 const options = { encoding: 'GB18030' /* default */ };
 const printer = new escpos.Printer(device, options);
 
+// let escpos = require('escpos');
+// escpos.USB = require('escpos-usb');
+// let device = new escpos.USB();
+// let options = { encoding: 'GB18030' /* default */ };
+// let printer = new escpos.Printer(device, options);
+
 let mainWindow;
 
 usbDetect.on('remove', function (device) {
     console.log('remove', device);
+    // escpos = null;
+    // device = null;
+    // options = null;
+    // printer = null;
+    app.quit();
 });
 
 usbDetect.on('add', function (device) {
     console.log('add', device);
+    // escpos = require('escpos');
+    // escpos.USB = require('escpos-usb');
+    // device = new escpos.USB();
+    // options = { encoding: 'GB18030' /* default */ };
+    // printer = new escpos.Printer(device, options);
 });
 
 function createWindow() {
@@ -90,8 +105,9 @@ function createWindow() {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
+            mainWindow = null;
         });
-        mainWindow = null;
+        // mainWindow = null;
     });
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
@@ -154,7 +170,6 @@ app.on('window-all-closed', function () {
             console.log('Close the database connection.');
             app.quit();
         });
-        // app.quit();
     }
 });
 
