@@ -53,7 +53,8 @@ const AddScreen = (props) => {
     }, [lastRecord, lastAccount]);
 
     useEffect(() => {
-        document.getElementById('areaCode').focus();
+        // document.getElementById('areaCode').focus();
+        document.getElementById('account').focus();
     }, [lastAccount]);
 
     return (

@@ -46,6 +46,7 @@ const BuyForm = (props) => {
                     width={2}
                 />
                 <Field
+                    id='account'
                     readOnly
                     label='Account'
                     name='account'

@@ -94,55 +94,112 @@ const AddForm = (props) => {
 
         // console.log(kaka);
 
-        addNewMembership(
-            {
-                record_id: record + 1,
-                // account: account + 1,
-                account: accountT,
-                firstName: firstName,
-                lastName: lastName,
-                fullname: fullname,
-                memberSince: add.memberSince,
-                phone: add.phone,
-                prevGallon: gallonAmount,
-                buyGallon: 0,
-                gallonLeft: gallonAmount,
-                overGallon: gallonAmount,
-                preOver: gallonAmount,
-                renew: parseInt(gallonAmount),
-                renewFee: parseInt(fee),
-                lastRenewGallon: parseInt(gallonAmount),
-                invoiceDate: currentDate(),
-                invoiceTime: getCurrentTime(),
-                areaCode: add.areaCode,
-                threeDigit: add.phone.slice(0, 3),
-                fourDigit: add.phone.slice(4, 8),
-            },
-            (response) => {
-                console.log(response);
-                // if (response.error) {
-                //     props.clearMembership();
-                //     console.log(response.error);
-                //     history.push('/add');
-                // } else {
-                //     find({ account: account + 1 }, (data) => {
-                //         console.log(data);
-                //         getAccount(data.membership[0].account, () => {
-                //             props.clearMembership();
-                //             history.push('/account');
-                //         });
-                //     });
-                // }
-                // find({ account: account + 1 }, (data) => {
-                find({ account: accountT }, (data) => {
-                    console.log(data);
-                    getAccount(data.membership[0].account, () => {
-                        props.clearMembership();
-                        history.push('/account');
-                    });
-                });
+        checkDuplicateAccount(accountT, (data) => {
+            if (!data) {
+                addNewMembership(
+                    {
+                        record_id: record + 1,
+                        // account: account + 1,
+                        account: accountT,
+                        firstName: firstName,
+                        lastName: lastName,
+                        fullname: fullname,
+                        memberSince: add.memberSince,
+                        phone: add.phone,
+                        prevGallon: gallonAmount,
+                        buyGallon: 0,
+                        gallonLeft: gallonAmount,
+                        overGallon: gallonAmount,
+                        preOver: gallonAmount,
+                        renew: parseInt(gallonAmount),
+                        renewFee: parseInt(fee),
+                        lastRenewGallon: parseInt(gallonAmount),
+                        invoiceDate: currentDate(),
+                        invoiceTime: getCurrentTime(),
+                        areaCode: add.areaCode,
+                        threeDigit: add.phone.slice(0, 3),
+                        fourDigit: add.phone.slice(4, 8),
+                    },
+                    (response) => {
+                        console.log(response);
+                        // if (response.error) {
+                        //     props.clearMembership();
+                        //     console.log(response.error);
+                        //     history.push('/add');
+                        // } else {
+                        //     find({ account: account + 1 }, (data) => {
+                        //         console.log(data);
+                        //         getAccount(data.membership[0].account, () => {
+                        //             props.clearMembership();
+                        //             history.push('/account');
+                        //         });
+                        //     });
+                        // }
+                        // find({ account: account + 1 }, (data) => {
+                        find({ account: accountT }, (data) => {
+                            console.log(data);
+                            getAccount(data.membership[0].account, () => {
+                                props.clearMembership();
+                                history.push('/account');
+                            });
+                        });
+                    }
+                );
+            } else {
+                props.clearMembership();
+                console.log(data);
             }
-        );
+        });
+
+        // addNewMembership(
+        //     {
+        //         record_id: record + 1,
+        //         // account: account + 1,
+        //         account: accountT,
+        //         firstName: firstName,
+        //         lastName: lastName,
+        //         fullname: fullname,
+        //         memberSince: add.memberSince,
+        //         phone: add.phone,
+        //         prevGallon: gallonAmount,
+        //         buyGallon: 0,
+        //         gallonLeft: gallonAmount,
+        //         overGallon: gallonAmount,
+        //         preOver: gallonAmount,
+        //         renew: parseInt(gallonAmount),
+        //         renewFee: parseInt(fee),
+        //         lastRenewGallon: parseInt(gallonAmount),
+        //         invoiceDate: currentDate(),
+        //         invoiceTime: getCurrentTime(),
+        //         areaCode: add.areaCode,
+        //         threeDigit: add.phone.slice(0, 3),
+        //         fourDigit: add.phone.slice(4, 8),
+        //     },
+        //     (response) => {
+        //         console.log(response);
+        //         // if (response.error) {
+        //         //     props.clearMembership();
+        //         //     console.log(response.error);
+        //         //     history.push('/add');
+        //         // } else {
+        //         //     find({ account: account + 1 }, (data) => {
+        //         //         console.log(data);
+        //         //         getAccount(data.membership[0].account, () => {
+        //         //             props.clearMembership();
+        //         //             history.push('/account');
+        //         //         });
+        //         //     });
+        //         // }
+        //         // find({ account: account + 1 }, (data) => {
+        //         find({ account: accountT }, (data) => {
+        //             console.log(data);
+        //             getAccount(data.membership[0].account, () => {
+        //                 props.clearMembership();
+        //                 history.push('/account');
+        //             });
+        //         });
+        //     }
+        // );
     };
 
     useEffect(() => {
@@ -199,6 +256,7 @@ const AddForm = (props) => {
                 />
                 <Field
                     // readOnly
+                    id='account'
                     label='Account'
                     name='account'
                     className='BuyAccount'
