@@ -31,7 +31,8 @@ const BuyForm = (props) => {
                     readOnly
                     width={2}
                 />
-                <Form.Input type='hidden' width={8} />
+                {/* <Form.Input type='hidden' width={8} /> */}
+                <Form.Input type='hidden' width={6} />
                 <Field
                     name='memberSince'
                     label='Member Since'
@@ -76,12 +77,12 @@ const BuyForm = (props) => {
                     error={!props.edited ? false : true}
                     className='AreaCode'
                     inverted={true}
-                    width={1}
                     readOnly={!props.edited}
                     placeholder='xxx'
                     component={Form.Input}
                     label='Area Code'
                     normalize={normalizeAreaCode}
+                    width={1}
                 />
                 <Field
                     name='phone'
@@ -91,10 +92,10 @@ const BuyForm = (props) => {
                     className='PhoneNumber'
                     inverted={true}
                     placeholder='xxx-xxxx'
-                    width={2}
                     component={Form.Input}
                     label='Phone Number'
                     normalize={normalizeInput}
+                    width={2}
                 />
                 {!props.edited ? (
                     <Field
@@ -151,10 +152,14 @@ const BuyForm = (props) => {
                         />
                     </>
                 )}
-                <Form.Input type='hidden' width={10} />
+                {/* <Form.Input type='hidden' width={10} /> */}
+                {/* <Form.Input type='hidden' width={10} /> */}
+                {/* <Form.Input type='hidden' width={!props.edited ? 6 : 3} /> */}
+                {/* <Form.Input type='hidden' width={!props.edited ? 6 : 3} /> */}
                 {/* <Form.Input type='hidden' width={!props.edited ? 6 : 3} /> */}
                 <Form.Input type='hidden' width={!props.edited ? 6 : 3} />
                 <Form.Input
+                    floated='right'
                     className='AreaCode'
                     width={1}
                     readOnly
@@ -179,6 +184,7 @@ const BuyForm = (props) => {
                             ? props.buyWaterGallon(e)
                             : null
                     }
+                    floated='right'
                 />
 
                 <Form.Input
@@ -204,7 +210,8 @@ const BuyForm = (props) => {
                     color='green'
                     disabled={props.disabledBuyButton}
                     onClick={props.buyWaterGallon}
-                    width={1}
+                    // width
+                    // width={5}
                 />
             </Form.Group>
             <Form.Group>

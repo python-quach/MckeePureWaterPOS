@@ -37,6 +37,8 @@ let device;
 let printer;
 let mainWindow;
 
+usbDetect.startMonitoring();
+
 usbDetect.on('remove', function (device) {
     console.log('remove', device);
     app.quit();
