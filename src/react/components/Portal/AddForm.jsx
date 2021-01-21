@@ -7,14 +7,17 @@ import {
     normalizeAreaCode,
     normalizeInput,
 } from '../../helpers/helpers';
+// import { checkDuplicateAccount } from '../../../actions';
 
 const AddForm = (props) => {
     const {
         add,
         find,
         getAccount,
+        checkDuplicateAccount,
         // getLastRecord,
-        account,
+        // account,
+        accountT,
         record,
         firstName,
         lastName,
@@ -25,14 +28,77 @@ const AddForm = (props) => {
     const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
     const [added, setAdded] = useState(false);
+    // const [testAccount, setTestAccount] = useState(account);
 
     const addNew = (e) => {
         e.preventDefault();
         setAdded(true);
+        // checkDuplicateAccount(account + 1, (data) => {
+        // checkDuplicateAccount(account, (data) => {
+        //     console.log('Account Duplicate', data);
+
+        //     if (!data) {
+        //         addNewMembership(
+        //             {
+        //                 record_id: record + 1,
+        //                 // account: account + 1,
+        //                 account: account,
+        //                 firstName: firstName,
+        //                 lastName: lastName,
+        //                 fullname: fullname,
+        //                 memberSince: add.memberSince,
+        //                 phone: add.phone,
+        //                 prevGallon: gallonAmount,
+        //                 buyGallon: 0,
+        //                 gallonLeft: gallonAmount,
+        //                 overGallon: gallonAmount,
+        //                 preOver: gallonAmount,
+        //                 renew: parseInt(gallonAmount),
+        //                 renewFee: parseInt(fee),
+        //                 lastRenewGallon: parseInt(gallonAmount),
+        //                 invoiceDate: currentDate(),
+        //                 invoiceTime: getCurrentTime(),
+        //                 areaCode: add.areaCode,
+        //                 threeDigit: add.phone.slice(0, 3),
+        //                 fourDigit: add.phone.slice(4, 8),
+        //             },
+        //             (response) => {
+        //                 console.log(response);
+        //                 // if (response.error) {
+        //                 //     props.clearMembership();
+        //                 //     console.log(response.error);
+        //                 //     history.push('/add');
+        //                 // } else {
+        //                 //     find({ account: account + 1 }, (data) => {
+        //                 //         console.log(data);
+        //                 //         getAccount(data.membership[0].account, () => {
+        //                 //             props.clearMembership();
+        //                 //             history.push('/account');
+        //                 //         });
+        //                 //     });
+        //                 // }
+        //                 find({ account: account + 1 }, (data) => {
+        //                     console.log(data);
+        //                     getAccount(data.membership[0].account, () => {
+        //                         props.clearMembership();
+        //                         history.push('/account');
+        //                     });
+        //                 });
+        //             }
+        //         );
+        //     } else {
+        //         props.clearMembership();
+        //         console.log(data);
+        //     }
+        // });
+
+        // console.log(kaka);
+
         addNewMembership(
             {
                 record_id: record + 1,
-                account: account + 1,
+                // account: account + 1,
+                account: accountT,
                 firstName: firstName,
                 lastName: lastName,
                 fullname: fullname,
@@ -52,8 +118,24 @@ const AddForm = (props) => {
                 threeDigit: add.phone.slice(0, 3),
                 fourDigit: add.phone.slice(4, 8),
             },
-            () => {
-                find({ account: account + 1 }, (data) => {
+            (response) => {
+                console.log(response);
+                // if (response.error) {
+                //     props.clearMembership();
+                //     console.log(response.error);
+                //     history.push('/add');
+                // } else {
+                //     find({ account: account + 1 }, (data) => {
+                //         console.log(data);
+                //         getAccount(data.membership[0].account, () => {
+                //             props.clearMembership();
+                //             history.push('/account');
+                //         });
+                //     });
+                // }
+                // find({ account: account + 1 }, (data) => {
+                find({ account: accountT }, (data) => {
+                    console.log(data);
                     getAccount(data.membership[0].account, () => {
                         props.clearMembership();
                         history.push('/account');
@@ -116,7 +198,7 @@ const AddForm = (props) => {
                     width={2}
                 />
                 <Field
-                    readOnly
+                    // readOnly
                     label='Account'
                     name='account'
                     className='BuyAccount'
@@ -127,6 +209,20 @@ const AddForm = (props) => {
                     iconPosition='left'
                     width={2}
                 />
+                {/* <Form.Input
+                    readOnly
+                    label='Account'
+                    name='account'
+                    // value={testAccount + 1}
+                    defaultValue={testAccount + 1}
+                    className='BuyAccount'
+                    placeholder='xxxxxx'
+                    // component={Form.Input}
+                    inverted={true}
+                    icon='hashtag'
+                    iconPosition='left'
+                    width={2}
+                /> */}
                 <Field
                     readOnly
                     label='Invoice'

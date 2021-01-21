@@ -164,7 +164,28 @@ export const addNewMembership = (data, callback) => (dispatch) => {
             type: actionTypes.ADD_NEW_MEMBER,
             payload: response,
         });
-        callback();
+        callback(response);
+    });
+};
+
+export const checkDuplicateAccount = (account, callback) => (dispatch) => {
+    console.log('checkDuplicate', account);
+    ipcRenderer.send(channels.DUPLICATE_ACCOUNT, account);
+    ipcRenderer.on(channels.DUPLICATE_ACCOUNT, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.DUPLICATE_ACCOUNT);
+        console.log('response', response);
+        if (response) {
+            // dispatch(change('add', 'acc', value));
+            dispatch({ type: actionTypes.GET_ACCOUNT, payload: account + 1 });
+            // dispatch(change('add', 'account', account + 2));
+            console.log(account + 1);
+            callback(response);
+            // return false;
+        } else {
+            callback(response);
+
+            // return true;
+        }
     });
 };
 

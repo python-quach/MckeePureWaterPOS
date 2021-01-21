@@ -149,11 +149,17 @@ function FindContainer(props) {
                         content='New Membership'
                         onClick={() => {
                             console.log('Add New MemberShip');
-                            props.getLastAccount(() => {
-                                props.getLastRecord(() => {
-                                    props.history.push('/add');
-                                });
+
+                            props.getLastRecord(() => {
+                                props.history.push('/add');
                             });
+
+                            // props.getLastAccount((account) => {
+                            //     console.log(account);
+                            //     props.getLastRecord(() => {
+                            //         props.history.push('/add');
+                            //     });
+                            // });
                         }}
                     />
                     <Divider hidden />

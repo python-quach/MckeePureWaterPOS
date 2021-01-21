@@ -21,5 +21,6 @@ module.exports = {
         CLOSE_APP: 'CLOSE_APP',
         REPORT: 'REPORT',
         SHOW_BACKUP_DIALOG: 'SHOW_BACKUP_DIALOG',
+        DUPLICATE_ACCOUNT: 'DUPLICATE_ACCOUNT',
     },
 };

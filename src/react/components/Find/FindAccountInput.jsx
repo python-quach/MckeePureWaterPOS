@@ -19,7 +19,8 @@ const FindAccountInput = ({
             onFocus={clearFields}
             {...setting}
             normalize={(value, preValue) => {
-                if (value.match(/^\d+$/g) && value.length < 6) {
+                // if (value.match(/^\d+$/g) && value.length < 6) {
+                if (value.match(/^\d+$/g) && value.length < 10) {
                     return value;
                 } else {
                     if (value.length === 0) {

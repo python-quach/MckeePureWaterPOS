@@ -97,7 +97,7 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            devTools: false,
+            // devTools: false,
         },
     });
     // mainWindow.removeMenu();
@@ -263,6 +263,14 @@ ipcMain.on(
 // GET LAST ACCOUNT:
 ipcMain.on(channels.GET_LAST_ACCOUNT, (event, _) => {
     db.get(sql.lastAccount, (err, row) => {
+        // CHECK FOR SAME ACCOUNT
+        //    const sql = `SELECT DISTINCT field22 FROM mckee WHERE field22 = ?`;
+
+        //    db.get(sql, row.account + 1, (err, row) => {
+        //         if
+
+        //    })
+
         if (err) return console.log(err.message);
         event.sender.send(channels.GET_LAST_ACCOUNT, {
             account: parseInt(row.account),
@@ -461,6 +469,97 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
         fourDigit,
     } = args;
 
+    console.log({ account });
+
+    // db.get(`SELECT * FROM mckee WHERE field22 = ${77250}`, (err, row) => {
+    //     if (err) return console.log(err.message);
+    //     console.log({ row });
+    //     if (row) {
+    //         event.sender.send(channels.ADD_NEW_MEMBER, {
+    //             ...row,
+    //             // null,
+    //             lastRecord: null,
+    //         });
+    //     } else {
+    //         db.run(
+    //             sql.add,
+    //             [
+    //                 record_id,
+    //                 account,
+    //                 firstName,
+    //                 lastName,
+    //                 fullname,
+    //                 memberSince,
+    //                 phone,
+    //                 prevGallon,
+    //                 buyGallon,
+    //                 gallonLeft,
+    //                 overGallon,
+    //                 renew,
+    //                 renewFee,
+    //                 lastRenewGallon,
+    //                 invoiceDate,
+    //                 invoiceTime,
+    //                 areaCode,
+    //                 threeDigit,
+    //                 fourDigit,
+    //             ],
+    //             function (err) {
+    //                 if (err) return console.log(err.message);
+    //                 const last = this.lastID;
+
+    //                 db.get(
+    //                     `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
+    //                     (err, row) => {
+    //                         if (err) return console.log(err.message);
+    //                         const renewFee = `Membership Fee: $${row.field9}`;
+    //                         const fullname = `${row.field4} -- ${row.field7}`;
+    //                         const account = `[Account #: ${row.field22}]`;
+    //                         const prevGallon = `Gallon Total: ${row.field31}`;
+    //                         const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
+    //                         const blank = '';
+    //                         if (device) {
+    //                             device.open(function (error) {
+    //                                 printer
+    //                                     .font('a')
+    //                                     .align('lt')
+    //                                     .text('Thank You')
+    //                                     .text('Mckee Pure Water')
+    //                                     .text('2349 McKee Rd')
+    //                                     .text('San Jose, CA 95116')
+    //                                     .text('(408) 729-1319')
+    //                                     .text(blank)
+    //                                     .text(fullname)
+    //                                     .text(account)
+    //                                     .text(renewFee)
+    //                                     .text(prevGallon)
+    //                                     .text(row.field15 + ' ' + row.field32)
+    //                                     .text(blank)
+    //                                     .text(invoice)
+    //                                     .text(blank)
+    //                                     .cut()
+    //                                     .close();
+    //                                 event.sender.send(channels.ADD_NEW_MEMBER, {
+    //                                     ...row,
+    //                                     lastRecord: last,
+    //                                 });
+    //                             });
+    //                         } else {
+    //                             event.sender.send(channels.ADD_NEW_MEMBER, {
+    //                                 ...row,
+    //                                 lastRecord: last,
+    //                             });
+    //                         }
+    //                     }
+    //                 );
+    //                 console.log(
+    //                     `A row has been inserted with rowid ${this.lastID}`
+    //                 );
+    //             }
+    //         );
+    //     }
+    // });
+
     db.run(
         sql.add,
         [
@@ -485,9 +584,14 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
             fourDigit,
         ],
         function (err) {
-            if (err) return console.log(err.message);
-            const last = this.lastID;
+            // if (err) {
+            //     event.sender.send(channels.ADD_NEW_MEMBER, {
+            //         error: `Duplicate Account Number ${account}`,
+            //     });
+            //     return console.log(err.message);
+            // }
 
+            const last = this.lastID;
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
@@ -938,6 +1042,19 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
             //     });
             // });
         });
+    });
+});
+
+// CHECK FOR DUPLICATE ACCOUNT
+ipcMain.on(channels.DUPLICATE_ACCOUNT, (event, account) => {
+    console.log('account check', account);
+    // console.log('account check', account);
+    const sql = `SELECT DISTINCT field22 FROM mckee WHERE field22 = ?`;
+    // db.get(sql, 77258, (err, row) => {
+    db.get(sql, account, (err, row) => {
+        console.log(row);
+        if (err) return console.log(err.message);
+        event.sender.send(channels.DUPLICATE_ACCOUNT, row);
     });
 });
 

@@ -21,6 +21,8 @@ const AddScreen = (props) => {
         firstName,
         lastName,
         history,
+        accountT,
+        checkDuplicateAccount,
     } = props;
     const [open, setOpenPortal] = useState(true);
 
@@ -40,7 +42,8 @@ const AddScreen = (props) => {
     };
 
     useEffect(() => {
-        if (!lastRecord || !lastAccount) {
+        // if (!lastRecord || !lastAccount) {
+        if (!lastRecord) {
             props.history.push('/find');
         }
     });
@@ -74,9 +77,11 @@ const AddScreen = (props) => {
                             record={lastRecord}
                             getLastRecord={getLastRecord}
                             account={lastAccount}
+                            accountT={accountT}
                             add={addForm}
                             history={history}
                             find={props.find}
+                            checkDuplicateAccount={checkDuplicateAccount}
                             clearAccount={props.clearAccount}
                             clearMembership={props.clearMembership}
                             getAccount={props.getAccount}
@@ -106,7 +111,8 @@ const mapStateToProps = (state) => {
             memberSince: currentDate(),
             todayDate: currentDate(),
             todayTime: getCurrentTime(),
-            account: lastAccount ? lastAccount + 1 : '',
+            // account: lastAccount ? lastAccount + 1 : '',
+            account: '',
             record_id: lastRecord ? lastRecord + 1 : '',
         },
 
@@ -119,6 +125,7 @@ const mapStateToProps = (state) => {
         phone: selectFormData(state, 'phone') || '',
         firstName: selectFormData(state, 'firstName') || '',
         lastName: selectFormData(state, 'lastName') || '',
+        accountT: selectFormData(state, 'account') || '',
         addForm: state.form.add ? state.form.add.values : {},
         submitSucceeded: state.form.add ? state.form.add.submitSucceeded : {},
     };
