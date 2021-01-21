@@ -4,8 +4,8 @@ const {
     ipcMain,
     crashReporter,
     dialog,
-    Menu,
-    shell,
+    // Menu,
+    // shell,
 } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -13,12 +13,9 @@ const url = require('url');
 const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
 const { sql } = require('./query');
-
-var usbDetect = require('usb-detection');
-usbDetect.startMonitoring();
-
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
+const usbDetect = require('usb-detection');
 
 let db;
 
@@ -30,39 +27,44 @@ crashReporter.start({
 });
 
 // ESC-POS PRINTER SETUP
-const escpos = require('escpos');
+let escpos = require('escpos');
 escpos.USB = require('escpos-usb');
-const device = new escpos.USB();
 const options = { encoding: 'GB18030' /* default */ };
-const printer = new escpos.Printer(device, options);
+// const device = new escpos.USB();
+// const printer = new escpos.Printer(device, options);
 
-// let escpos = require('escpos');
-// escpos.USB = require('escpos-usb');
-// let device = new escpos.USB();
-// let options = { encoding: 'GB18030' /* default */ };
-// let printer = new escpos.Printer(device, options);
-
+let device;
+let printer;
 let mainWindow;
 
 usbDetect.on('remove', function (device) {
     console.log('remove', device);
-    // escpos = null;
-    // device = null;
-    // options = null;
-    // printer = null;
     app.quit();
 });
 
 usbDetect.on('add', function (device) {
     console.log('add', device);
-    // escpos = require('escpos');
-    // escpos.USB = require('escpos-usb');
-    // device = new escpos.USB();
-    // options = { encoding: 'GB18030' /* default */ };
-    // printer = new escpos.Printer(device, options);
 });
 
 function createWindow() {
+    // usbDetect.startMonitoring();
+    usbDetect
+        .find()
+        .then(function (devices) {
+            console.log(devices);
+            devices.forEach(function (item) {
+                if (item.deviceName === 'USB Printing Support') {
+                    device = new escpos.USB();
+                    printer = new escpos.Printer(device, options);
+                }
+            });
+        })
+        .catch(function (err) {
+            console.log(err);
+            device = null;
+            printer = null;
+        });
+
     // Connect to Sqlite3 local database
     db = new sqlite3.Database(dbFile, (err) => {
         if (err) console.error('Database opening error', err);
@@ -105,6 +107,7 @@ function createWindow() {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
+            // usbDetect.stopMonitoring();
             mainWindow = null;
         });
         // mainWindow = null;
@@ -168,6 +171,7 @@ app.on('window-all-closed', function () {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
+            // usbDetect.stopMonitoring();
             app.quit();
         });
     }
@@ -183,6 +187,7 @@ app.on('activate', function () {
 ipcMain.on(channels.CLOSE_APP, (event, _) => {
     ipcMain.removeAllListeners(channels.CLOSE_APP);
     console.log('Closing App');
+    // usbDetect.stopMonitoring();
     app.quit();
 });
 
@@ -363,32 +368,65 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
                             ? `=> [Please Renew Membership!!!]`
                             : '';
                     const gallonLeft = `Gallon Left: ${row.field12}${renew2}`;
-                    device.open(function (error) {
-                        printer
-                            .font('a')
-                            .align('lt')
-                            .text('Thank You')
-                            .text('Mckee Pure Water')
-                            .text('2349 McKee Rd')
-                            .text('San Jose, CA 95116')
-                            .text('(408) 729-1319')
-                            .text(blank)
-                            .text(fullname)
-                            .text(account)
-                            .text(prevGallon)
-                            .text(gallonBuy)
-                            .text(gallonLeft)
-                            .text(row.field15 + ' ' + row.field32)
-                            .text(blank)
-                            .text(invoice)
-                            .text(blank)
-                            .cut()
-                            .close();
+                    if (device) {
+                        device.open(function (error) {
+                            printer
+                                .font('a')
+                                .align('lt')
+                                .text('Thank You')
+                                .text('Mckee Pure Water')
+                                .text('2349 McKee Rd')
+                                .text('San Jose, CA 95116')
+                                .text('(408) 729-1319')
+                                .text(blank)
+                                .text(fullname)
+                                .text(account)
+                                .text(prevGallon)
+                                .text(gallonBuy)
+                                .text(gallonLeft)
+                                .text(row.field15 + ' ' + row.field32)
+                                .text(blank)
+                                .text(invoice)
+                                .text(blank)
+                                .cut()
+                                .close();
+                            event.sender.send(channels.BUY_WATER, {
+                                ...row,
+                                lastRecord: last,
+                            });
+                        });
+                    } else {
                         event.sender.send(channels.BUY_WATER, {
                             ...row,
                             lastRecord: last,
                         });
-                    });
+                    }
+                    // device.open(function (error) {
+                    //     printer
+                    //         .font('a')
+                    //         .align('lt')
+                    //         .text('Thank You')
+                    //         .text('Mckee Pure Water')
+                    //         .text('2349 McKee Rd')
+                    //         .text('San Jose, CA 95116')
+                    //         .text('(408) 729-1319')
+                    //         .text(blank)
+                    //         .text(fullname)
+                    //         .text(account)
+                    //         .text(prevGallon)
+                    //         .text(gallonBuy)
+                    //         .text(gallonLeft)
+                    //         .text(row.field15 + ' ' + row.field32)
+                    //         .text(blank)
+                    //         .text(invoice)
+                    //         .text(blank)
+                    //         .cut()
+                    //         .close();
+                    //     event.sender.send(channels.BUY_WATER, {
+                    //         ...row,
+                    //         lastRecord: last,
+                    //     });
+                    // });
                 }
             );
 
@@ -458,32 +496,38 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
                     const prevGallon = `Gallon Total: ${row.field31}`;
                     const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
-
-                    device.open(function (error) {
-                        printer
-                            .font('a')
-                            .align('lt')
-                            .text('Thank You')
-                            .text('Mckee Pure Water')
-                            .text('2349 McKee Rd')
-                            .text('San Jose, CA 95116')
-                            .text('(408) 729-1319')
-                            .text(blank)
-                            .text(fullname)
-                            .text(account)
-                            .text(renewFee)
-                            .text(prevGallon)
-                            .text(row.field15 + ' ' + row.field32)
-                            .text(blank)
-                            .text(invoice)
-                            .text(blank)
-                            .cut()
-                            .close();
+                    if (device) {
+                        device.open(function (error) {
+                            printer
+                                .font('a')
+                                .align('lt')
+                                .text('Thank You')
+                                .text('Mckee Pure Water')
+                                .text('2349 McKee Rd')
+                                .text('San Jose, CA 95116')
+                                .text('(408) 729-1319')
+                                .text(blank)
+                                .text(fullname)
+                                .text(account)
+                                .text(renewFee)
+                                .text(prevGallon)
+                                .text(row.field15 + ' ' + row.field32)
+                                .text(blank)
+                                .text(invoice)
+                                .text(blank)
+                                .cut()
+                                .close();
+                            event.sender.send(channels.ADD_NEW_MEMBER, {
+                                ...row,
+                                lastRecord: last,
+                            });
+                        });
+                    } else {
                         event.sender.send(channels.ADD_NEW_MEMBER, {
                             ...row,
                             lastRecord: last,
                         });
-                    });
+                    }
                 }
             );
             console.log(`A row has been inserted with rowid ${this.lastID}`);
@@ -556,60 +600,74 @@ ipcMain.on(channels.RENEW_WATER, (event, args) => {
                     const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
                     if (args.preOver < 0) {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                .text(blank)
-                                .text(fullname)
-                                .text(account)
-                                .text(renewFee)
-                                .text(renewGallon)
-                                .text(args.preOver < 0 ? overLimit : '')
-                                .text(prevGallon)
-                                .text(row.field15 + '@' + row.field32)
-                                .text(blank)
-                                .text(invoice)
-                                .text(blank)
-                                .cut()
-                                .close();
+                        if (!device) {
                             event.sender.send(channels.RENEW_WATER, {
                                 ...row,
                                 lastRecord: last,
                             });
-                        });
+                        } else {
+                            device.open(function (error) {
+                                printer
+                                    .font('a')
+                                    .align('lt')
+                                    .text('Thank You')
+                                    .text('Mckee Pure Water')
+                                    .text('2349 McKee Rd')
+                                    .text('San Jose, CA 95116')
+                                    .text('(408) 729-1319')
+                                    .text(blank)
+                                    .text(fullname)
+                                    .text(account)
+                                    .text(renewFee)
+                                    .text(renewGallon)
+                                    .text(args.preOver < 0 ? overLimit : '')
+                                    .text(prevGallon)
+                                    .text(row.field15 + '@' + row.field32)
+                                    .text(blank)
+                                    .text(invoice)
+                                    .text(blank)
+                                    .cut()
+                                    .close();
+                                event.sender.send(channels.RENEW_WATER, {
+                                    ...row,
+                                    lastRecord: last,
+                                });
+                            });
+                        }
                     } else {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                .text(blank)
-                                .text(fullname)
-                                .text(account)
-                                .text(renewFee)
-                                .text(renewGallon)
-                                .text(prevGallon)
-                                .text(row.field15 + '@' + row.field32)
-                                .text(blank)
-                                .text(invoice)
-                                .text(blank)
-                                .cut()
-                                .close();
+                        if (!device) {
                             event.sender.send(channels.RENEW_WATER, {
                                 ...row,
                                 lastRecord: last,
                             });
-                        });
+                        } else {
+                            device.open(function (error) {
+                                printer
+                                    .font('a')
+                                    .align('lt')
+                                    .text('Thank You')
+                                    .text('Mckee Pure Water')
+                                    .text('2349 McKee Rd')
+                                    .text('San Jose, CA 95116')
+                                    .text('(408) 729-1319')
+                                    .text(blank)
+                                    .text(fullname)
+                                    .text(account)
+                                    .text(renewFee)
+                                    .text(renewGallon)
+                                    .text(prevGallon)
+                                    .text(row.field15 + '@' + row.field32)
+                                    .text(blank)
+                                    .text(invoice)
+                                    .text(blank)
+                                    .cut()
+                                    .close();
+                                event.sender.send(channels.RENEW_WATER, {
+                                    ...row,
+                                    lastRecord: last,
+                                });
+                            });
+                        }
                     }
                 }
             );
@@ -641,26 +699,30 @@ ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
         parseInt(receipt.barcode) + 1
     }`;
     const blank = ` `;
-    device.open(function (error) {
-        printer
-            .font('a')
-            .align('lt')
-            .text(fullname)
-            .text(account)
-            .text(prevGallon)
-            .text(buyGallon)
-            .text(remainGallon)
-            .text(gallonOver)
-            .text(timestamp)
-            .text('Thank You')
-            .text('Mckee Pure Water')
-            .text(record_id)
-            .text(blank)
-            .text(blank)
-            .cut()
-            .close();
+    if (device) {
+        device.open(function (error) {
+            printer
+                .font('a')
+                .align('lt')
+                .text(fullname)
+                .text(account)
+                .text(prevGallon)
+                .text(buyGallon)
+                .text(remainGallon)
+                .text(gallonOver)
+                .text(timestamp)
+                .text('Thank You')
+                .text('Mckee Pure Water')
+                .text(record_id)
+                .text(blank)
+                .text(blank)
+                .cut()
+                .close();
+            event.sender.send(channels.PRINT_RECEIPT, { done: true });
+        });
+    } else {
         event.sender.send(channels.PRINT_RECEIPT, { done: true });
-    });
+    }
 });
 
 // GET CURRENT GALLON FOR MEMBER
@@ -825,27 +887,54 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
             const totalRenewFee = `Total Fee:  $${totalFee || 0}`;
             const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
             const totalBuyAmount = `Total Buy:   ${totalBuy || 0}`;
-
-            device.open(function (error) {
-                printer
-                    .font('a')
-                    .align('lt')
-                    .text('Mckee Pure Water')
-                    .text(`Daily Report`)
-                    .text(`${date} - ${time}`)
-                    .text(totalRenewFee)
-                    .text(totalRenew)
-                    .text(totalBuyAmount)
-                    .text('')
-                    .text('')
-                    .cut()
-                    .close();
+            if (device) {
+                device.open(function (error) {
+                    printer
+                        .font('a')
+                        .align('lt')
+                        .text('Mckee Pure Water')
+                        .text(`Daily Report`)
+                        .text(`${date} - ${time}`)
+                        .text(totalRenewFee)
+                        .text(totalRenew)
+                        .text(totalBuyAmount)
+                        .text('')
+                        .text('')
+                        .cut()
+                        .close();
+                    event.sender.send(channels.REPORT, {
+                        totalFee,
+                        totalRenewAmount,
+                        totalBuy,
+                    });
+                });
+            } else {
                 event.sender.send(channels.REPORT, {
                     totalFee,
                     totalRenewAmount,
                     totalBuy,
                 });
-            });
+            }
+            // device.open(function (error) {
+            //     printer
+            //         .font('a')
+            //         .align('lt')
+            //         .text('Mckee Pure Water')
+            //         .text(`Daily Report`)
+            //         .text(`${date} - ${time}`)
+            //         .text(totalRenewFee)
+            //         .text(totalRenew)
+            //         .text(totalBuyAmount)
+            //         .text('')
+            //         .text('')
+            //         .cut()
+            //         .close();
+            //     event.sender.send(channels.REPORT, {
+            //         totalFee,
+            //         totalRenewAmount,
+            //         totalBuy,
+            //     });
+            // });
         });
     });
 });
