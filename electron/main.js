@@ -367,36 +367,45 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
-                    const fullname = `${row.field4} -- ${row.field7}`;
-                    const account = `[Account #: ${row.field22}]`;
+                    const fullname = `${row.field4}--${row.field7}`;
+                    // const account = `[Account #: ${row.field22}]`;
                     const prevGallon = `Gallon Prev: ${row.field31}`;
                     const gallonBuy = `Gallon Buy:  ${row.field19}`;
-                    const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
+                    const message = `Thank you                        ${row.field22}`;
+                    // const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
                     const blank = '';
-                    const renew2 =
-                        row.field12 <= 0
-                            ? `=> [Please Renew Membership!!!]`
-                            : '';
-                    const gallonLeft = `Gallon Left: ${row.field12}${renew2}`;
+                    // const renew2 =
+                    //     row.field12 <= 0
+                    //         ? `=> [Please Renew Membership!!!]`
+                    //         : '';
+                    // const gallonLeft = `Gallon Left: ${row.field12}${renew2}`;
+                    const gallonLeft = `Gallon Left: ${row.field12}`;
                     if (device) {
                         device.open(function (error) {
                             printer
                                 .font('a')
+                                // .font('b')
                                 .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                .text(blank)
+                                // .text('Thank You')
+                                // .text('Mckee Pure Water')
+                                // .text('2349 McKee Rd')
+                                // .text('San Jose, CA 95116')
+                                // .text('(408) 729-1319')
+                                // .text(blank)
                                 .text(fullname)
-                                .text(account)
+                                // .text(account)
                                 .text(prevGallon)
                                 .text(gallonBuy)
                                 .text(gallonLeft)
-                                .text(row.field15 + ' ' + row.field32)
-                                .text(blank)
-                                .text(invoice)
+                                .text(row.field15 + ' --- ' + row.field32)
+                                // .text(blank)
+                                // .text('Thank You')
+                                .text(message)
+                                .text('Mckee Pure Water')
+                                // .text('2349 McKee Rd')
+                                // .text('San Jose, CA 95116')
+                                .text('(408) 729-1319')
+                                // .text(invoice)
                                 .text(blank)
                                 .cut()
                                 .close();
