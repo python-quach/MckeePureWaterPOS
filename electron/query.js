@@ -251,5 +251,51 @@ FROM
 	mckee 
 WHERE field15 = ?) 
 WHERE buyGallon IS NOT NULL OR buyGallon = '0'`,
+    buyData: (data) => {
+        return [
+            data.record_id,
+            data.account,
+            data.firstName,
+            data.lastName,
+            data.fullname,
+            data.memberSince,
+            data.phone,
+            data.prevGallon,
+            data.buyGallon,
+            data.gallonLeft,
+            data.overGallon,
+            data.renew,
+            data.renewFee,
+            data.lastRenewGallon,
+            data.invoiceDate,
+            data.invoiceTime,
+            data.areaCode,
+            data.threeDigit,
+            data.fourDigit,
+        ];
+    },
+    addData: (data) => {
+        return [
+            data.record_id,
+            data.account,
+            data.firstName,
+            data.lastName,
+            data.fullname,
+            data.memberSince,
+            data.phone,
+            data.prevGallon,
+            data.buyGallon,
+            data.gallonLeft,
+            data.overGallon,
+            data.renew,
+            data.renewFee,
+            data.lastRenewGallon,
+            data.invoiceDate,
+            data.invoiceTime,
+            data.areaCode,
+            data.threeDigit,
+            data.fourDigit,
+        ];
+    },
 };
 exports.sql = sql;

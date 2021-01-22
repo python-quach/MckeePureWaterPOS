@@ -312,323 +312,132 @@ ipcMain.on(channels.GET_TOTAL_INVOICE, (event, args) => {
     });
 });
 
-// CUSTOMER WATER BUY UPDATE
+// CUSTOMER WATER BUY
 ipcMain.on(channels.BUY_WATER, (event, args) => {
-    const {
-        record_id,
-        account,
-        firstName,
-        lastName,
-        fullname,
-        memberSince,
-        phone,
-        prevGallon,
-        buyGallon,
-        gallonLeft,
-        overGallon,
-        renew,
-        renewFee,
-        lastRenewGallon,
-        invoiceDate,
-        invoiceTime,
-        areaCode,
-        threeDigit,
-        fourDigit,
-    } = args;
-
-    db.run(
-        sql.buy,
-        [
-            record_id,
-            account,
-            firstName,
-            lastName,
-            fullname,
-            memberSince,
-            phone,
-            prevGallon,
-            buyGallon,
-            gallonLeft,
-            overGallon,
-            renew,
-            renewFee,
-            lastRenewGallon,
-            invoiceDate,
-            invoiceTime,
-            areaCode,
-            threeDigit,
-            fourDigit,
-        ],
-        function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-            const last = this.lastID;
-            db.get(
-                `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
-                (err, row) => {
-                    const fullname = `${row.field4}--${row.field7}`;
-                    // const account = `[Account #: ${row.field22}]`;
-                    const prevGallon = `Gallon Prev: ${row.field31}`;
-                    const gallonBuy = `Gallon Buy:  ${row.field19}`;
-                    const message = `Thank you                        ${row.field22}`;
-                    // const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
-                    const blank = '';
-                    // const renew2 =
-                    //     row.field12 <= 0
-                    //         ? `=> [Please Renew Membership!!!]`
-                    //         : '';
-                    // const gallonLeft = `Gallon Left: ${row.field12}${renew2}`;
-                    const gallonLeft = `Gallon Left: ${row.field12}`;
-                    if (device) {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                // .font('b')
-                                .align('lt')
-                                // .text('Thank You')
-                                // .text('Mckee Pure Water')
-                                // .text('2349 McKee Rd')
-                                // .text('San Jose, CA 95116')
-                                // .text('(408) 729-1319')
-                                // .text(blank)
-                                .text(fullname)
-                                // .text(account)
-                                .text(prevGallon)
-                                .text(gallonBuy)
-                                .text(gallonLeft)
-                                .text(row.field15 + ' --- ' + row.field32)
-                                // .text(blank)
-                                // .text('Thank You')
-                                .text(message)
-                                .text('Mckee Pure Water')
-                                // .text('2349 McKee Rd')
-                                // .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
-                                // .text(invoice)
-                                .text(blank)
-                                .cut()
-                                .close();
-                            event.sender.send(channels.BUY_WATER, {
-                                ...row,
-                                lastRecord: last,
-                            });
-                        });
-                    } else {
+    db.run(sql.buy, sql.buyData(args), function (err) {
+        if (err) {
+            return console.log(err.message);
+        }
+        const last = this.lastID;
+        db.get(
+            `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
+            (err, row) => {
+                const fullname = `${row.field4}--${row.field7}`;
+                const prevGallon = `Gallon Prev: ${row.field31}`;
+                const gallonBuy = `Gallon Buy:  ${row.field19}`;
+                const message = `Thank you                        ${row.field22}`;
+                const blank = '';
+                const gallonLeft = `Gallon Left: ${row.field12}`;
+                if (device) {
+                    device.open(function (error) {
+                        printer
+                            .font('a')
+                            .align('lt')
+                            .text(fullname)
+                            .text(prevGallon)
+                            .text(gallonBuy)
+                            .text(gallonLeft)
+                            .text(row.field15 + ' --- ' + row.field32)
+                            .text(message)
+                            .text('Mckee Pure Water')
+                            .text('(408) 729-1319')
+                            .text(blank)
+                            .cut()
+                            .close();
                         event.sender.send(channels.BUY_WATER, {
                             ...row,
                             lastRecord: last,
                         });
-                    }
-                    // device.open(function (error) {
-                    //     printer
-                    //         .font('a')
-                    //         .align('lt')
-                    //         .text('Thank You')
-                    //         .text('Mckee Pure Water')
-                    //         .text('2349 McKee Rd')
-                    //         .text('San Jose, CA 95116')
-                    //         .text('(408) 729-1319')
-                    //         .text(blank)
-                    //         .text(fullname)
-                    //         .text(account)
-                    //         .text(prevGallon)
-                    //         .text(gallonBuy)
-                    //         .text(gallonLeft)
-                    //         .text(row.field15 + ' ' + row.field32)
-                    //         .text(blank)
-                    //         .text(invoice)
-                    //         .text(blank)
-                    //         .cut()
-                    //         .close();
-                    //     event.sender.send(channels.BUY_WATER, {
-                    //         ...row,
-                    //         lastRecord: last,
-                    //     });
-                    // });
+                    });
+                } else {
+                    event.sender.send(channels.BUY_WATER, {
+                        ...row,
+                        lastRecord: last,
+                    });
                 }
-            );
+            }
+        );
 
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
-        }
-    );
+        console.log(`A row has been inserted with rowid ${this.lastID}`);
+    });
 });
 
 // Add New Membership
 ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
-    const {
-        record_id,
-        account,
-        firstName,
-        lastName,
-        fullname,
-        memberSince,
-        phone,
-        gallonLeft,
-        buyGallon,
-        lastRenewGallon,
-        overGallon,
-        renew,
-        renewFee,
-        prevGallon,
-        invoiceDate,
-        invoiceTime,
-        areaCode,
-        threeDigit,
-        fourDigit,
-    } = args;
+    // const {
+    //     record_id,
+    //     account,
+    //     firstName,
+    //     lastName,
+    //     fullname,
+    //     memberSince,
+    //     phone,
+    //     gallonLeft,
+    //     buyGallon,
+    //     lastRenewGallon,
+    //     overGallon,
+    //     renew,
+    //     renewFee,
+    //     prevGallon,
+    //     invoiceDate,
+    //     invoiceTime,
+    //     areaCode,
+    //     threeDigit,
+    //     fourDigit,
+    // } = args;
 
-    console.log({ account });
-
-    // db.get(`SELECT * FROM mckee WHERE field22 = ${77250}`, (err, row) => {
-    //     if (err) return console.log(err.message);
-    //     console.log({ row });
-    //     if (row) {
-    //         event.sender.send(channels.ADD_NEW_MEMBER, {
-    //             ...row,
-    //             // null,
-    //             lastRecord: null,
-    //         });
-    //     } else {
-    //         db.run(
-    //             sql.add,
-    //             [
-    //                 record_id,
-    //                 account,
-    //                 firstName,
-    //                 lastName,
-    //                 fullname,
-    //                 memberSince,
-    //                 phone,
-    //                 prevGallon,
-    //                 buyGallon,
-    //                 gallonLeft,
-    //                 overGallon,
-    //                 renew,
-    //                 renewFee,
-    //                 lastRenewGallon,
-    //                 invoiceDate,
-    //                 invoiceTime,
-    //                 areaCode,
-    //                 threeDigit,
-    //                 fourDigit,
-    //             ],
-    //             function (err) {
-    //                 if (err) return console.log(err.message);
-    //                 const last = this.lastID;
-
-    //                 db.get(
-    //                     `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
-    //                     (err, row) => {
-    //                         if (err) return console.log(err.message);
-    //                         const renewFee = `Membership Fee: $${row.field9}`;
-    //                         const fullname = `${row.field4} -- ${row.field7}`;
-    //                         const account = `[Account #: ${row.field22}]`;
-    //                         const prevGallon = `Gallon Total: ${row.field31}`;
-    //                         const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
-    //                         const blank = '';
-    //                         if (device) {
-    //                             device.open(function (error) {
-    //                                 printer
-    //                                     .font('a')
-    //                                     .align('lt')
-    //                                     .text('Thank You')
-    //                                     .text('Mckee Pure Water')
-    //                                     .text('2349 McKee Rd')
-    //                                     .text('San Jose, CA 95116')
-    //                                     .text('(408) 729-1319')
-    //                                     .text(blank)
-    //                                     .text(fullname)
-    //                                     .text(account)
-    //                                     .text(renewFee)
-    //                                     .text(prevGallon)
-    //                                     .text(row.field15 + ' ' + row.field32)
-    //                                     .text(blank)
-    //                                     .text(invoice)
-    //                                     .text(blank)
-    //                                     .cut()
-    //                                     .close();
-    //                                 event.sender.send(channels.ADD_NEW_MEMBER, {
-    //                                     ...row,
-    //                                     lastRecord: last,
-    //                                 });
-    //                             });
-    //                         } else {
-    //                             event.sender.send(channels.ADD_NEW_MEMBER, {
-    //                                 ...row,
-    //                                 lastRecord: last,
-    //                             });
-    //                         }
-    //                     }
-    //                 );
-    //                 console.log(
-    //                     `A row has been inserted with rowid ${this.lastID}`
-    //                 );
-    //             }
-    //         );
-    //     }
-    // });
+    console.log({ account: args.account });
 
     db.run(
         sql.add,
-        [
-            record_id,
-            account,
-            firstName,
-            lastName,
-            fullname,
-            memberSince,
-            phone,
-            prevGallon,
-            buyGallon,
-            gallonLeft,
-            overGallon,
-            renew,
-            renewFee,
-            lastRenewGallon,
-            invoiceDate,
-            invoiceTime,
-            areaCode,
-            threeDigit,
-            fourDigit,
-        ],
+        sql.addData(args),
+        // [
+        //     record_id,
+        //     account,
+        //     firstName,
+        //     lastName,
+        //     fullname,
+        //     memberSince,
+        //     phone,
+        //     prevGallon,
+        //     buyGallon,
+        //     gallonLeft,
+        //     overGallon,
+        //     renew,
+        //     renewFee,
+        //     lastRenewGallon,
+        //     invoiceDate,
+        //     invoiceTime,
+        //     areaCode,
+        //     threeDigit,
+        //     fourDigit,
+        // ],
         function (err) {
-            // if (err) {
-            //     event.sender.send(channels.ADD_NEW_MEMBER, {
-            //         error: `Duplicate Account Number ${account}`,
-            //     });
-            //     return console.log(err.message);
-            // }
-
             const last = this.lastID;
             db.get(
                 `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
                 (err, row) => {
                     if (err) return console.log(err.message);
                     const renewFee = `Membership Fee: $${row.field9}`;
-                    const fullname = `${row.field4} -- ${row.field7}`;
-                    const account = `[Account #: ${row.field22}]`;
-                    const prevGallon = `Gallon Total: ${row.field31}`;
-                    const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
+                    const fullname = `${row.field4} -- ${args.fourDigit}`;
+                    const gallonLeft = `Gallon Total: ${args.renew}`;
                     const blank = '';
                     if (device) {
                         device.open(function (error) {
                             printer
                                 .font('a')
+                                .control('LF')
                                 .align('lt')
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('2349 McKee Rd')
-                                .text('San Jose, CA 95116')
-                                .text('(408) 729-1319')
                                 .text(blank)
                                 .text(fullname)
-                                .text(account)
+                                .text(`NEW MEMBERSHIP: [${row.field22}]`)
                                 .text(renewFee)
-                                .text(prevGallon)
+                                .text(gallonLeft)
                                 .text(row.field15 + ' ' + row.field32)
                                 .text(blank)
-                                .text(invoice)
+                                .text('Thank You')
+                                .text('Mckee Pure Water')
+                                .text('(408) 729-1319')
                                 .text(blank)
                                 .cut()
                                 .close();
