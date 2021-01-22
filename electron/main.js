@@ -13,6 +13,8 @@ const url = require('url');
 const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
 const { sql } = require('./query');
+const { receiptPrinter } = require('./printer');
+const { createNewMembership } = require('./db');
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
 const usbDetect = require('usb-detection');
@@ -362,101 +364,23 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
     });
 });
 
-// Add New Membership
+// Add New Membership to Database
 ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
-    // const {
-    //     record_id,
-    //     account,
-    //     firstName,
-    //     lastName,
-    //     fullname,
-    //     memberSince,
-    //     phone,
-    //     gallonLeft,
-    //     buyGallon,
-    //     lastRenewGallon,
-    //     overGallon,
-    //     renew,
-    //     renewFee,
-    //     prevGallon,
-    //     invoiceDate,
-    //     invoiceTime,
-    //     areaCode,
-    //     threeDigit,
-    //     fourDigit,
-    // } = args;
-
-    console.log({ account: args.account });
-
-    db.run(
-        sql.add,
-        sql.addData(args),
-        // [
-        //     record_id,
-        //     account,
-        //     firstName,
-        //     lastName,
-        //     fullname,
-        //     memberSince,
-        //     phone,
-        //     prevGallon,
-        //     buyGallon,
-        //     gallonLeft,
-        //     overGallon,
-        //     renew,
-        //     renewFee,
-        //     lastRenewGallon,
-        //     invoiceDate,
-        //     invoiceTime,
-        //     areaCode,
-        //     threeDigit,
-        //     fourDigit,
-        // ],
-        function (err) {
-            const last = this.lastID;
-            db.get(
-                `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
-                (err, row) => {
-                    if (err) return console.log(err.message);
-                    const renewFee = `Membership Fee: $${row.field9}`;
-                    const fullname = `${row.field4} -- ${args.fourDigit}`;
-                    const gallonLeft = `Gallon Total: ${args.renew}`;
-                    const blank = '';
-                    if (device) {
-                        device.open(function (error) {
-                            printer
-                                .font('a')
-                                .control('LF')
-                                .align('lt')
-                                .text(blank)
-                                .text(fullname)
-                                .text(`NEW MEMBERSHIP: [${row.field22}]`)
-                                .text(renewFee)
-                                .text(gallonLeft)
-                                .text(row.field15 + ' ' + row.field32)
-                                .text(blank)
-                                .text('Thank You')
-                                .text('Mckee Pure Water')
-                                .text('(408) 729-1319')
-                                .text(blank)
-                                .cut()
-                                .close();
-                            event.sender.send(channels.ADD_NEW_MEMBER, {
-                                ...row,
-                                lastRecord: last,
-                            });
-                        });
-                    } else {
-                        event.sender.send(channels.ADD_NEW_MEMBER, {
-                            ...row,
-                            lastRecord: last,
-                        });
-                    }
-                }
-            );
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
+    createNewMembership(db, args, (row, lastID) => {
+        if (device) {
+            receiptPrinter.newMembership(device, printer, args, row, () => {
+                event.sender.send(channels.ADD_NEW_MEMBER, {
+                    ...row,
+                    lastRecord: lastID,
+                });
+            });
+        } else {
+            event.sender.send(channels.ADD_NEW_MEMBER, {
+                ...row,
+                lastRecord: lastID,
+            });
         }
-    );
+    });
 });
 
 // RENEW
