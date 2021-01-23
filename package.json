@@ -52,7 +52,7 @@
         },
         "extraFiles": [
             {
-                "from": "./src/membership.sqlite3",
+                "from": "./database/kaka.sqlite3",
                 "to": "."
             }
         ],

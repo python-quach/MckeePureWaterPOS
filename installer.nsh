@@ -1,5 +1,5 @@
 !macro customInstall
-  CreateDirectory $LOCALAPPDATA\MCKEEPUREWATERPOS
-  CopyFiles $INSTDIR\membership.sqlite3 $LOCALAPPDATA\MCKEEPUREWATERPOS
-  Delete $INSTDIR\membership.sqlite3
+  CreateDirectory $LOCALAPPDATA\MCKEEPUREWATER
+  CopyFiles $INSTDIR\kaka.sqlite3 $LOCALAPPDATA\MCKEEPUREWATER
+  Delete $INSTDIR\kaka.sqlite3
 !macroend
