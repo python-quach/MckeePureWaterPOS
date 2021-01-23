@@ -41,5 +41,17 @@ module.exports = {
             });
         });
     },
+    getDailyReport: function (db, date, callback) {
+        console.log('daily report', { date });
+        db.get(sql.reportRenew, date, (err, row) => {
+            if (err) return console.log(err.message);
+            const { totalFee, totalRenewAmount } = row;
+            db.get(sql.reportBuy, date, (err, row) => {
+                if (err) return console.log(err.message);
+                const { totalBuy } = row;
+                callback(totalFee, totalRenewAmount, totalBuy);
+            });
+        });
+    },
     updateMembershipInfo: function () {},
 };

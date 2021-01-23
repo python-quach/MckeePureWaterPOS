@@ -46,9 +46,7 @@ const printReceipts = {
         const fullname = `${row.field4} -- ${row.field7}`;
         const account = `[Account#: ${row.field22}]`;
         const totalGallon = `Gallon Left : ${row.field31}`;
-        // const message = `Thank You             ${account}`;
         const message = `Thank You                  ${account}`;
-
         const blank = '';
         if (args.preOver < 0) {
             device.open(function (error) {
@@ -107,6 +105,7 @@ const printReceipts = {
 
         if (device) {
             device.open(function (error) {
+                if (error) return console.log(error.message);
                 printer
                     .font('a')
                     .align('lt')
@@ -123,6 +122,46 @@ const printReceipts = {
                     .cut()
                     .close();
                 callback();
+            });
+        }
+    },
+    dailyReport: function (
+        device,
+        printer,
+        totalFee,
+        totalRenewAmount,
+        // row,
+        totalBuy,
+        date,
+        time,
+        callback
+    ) {
+        // const { totalBuy } = row;
+        const totalRenewFee = `Total Fee  : $${totalFee || 0}`;
+        const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
+        const totalBuyAmount = `Total Buy  : ${totalBuy || 0}`;
+        if (device) {
+            device.open(function (error) {
+                if (error) return console.log(error.message);
+                printer
+                    .font('a')
+                    .align('lt')
+                    .text('Mckee Pure Water')
+                    .text(`Daily Report`)
+                    .text(`${date} - ${time}`)
+                    .text(totalRenewFee)
+                    .text(totalRenew)
+                    .text(totalBuyAmount)
+                    .text('')
+                    .text('')
+                    .cut()
+                    .close();
+                callback();
+                // event.sender.send(channels.REPORT, {
+                //     totalFee,
+                //     totalRenewAmount,
+                //     totalBuy,
+                // });
             });
         }
     },

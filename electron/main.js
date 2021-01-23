@@ -4,8 +4,6 @@ const {
     ipcMain,
     crashReporter,
     dialog,
-    // Menu,
-    // shell,
 } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +16,7 @@ const {
     createNewMembership,
     renewMembership,
     buyWaterGallon,
+    getDailyReport,
 } = require('./db');
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
@@ -405,50 +404,31 @@ ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
 // GET DAILY REPORT
 ipcMain.on(channels.REPORT, (event, request) => {
     const { date, time } = request;
-
-    console.log('daily report', { date });
-
-    db.get(sql.reportRenew, date, (err, row) => {
-        const { totalFee, totalRenewAmount } = row;
-
-        console.log({ totalFee, totalRenewAmount });
-
-        db.get(sql.reportBuy, date, (err, row) => {
-            const { totalBuy } = row;
-            console.log({ totalBuy });
-
-            const totalRenewFee = `Total Fee  : $${totalFee || 0}`;
-            const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
-            const totalBuyAmount = `Total Buy  : ${totalBuy || 0}`;
-            if (device) {
-                device.open(function (error) {
-                    printer
-                        .font('a')
-                        .align('lt')
-                        .text('Mckee Pure Water')
-                        .text(`Daily Report`)
-                        .text(`${date} - ${time}`)
-                        .text(totalRenewFee)
-                        .text(totalRenew)
-                        .text(totalBuyAmount)
-                        .text('')
-                        .text('')
-                        .cut()
-                        .close();
+    getDailyReport(db, date, (totalFee, totalRenewAmount, totalBuy) => {
+        if (device) {
+            receiptPrinter.dailyReport(
+                device,
+                printer,
+                totalFee,
+                totalRenewAmount,
+                totalBuy,
+                date,
+                time,
+                () => {
                     event.sender.send(channels.REPORT, {
                         totalFee,
                         totalRenewAmount,
                         totalBuy,
                     });
-                });
-            } else {
-                event.sender.send(channels.REPORT, {
-                    totalFee,
-                    totalRenewAmount,
-                    totalBuy,
-                });
-            }
-        });
+                }
+            );
+        } else {
+            event.sender.send(channels.REPORT, {
+                totalFee,
+                totalRenewAmount,
+                totalBuy,
+            });
+        }
     });
 });
 
