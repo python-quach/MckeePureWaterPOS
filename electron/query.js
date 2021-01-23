@@ -320,8 +320,9 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`,
             data.fourDigit,
         ];
     },
-
     findNewAdd: `SELECT * FROM mckee WHERE rowid = ?`,
     findNewRenew: `SELECT * FROM mckee WHERE rowid = ?`,
+    findNewBuy: `SELECT * FROM mckee WHERE rowid = ?`,
+    findLastRecord: `SELECT * FROM mckee WHERE rowid = ?`,
 };
 exports.sql = sql;

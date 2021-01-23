@@ -96,6 +96,36 @@ const printReceipts = {
             });
         }
     },
+    buyReceipt: function (device, printer, args, row, callback) {
+        const fullname = `${row.field4} -- ${row.field7}`;
+        const prevGallon = `Gallon Prev: ${row.field31}`;
+        const gallonBuy = `Gallon Buy : ${row.field19}`;
+        const blank = '';
+        const gallonLeft = `Gallon Left: ${row.field12}`;
+        const account = `[Account#: ${row.field22}]`;
+        const message = `Thank You                  ${account}`;
+
+        if (device) {
+            device.open(function (error) {
+                printer
+                    .font('a')
+                    .align('lt')
+                    .text(fullname.trim())
+                    .text(prevGallon)
+                    .text(gallonBuy)
+                    .text(gallonLeft)
+                    .text(row.field15 + ' ' + row.field32)
+                    .text(blank)
+                    .text(message)
+                    .text('Mckee Pure Water')
+                    .text('(408) 729-1319')
+                    .text(blank)
+                    .cut()
+                    .close();
+                callback();
+            });
+        }
+    },
 };
 
 exports.receiptPrinter = printReceipts;
