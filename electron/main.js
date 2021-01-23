@@ -40,10 +40,25 @@ let device;
 let printer;
 let mainWindow;
 
-usbDetect.startMonitoring();
+// usbDetect.startMonitoring();
+usbDetect
+    .find()
+    .then(function (devices) {
+        console.log(devices);
+        devices.forEach(function (item) {
+            if (item.deviceName === 'USB Printing Support') {
+                device = new escpos.USB();
+                printer = new escpos.Printer(device, options);
+            }
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
 
 usbDetect.on('remove', function (device) {
     console.log('remove', device);
+    // usbDetect.stopMonitoring();
     app.quit();
 });
 
@@ -51,23 +66,21 @@ usbDetect.on('add', function (device) {
     console.log('add', device);
 });
 
+// Electron Main Window Setup
 function createWindow() {
-    usbDetect
-        .find()
-        .then(function (devices) {
-            console.log(devices);
-            devices.forEach(function (item) {
-                if (item.deviceName === 'USB Printing Support') {
-                    device = new escpos.USB();
-                    printer = new escpos.Printer(device, options);
-                }
-            });
-        })
-        .catch(function (err) {
-            console.log(err);
-            device = null;
-            printer = null;
-        });
+    // usbDetect
+    //     .find()
+    //     .then(function (devices) {
+    //         devices.forEach(function (item) {
+    //             if (item.deviceName === 'USB Printing Support') {
+    //                 device = new escpos.USB();
+    //                 printer = new escpos.Printer(device, options);
+    //             }
+    //         });
+    //     })
+    //     .catch(function (err) {
+    //         console.log(err);
+    //     });
 
     // Connect to Sqlite3 local database
     db = new sqlite3.Database(dbFile, (err) => {
