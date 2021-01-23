@@ -55,10 +55,10 @@
                 "from": "./database/kaka.sqlite3",
                 "to": "."
             }
-        ],
-        "nsis": {
-            "include": "build/installer.nsh"
-        }
+        ]
+    },
+    "nsis": {
+        "include": "build/installer.nsh"
     },
     "eslintConfig": {
         "extends": "react-app"
