@@ -100,7 +100,6 @@ const BuyScreen = (props) => {
 
     const renewWaterGallon = (e) => {
         e.preventDefault();
-        // if(renew || )
         getLastRecord((lastRecord) => {
             console.log(detail);
             const updateGallon = parseInt(gallonRemain) + parseInt(renewAmount);
@@ -156,7 +155,6 @@ const BuyScreen = (props) => {
                     buyGallon: parseInt(gallonBuy),
                     gallonLeft: parseInt(gallonAfterBuy),
                     overGallon: parseInt(gallonAfterBuy),
-                    // renew: 0,
                     renew: null,
                     renewFee: 0,
                     lastRenewGallon: detail.lastRenewGallon,
@@ -184,11 +182,9 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setGallonBuy(0);
             setGallonAfterBuy(gallonRemain);
-            // Reset Rnew
         } else {
             setGallonBuy(parseInt(value));
             setGallonAfterBuy(parseInt(gallonRemain) - parseInt(value));
-            // reset renew
             setRenewalFee(0);
             setRenewAmount(0);
         }
@@ -210,7 +206,6 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setRenewAmount(0);
         } else {
-            // Reset Buy and Curret
             setGallonAfterBuy(currentGallon);
             setGallonBuy(0);
             setRenewAmount(parseInt(value));
@@ -255,8 +250,6 @@ const BuyScreen = (props) => {
     };
 
     useEffect(() => {
-        // console.log({ open, offset, limit });
-        // if (open)
         getAccountInvoices(account, limit, offset, (data) => {
             setInvoices(data);
         });
@@ -281,10 +274,6 @@ const BuyScreen = (props) => {
         }
 
         setDisabledRenewButton(
-            // gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0
-            //     ? false
-            //     : true
-            // renewAmount <= 0 && renewalFee <= 0 ? true : false
             renewAmount <= 0 || renewalFee <= 0 ? true : false
         );
 
@@ -305,22 +294,16 @@ const BuyScreen = (props) => {
     ]);
 
     useEffect(() => {
-        // if (!edited) {
-        //     document.getElementById('buy').focus();
-        // }
-        // if (disabledBuyButton && renewAmount === 0) {
-        //     document.getElementById('renew').focus();
-        // }
         if (!account) {
             history.push('/find');
         }
     });
 
-    useEffect(() => {
-        // if (renewAmount > 0 || renewalFee > 0) {
-        //     setGallonBuy(0);
-        // }
-    }, [gallonBuy, renewAmount, setGallonBuy, renewalFee]);
+    // useEffect(() => {
+    //     // if (renewAmount > 0 || renewalFee > 0) {
+    //     //     setGallonBuy(0);
+    //     // }
+    // }, [gallonBuy, renewAmount, setGallonBuy, renewalFee]);
 
     useEffect(() => {
         if (edited) {
@@ -384,7 +367,6 @@ const BuyScreen = (props) => {
                         )}
                         <Divider hidden />
                         <Button
-                            // color='google plus'
                             content='Done'
                             floated='right'
                             onClick={handleBackButton}
@@ -394,7 +376,6 @@ const BuyScreen = (props) => {
                                 floated='right'
                                 content='Cancel Edit'
                                 color='blue'
-                                // color='primary'
                                 onClick={() => {
                                     resetBuyForm();
                                     setEdited(false);
@@ -440,9 +421,6 @@ const BuyScreen = (props) => {
                                         loading={loading}
                                         onClick={() => {
                                             if (!openHistory) {
-                                                // setLimit(10);
-                                                // setOffset(0);
-                                                // setOpenHistory(true);
                                                 handleGetInvoices();
                                             } else {
                                                 setLimit(10);
@@ -500,13 +478,7 @@ const BuyScreen = (props) => {
                                     color='red'
                                     content='Close'
                                     onClick={() => {
-                                        // console.log('close');
                                         setOpenHistory(false);
-                                        // setActivePage(1);
-                                        // setOffset(1 * 10 - 10);
-                                        // setActivePage(1);
-                                        // setLimit(10);
-                                        // setOffset(0);
                                     }}></Button>
 
                                 <Pagination

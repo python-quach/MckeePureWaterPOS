@@ -49,6 +49,15 @@
             "provider": "github",
             "repo": "mckee-water-pos",
             "owner": "python-quach"
+        },
+        "extraFiles": [
+            {
+                "from": "./src/membership.sqlite3",
+                "to": "."
+            }
+        ],
+        "nsis": {
+            "include": "build/installer.nsh"
         }
     },
     "eslintConfig": {

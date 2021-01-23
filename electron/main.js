@@ -597,9 +597,9 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`;
             const { totalBuy } = row;
             console.log({ totalBuy });
 
-            const totalRenewFee = `Total Fee:  $${totalFee || 0}`;
+            const totalRenewFee = `Total Fee  : $${totalFee || 0}`;
             const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
-            const totalBuyAmount = `Total Buy:   ${totalBuy || 0}`;
+            const totalBuyAmount = `Total Buy  : ${totalBuy || 0}`;
             if (device) {
                 device.open(function (error) {
                     printer
