@@ -26,6 +26,9 @@ Username.defaultProps = {
     inverted: true,
     className: 'default',
     onChange: () => {},
+    // onFocus: () => {
+    //     console.log('focus');
+    // },
 };
 
 Password.propTypes = {

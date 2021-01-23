@@ -49,7 +49,8 @@ const RenewReceipt = (props) => {
                     />
                     <Table.HeaderCell
                         textAlign='right'
-                        content='Gallon Over'
+                        // content='Gallon Over'
+                        content='Gallon Prev'
                         style={{ paddingRight: '25px' }}
                     />
                     <Table.HeaderCell

@@ -14,7 +14,7 @@ const sqlite3 = require('sqlite3');
 const { channels } = require('../src/shared/constants');
 const { sql } = require('./query');
 const { receiptPrinter } = require('./printer');
-const { createNewMembership } = require('./db');
+const { createNewMembership, renewMembership } = require('./db');
 const userData = app.getPath('userData');
 const dbFile = path.resolve(userData, 'membership.sqlite3');
 const usbDetect = require('usb-detection');
@@ -32,8 +32,6 @@ crashReporter.start({
 let escpos = require('escpos');
 escpos.USB = require('escpos-usb');
 const options = { encoding: 'GB18030' /* default */ };
-// const device = new escpos.USB();
-// const printer = new escpos.Printer(device, options);
 
 let device;
 let printer;
@@ -51,7 +49,6 @@ usbDetect.on('add', function (device) {
 });
 
 function createWindow() {
-    // usbDetect.startMonitoring();
     usbDetect
         .find()
         .then(function (devices) {
@@ -89,8 +86,8 @@ function createWindow() {
         darkTheme: true,
         backgroundColor: '#060b22',
         frame: true,
-        fullscreen: false,
-        // fullscreen: true,
+        // fullscreen: false,
+        fullscreen: true,
         maximizable: true,
         transparent: false,
         fullscreenable: true,
@@ -111,10 +108,8 @@ function createWindow() {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
-            // usbDetect.stopMonitoring();
             mainWindow = null;
         });
-        // mainWindow = null;
     });
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
@@ -175,7 +170,6 @@ app.on('window-all-closed', function () {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
-            // usbDetect.stopMonitoring();
             app.quit();
         });
     }
@@ -191,7 +185,6 @@ app.on('activate', function () {
 ipcMain.on(channels.CLOSE_APP, (event, _) => {
     ipcMain.removeAllListeners(channels.CLOSE_APP);
     console.log('Closing App');
-    // usbDetect.stopMonitoring();
     app.quit();
 });
 
@@ -265,14 +258,6 @@ ipcMain.on(
 // GET LAST ACCOUNT:
 ipcMain.on(channels.GET_LAST_ACCOUNT, (event, _) => {
     db.get(sql.lastAccount, (err, row) => {
-        // CHECK FOR SAME ACCOUNT
-        //    const sql = `SELECT DISTINCT field22 FROM mckee WHERE field22 = ?`;
-
-        //    db.get(sql, row.account + 1, (err, row) => {
-        //         if
-
-        //    })
-
         if (err) return console.log(err.message);
         event.sender.send(channels.GET_LAST_ACCOUNT, {
             account: parseInt(row.account),
@@ -324,22 +309,25 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
         db.get(
             `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
             (err, row) => {
-                const fullname = `${row.field4}--${row.field7}`;
+                const fullname = `${row.field4} -- ${row.field7}`;
                 const prevGallon = `Gallon Prev: ${row.field31}`;
-                const gallonBuy = `Gallon Buy:  ${row.field19}`;
-                const message = `Thank you                        ${row.field22}`;
+                const gallonBuy = `Gallon Buy : ${row.field19}`;
                 const blank = '';
                 const gallonLeft = `Gallon Left: ${row.field12}`;
+                const account = `[Account#: ${row.field22}]`;
+                const message = `Thank You                  ${account}`;
+
                 if (device) {
                     device.open(function (error) {
                         printer
                             .font('a')
                             .align('lt')
-                            .text(fullname)
+                            .text(fullname.trim())
                             .text(prevGallon)
                             .text(gallonBuy)
                             .text(gallonLeft)
-                            .text(row.field15 + ' --- ' + row.field32)
+                            .text(row.field15 + ' ' + row.field32)
+                            .text(blank)
                             .text(message)
                             .text('Mckee Pure Water')
                             .text('(408) 729-1319')
@@ -385,193 +373,70 @@ ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
 
 // RENEW
 ipcMain.on(channels.RENEW_WATER, (event, args) => {
-    const {
-        record_id,
-        account,
-        firstName,
-        lastName,
-        fullname,
-        memberSince,
-        phone,
-        prevGallon,
-        buyGallon,
-        gallonLeft,
-        overGallon,
-        renew,
-        renewFee,
-        lastRenewGallon,
-        invoiceDate,
-        invoiceTime,
-        areaCode,
-        threeDigit,
-        fourDigit,
-    } = args;
-    db.run(
-        sql.renew,
-        [
-            record_id,
-            account,
-            firstName,
-            lastName,
-            fullname,
-            memberSince,
-            phone,
-            prevGallon,
-            buyGallon,
-            gallonLeft,
-            overGallon,
-            renew,
-            renewFee,
-            lastRenewGallon,
-            invoiceDate,
-            invoiceTime,
-            areaCode,
-            threeDigit,
-            fourDigit,
-        ],
-        function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-
-            const last = this.lastID;
-
-            db.get(
-                `SELECT * FROM mckee WHERE rowid = ${this.lastID}`,
-                (err, row) => {
-                    const renewGallon = `Renew Gallon: ${row.field28}`;
-                    const overLimit = `Gallon Over: ${args.preOver}`;
-                    const renewFee = `Renew Fee: $${row.field9}`;
-                    const fullname = `${row.field4} -- ${row.field7}`;
-                    const account = `[Account #: ${row.field22}]`;
-                    const prevGallon = `Gallon Total: ${row.field31}`;
-                    const invoice = `Invoice #: ${row.field20}-${this.lastID}`;
-                    const blank = '';
-                    if (args.preOver < 0) {
-                        if (!device) {
-                            event.sender.send(channels.RENEW_WATER, {
-                                ...row,
-                                lastRecord: last,
-                            });
-                        } else {
-                            device.open(function (error) {
-                                printer
-                                    .font('a')
-                                    .align('lt')
-                                    .text('Thank You')
-                                    .text('Mckee Pure Water')
-                                    .text('2349 McKee Rd')
-                                    .text('San Jose, CA 95116')
-                                    .text('(408) 729-1319')
-                                    .text(blank)
-                                    .text(fullname)
-                                    .text(account)
-                                    .text(renewFee)
-                                    .text(renewGallon)
-                                    .text(args.preOver < 0 ? overLimit : '')
-                                    .text(prevGallon)
-                                    .text(row.field15 + '@' + row.field32)
-                                    .text(blank)
-                                    .text(invoice)
-                                    .text(blank)
-                                    .cut()
-                                    .close();
-                                event.sender.send(channels.RENEW_WATER, {
-                                    ...row,
-                                    lastRecord: last,
-                                });
-                            });
-                        }
-                    } else {
-                        if (!device) {
-                            event.sender.send(channels.RENEW_WATER, {
-                                ...row,
-                                lastRecord: last,
-                            });
-                        } else {
-                            device.open(function (error) {
-                                printer
-                                    .font('a')
-                                    .align('lt')
-                                    .text('Thank You')
-                                    .text('Mckee Pure Water')
-                                    .text('2349 McKee Rd')
-                                    .text('San Jose, CA 95116')
-                                    .text('(408) 729-1319')
-                                    .text(blank)
-                                    .text(fullname)
-                                    .text(account)
-                                    .text(renewFee)
-                                    .text(renewGallon)
-                                    .text(prevGallon)
-                                    .text(row.field15 + '@' + row.field32)
-                                    .text(blank)
-                                    .text(invoice)
-                                    .text(blank)
-                                    .cut()
-                                    .close();
-                                event.sender.send(channels.RENEW_WATER, {
-                                    ...row,
-                                    lastRecord: last,
-                                });
-                            });
-                        }
-                    }
-                }
-            );
-
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
+    renewMembership(db, args, (row, lastID) => {
+        if (device) {
+            receiptPrinter.renewReceipt(device, printer, args, row, () => {
+                event.sender.send(channels.RENEW_WATER, {
+                    ...row,
+                    lastRecord: lastID,
+                });
+            });
+        } else {
+            event.sender.send(channels.RENEW_WATER, {
+                ...row,
+                lastRecord: lastID,
+            });
         }
-    );
+    });
 });
 
 // Print Receipt
-ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
-    const { receipt } = args;
-    const fullname = `${
-        receipt.detail.fullname
-    } -- ${receipt.detail.phone.slice(4, 8)} `;
-    const account = `[Account #: ${receipt.account}]`;
-    const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
-    const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
-    const renew1 =
-        receipt.gallonLeft <= 0 && receipt.overLimit === 0
-            ? ` => [Please Renew Membership!!!]`
-            : '';
-    const renew2 =
-        receipt.overLimit < 0 ? `=> [Please Renew Membership!!!]` : '';
-    const remainGallon = `Gallon Left: ${receipt.gallonLeft} ${renew1}`;
-    const gallonOver = `Gallon Over: ${receipt.overLimit} ${renew2}`;
-    const timestamp = `${receipt.timestamp}`;
-    const record_id = `Invoice #: ${parseInt(receipt.record_id) + 1}-${
-        parseInt(receipt.barcode) + 1
-    }`;
-    const blank = ` `;
-    if (device) {
-        device.open(function (error) {
-            printer
-                .font('a')
-                .align('lt')
-                .text(fullname)
-                .text(account)
-                .text(prevGallon)
-                .text(buyGallon)
-                .text(remainGallon)
-                .text(gallonOver)
-                .text(timestamp)
-                .text('Thank You')
-                .text('Mckee Pure Water')
-                .text(record_id)
-                .text(blank)
-                .text(blank)
-                .cut()
-                .close();
-            event.sender.send(channels.PRINT_RECEIPT, { done: true });
-        });
-    } else {
-        event.sender.send(channels.PRINT_RECEIPT, { done: true });
-    }
-});
+// ipcMain.on(channels.PRINT_RECEIPT, (event, args) => {
+//     const { receipt } = args;
+//     const fullname = `${
+//         receipt.detail.fullname
+//     } -- ${receipt.detail.phone.slice(4, 8)} `;
+//     const account = `[Account #: ${receipt.account}]`;
+//     const prevGallon = `Gallon Prev: ${receipt.prevGallon}`;
+//     const buyGallon = `Gallon Buy:  ${receipt.buyGallon}`;
+//     const renew1 =
+//         receipt.gallonLeft <= 0 && receipt.overLimit === 0
+//             ? ` => [Please Renew Membership!!!]`
+//             : '';
+//     const renew2 =
+//         receipt.overLimit < 0 ? `=> [Please Renew Membership!!!]` : '';
+//     const remainGallon = `Gallon Left: ${receipt.gallonLeft} ${renew1}`;
+//     const gallonOver = `Gallon Over: ${receipt.overLimit} ${renew2}`;
+//     const timestamp = `${receipt.timestamp}`;
+//     const record_id = `Invoice #: ${parseInt(receipt.record_id) + 1}-${
+//         parseInt(receipt.barcode) + 1
+//     }`;
+//     const blank = ` `;
+//     if (device) {
+//         device.open(function (error) {
+//             printer
+//                 .font('a')
+//                 .align('lt')
+//                 .text(fullname)
+//                 .text(account)
+//                 .text(prevGallon)
+//                 .text(buyGallon)
+//                 .text(remainGallon)
+//                 .text(gallonOver)
+//                 .text(timestamp)
+//                 .text('Thank You')
+//                 .text('Mckee Pure Water')
+//                 .text(record_id)
+//                 .text(blank)
+//                 .text(blank)
+//                 .cut()
+//                 .close();
+//             event.sender.send(channels.PRINT_RECEIPT, { done: true });
+//         });
+//     } else {
+//         event.sender.send(channels.PRINT_RECEIPT, { done: true });
+//     }
+// });
 
 // GET CURRENT GALLON FOR MEMBER
 ipcMain.on(channels.GET_CURRENT_GALLON, (event, args) => {

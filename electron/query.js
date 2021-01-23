@@ -297,5 +297,31 @@ WHERE buyGallon IS NOT NULL OR buyGallon = '0'`,
             data.fourDigit,
         ];
     },
+    addRenew: (data) => {
+        return [
+            data.record_id,
+            data.account,
+            data.firstName,
+            data.lastName,
+            data.fullname,
+            data.memberSince,
+            data.phone,
+            data.prevGallon,
+            data.buyGallon,
+            data.gallonLeft,
+            data.overGallon,
+            data.renew,
+            data.renewFee,
+            data.lastRenewGallon,
+            data.invoiceDate,
+            data.invoiceTime,
+            data.areaCode,
+            data.threeDigit,
+            data.fourDigit,
+        ];
+    },
+
+    findNewAdd: `SELECT * FROM mckee WHERE rowid = ?`,
+    findNewRenew: `SELECT * FROM mckee WHERE rowid = ?`,
 };
 exports.sql = sql;

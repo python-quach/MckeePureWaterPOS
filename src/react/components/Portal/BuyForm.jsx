@@ -223,7 +223,7 @@ const BuyForm = (props) => {
                     name='renewalFee'
                     className='AreaCode'
                     value={props.renewalFee}
-                    disabled={props.disableRenewInput}
+                    // disabled={props.disableRenewInput}
                     inverted={true}
                     onChange={props.handleRenewalFee}
                     width={1}
@@ -233,14 +233,24 @@ const BuyForm = (props) => {
                     name='renewalAmount'
                     className='AreaCode'
                     value={props.renewAmount}
-                    disabled={props.disableRenewInput}
+                    // disabled={props.disableRenewInput}
                     inverted={true}
                     onChange={props.handleRenewalAmount}
+                    // onFocus={() => {
+                    //     console.log('hello');
+                    // }}
                     onKeyPress={(e) =>
                         e.key === 'Enter' || e.keyCode === 13
                             ? props.renewWaterGallon(e)
                             : null
                     }
+                    // onFocus={() => {
+                    //     console.log('onFocus');
+                    //     props.setBuy(0);
+                    // }}
+                    // onClick={() => {
+                    //     console.log('click');
+                    // }}
                     width={1}
                 />
                 <Form.Button
@@ -248,6 +258,7 @@ const BuyForm = (props) => {
                     style={{ marginTop: '30px' }}
                     color='blue'
                     size='large'
+                    // disabled={!props.renew}
                     disabled={props.disableRenewButton}
                     onClick={props.renewWaterGallon}
                 />

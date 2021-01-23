@@ -100,6 +100,7 @@ const BuyScreen = (props) => {
 
     const renewWaterGallon = (e) => {
         e.preventDefault();
+        // if(renew || )
         getLastRecord((lastRecord) => {
             console.log(detail);
             const updateGallon = parseInt(gallonRemain) + parseInt(renewAmount);
@@ -131,6 +132,7 @@ const BuyScreen = (props) => {
                     getAccountInvoices(account, limit, offset, (data) => {
                         setInvoices(data);
                         resetRenewData(currentRecord);
+                        document.getElementById('buy').focus();
                     });
                 });
             });
@@ -182,9 +184,13 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setGallonBuy(0);
             setGallonAfterBuy(gallonRemain);
+            // Reset Rnew
         } else {
             setGallonBuy(parseInt(value));
             setGallonAfterBuy(parseInt(gallonRemain) - parseInt(value));
+            // reset renew
+            setRenewalFee(0);
+            setRenewAmount(0);
         }
     };
 
@@ -192,6 +198,9 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setRenewalFee(0);
         } else {
+            // Reset Buy
+            setGallonAfterBuy(currentGallon);
+            setGallonBuy(0);
             setRenewalFee(parseInt(value));
         }
     };
@@ -201,6 +210,9 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setRenewAmount(0);
         } else {
+            // Reset Buy and Curret
+            setGallonAfterBuy(currentGallon);
+            setGallonBuy(0);
             setRenewAmount(parseInt(value));
         }
     };
@@ -267,10 +279,13 @@ const BuyScreen = (props) => {
                 setGallonOver(0);
             }
         }
+
         setDisabledRenewButton(
-            gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0
-                ? false
-                : true
+            // gallonRemain <= 0 && renewAmount > 0 && renewalFee > 0
+            //     ? false
+            //     : true
+            // renewAmount <= 0 && renewalFee <= 0 ? true : false
+            renewAmount <= 0 || renewalFee <= 0 ? true : false
         );
 
         setDisabledBuyButton(
@@ -290,16 +305,22 @@ const BuyScreen = (props) => {
     ]);
 
     useEffect(() => {
-        if (!edited) {
-            document.getElementById('buy').focus();
-        }
-        if (disabledBuyButton && renewAmount === 0) {
-            document.getElementById('renew').focus();
-        }
+        // if (!edited) {
+        //     document.getElementById('buy').focus();
+        // }
+        // if (disabledBuyButton && renewAmount === 0) {
+        //     document.getElementById('renew').focus();
+        // }
         if (!account) {
             history.push('/find');
         }
     });
+
+    useEffect(() => {
+        // if (renewAmount > 0 || renewalFee > 0) {
+        //     setGallonBuy(0);
+        // }
+    }, [gallonBuy, renewAmount, setGallonBuy, renewalFee]);
 
     useEffect(() => {
         if (edited) {
@@ -334,12 +355,15 @@ const BuyScreen = (props) => {
                         <BuyForm
                             date={date}
                             time={time}
+                            renew={renew}
+                            fee={renewalFee}
                             currentGallon={currentGallon}
                             gallonBuy={gallonBuy}
                             disableBuyInput={disableBuyInput}
                             handleBuyValue={handleBuyValue}
                             buyWaterGallon={buyWaterGallon}
                             gallonAfterBuy={gallonAfterBuy}
+                            setBuy={setGallonBuy}
                             renewalFee={renewalFee}
                             disableRenewInput={disableRenewInput}
                             handleRenewalFee={handleRenewalFee}
