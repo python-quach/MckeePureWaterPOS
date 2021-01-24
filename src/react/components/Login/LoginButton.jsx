@@ -6,9 +6,9 @@ const LoginButton = (props) => {
     const {
         transitionProps,
         submitSucceeded,
-        errorButton,
+        errorButtonConfig,
         errorMessage,
-        loginButton,
+        loginButtonConfig,
         username,
         password,
         focusInput,
@@ -18,14 +18,14 @@ const LoginButton = (props) => {
             <Divider hidden />
             {!errorMessage ? (
                 <Form.Button
-                    {...loginButton}
+                    {...loginButtonConfig}
                     disabled={!username || !password}
                     onClick={() => focusInput('username')}
                 />
             ) : (
                 <Transition {...transitionProps} visible={!submitSucceeded}>
                     <Form.Button
-                        {...errorButton}
+                        {...errorButtonConfig}
                         onClick={(event) => event.preventDefault()}
                     />
                 </Transition>
@@ -43,7 +43,7 @@ LoginButton.propTypes = {
 };
 
 LoginButton.defaultProps = {
-    loginButton: {
+    loginButtonConfig: {
         className: 'LoginButton',
         circular: true,
         fluid: true,
@@ -54,7 +54,7 @@ LoginButton.defaultProps = {
         labelPosition: 'right',
         content: 'Login',
     },
-    errorButton: {
+    errorButtonConfig: {
         circular: true,
         fluid: true,
         size: 'huge',
