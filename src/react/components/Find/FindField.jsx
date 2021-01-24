@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { Field } from 'redux-form';
-import Phone from '../Grid/FindPhoneInput';
+// import Phone from '../Grid/FindPhoneInput';
+import Phone from './FindPhoneInput';
 import Account from './FindAccountInput';
 import Name from './FindNameInput';
 
