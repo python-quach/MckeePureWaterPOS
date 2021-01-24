@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-// import { Form, Button, Divider } from 'semantic-ui-react';
 import { Form, Button } from 'semantic-ui-react';
 import LoginButton from './LoginButton';
 import Field from './LoginField';
 import { string } from 'prop-types';
-// import { dialog } from 'electron';
-// const { dialog } = require('electron').remote;
 
 function LoginForm(props) {
     const {

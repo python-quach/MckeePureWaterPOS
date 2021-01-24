@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Header, Icon, Divider } from 'semantic-ui-react';
-// import LoginDebug from './LoginDebug';
-import LoginForm from './LoginForm';
-import LoginGrid from '../Grid/Grid';
 import { reduxForm, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+import LoginGrid from '../Grid/Grid';
+import LoginForm from './LoginForm';
 
 function Login(props) {
     const {
@@ -25,9 +24,7 @@ function Login(props) {
     const [iconColor, setIconColor] = useState('blueIcon');
 
     const clearInvalidLoginButton = () => {
-        if (errorMessage) {
-            setErrorMessage('');
-        }
+        if (errorMessage) setErrorMessage('');
     };
 
     useEffect(() => {
@@ -78,14 +75,6 @@ function Login(props) {
         </LoginGrid>
     );
 }
-
-Login.defaultProps = {
-    gridProps: {
-        textAlign: 'center',
-        style: { height: '100vh' },
-        verticalAlign: 'middle',
-    },
-};
 
 const mapStateToProps = (state) => {
     const selectFormData = formValueSelector('user');

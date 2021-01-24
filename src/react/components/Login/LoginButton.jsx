@@ -1,37 +1,45 @@
 import React from 'react';
 import { Form, Transition, Divider } from 'semantic-ui-react';
-import PropTypes from 'prop-types';
+import { func, string, bool } from 'prop-types';
 
 const LoginButton = (props) => {
+    const {
+        transitionProps,
+        submitSucceeded,
+        errorButton,
+        errorMessage,
+        loginButton,
+        username,
+        password,
+        focusInput,
+    } = props;
     return (
-        <Transition.Group>
+        <>
             <Divider hidden />
-            {!props.errorMessage ? (
+            {!errorMessage ? (
                 <Form.Button
-                    {...props.loginButton}
-                    disabled={!props.username || !props.password}
-                    onClick={() => props.focusInput('username')}
+                    {...loginButton}
+                    disabled={!username || !password}
+                    onClick={() => focusInput('username')}
                 />
             ) : (
-                <Transition
-                    {...props.transitionProps}
-                    visible={!props.submitSucceeded}>
+                <Transition {...transitionProps} visible={!submitSucceeded}>
                     <Form.Button
-                        {...props.errorButton}
+                        {...errorButton}
                         onClick={(event) => event.preventDefault()}
                     />
                 </Transition>
             )}
-        </Transition.Group>
+        </>
     );
 };
 
 LoginButton.propTypes = {
-    errorMessage: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
-    focusInput: PropTypes.func.isRequired,
-    submitSucceeded: PropTypes.bool.isRequired,
+    focusInput: func.isRequired,
+    errorMessage: string.isRequired,
+    username: string.isRequired,
+    password: string.isRequired,
+    submitSucceeded: bool.isRequired,
 };
 
 LoginButton.defaultProps = {
@@ -39,10 +47,8 @@ LoginButton.defaultProps = {
         className: 'LoginButton',
         circular: true,
         fluid: true,
-        // size: 'massive',
         size: 'huge',
         id: 'LoginButton',
-        // color: 'teal',
         primary: true,
         icon: 'sign in',
         labelPosition: 'right',
@@ -51,11 +57,9 @@ LoginButton.defaultProps = {
     errorButton: {
         circular: true,
         fluid: true,
-        // size: 'massive',
         size: 'huge',
         id: 'LoginButton',
         color: 'red',
-        // secondary: true,
         icon: 'warning sign',
         labelPosition: 'right',
         content: 'Invalid Login',
