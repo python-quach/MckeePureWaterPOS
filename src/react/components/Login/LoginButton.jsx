@@ -44,17 +44,18 @@ LoginButton.propTypes = {
 
 LoginButton.defaultProps = {
     loginButtonConfig: {
+        content: 'Login',
         className: 'LoginButton',
+        primary: true,
         circular: true,
         fluid: true,
         size: 'huge',
         id: 'LoginButton',
-        primary: true,
         icon: 'sign in',
         labelPosition: 'right',
-        content: 'Login',
     },
     errorButtonConfig: {
+        content: 'Invalid Login',
         circular: true,
         fluid: true,
         size: 'huge',
@@ -62,7 +63,6 @@ LoginButton.defaultProps = {
         color: 'red',
         icon: 'warning sign',
         labelPosition: 'right',
-        content: 'Invalid Login',
     },
     transitionProps: {
         animation: 'shake',
