@@ -14,9 +14,9 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
-import BuyReceipt from './BuyReceipt';
-import RenewReceipt from './RenewReceipt';
-import InvoiceTable from './InvoiceTable';
+import BuyReceipt from '../Receipt/BuyReceipt';
+import RenewReceipt from '../Receipt/RenewReceipt';
+import InvoiceTable from '../Invoice/InvoiceTable';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {

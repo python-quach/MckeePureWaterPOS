@@ -3,8 +3,8 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Login from './components/Login/Login';
 import Find from './components/Find/Find';
 import Member from './components/Portal/MembershipPortal';
-import BuyScreen from './components/Portal/BuyScreen';
-import AddScreen from './components/Portal/AddScreen';
+import BuyScreen from './components/Buy/BuyScreen';
+import AddScreen from './components/Add/AddScreen';
 import './App.css';
 import './BuyForm.css';
 
