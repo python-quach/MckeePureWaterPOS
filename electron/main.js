@@ -53,6 +53,8 @@ usbDetect
     })
     .catch(function (err) {
         console.log(err);
+        device = null;
+        printer = null;
     });
 
 usbDetect.on('remove', function (device) {

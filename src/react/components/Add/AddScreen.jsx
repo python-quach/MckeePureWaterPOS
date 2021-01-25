@@ -112,7 +112,6 @@ const mapStateToProps = (state) => {
             memberSince: currentDate(),
             todayDate: currentDate(),
             todayTime: getCurrentTime(),
-            // account: lastAccount ? lastAccount + 1 : '',
             account: '',
             record_id: lastRecord ? lastRecord + 1 : '',
         },

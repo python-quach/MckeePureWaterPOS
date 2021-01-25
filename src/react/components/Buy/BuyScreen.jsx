@@ -194,7 +194,6 @@ const BuyScreen = (props) => {
         if (isNaN(parseInt(value))) {
             setRenewalFee(0);
         } else {
-            // Reset Buy
             setGallonAfterBuy(currentGallon);
             setGallonBuy(0);
             setRenewalFee(parseInt(value));
@@ -298,12 +297,6 @@ const BuyScreen = (props) => {
             history.push('/find');
         }
     });
-
-    // useEffect(() => {
-    //     // if (renewAmount > 0 || renewalFee > 0) {
-    //     //     setGallonBuy(0);
-    //     // }
-    // }, [gallonBuy, renewAmount, setGallonBuy, renewalFee]);
 
     useEffect(() => {
         if (edited) {
@@ -432,7 +425,6 @@ const BuyScreen = (props) => {
                             }>
                             <Segment
                                 style={{
-                                    // left: '13%',
                                     left: '10%',
                                     position: 'fixed',
                                     top: '20%',
