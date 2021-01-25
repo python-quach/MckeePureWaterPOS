@@ -1,10 +1,4 @@
-const {
-    app,
-    BrowserWindow,
-    ipcMain,
-    crashReporter,
-    dialog,
-} = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -24,13 +18,6 @@ const usbDetect = require('usb-detection');
 
 let db;
 
-crashReporter.start({
-    productName: 'PureWater',
-    companyName: 'MckeePureWater',
-    submitURL: 'http://localhost:3000/api/app-crashes',
-    uploadToServer: true,
-});
-
 // ESC-POS PRINTER SETUP
 let escpos = require('escpos');
 escpos.USB = require('escpos-usb');
@@ -40,6 +27,7 @@ let device;
 let printer;
 let mainWindow;
 
+usbDetect.startMonitoring();
 usbDetect
     .find()
     .then(function (devices) {
@@ -66,6 +54,10 @@ usbDetect.on('add', function (device) {
     console.log('add', device);
 });
 
+usbDetect.on('change:vid:pid', function (device) {
+    console.log('change', device);
+});
+
 // Electron Main Window Setup
 function createWindow() {
     // Connect to Sqlite3 local database
@@ -81,6 +73,7 @@ function createWindow() {
             protocol: 'file:',
             slashes: true,
         });
+
     mainWindow = new BrowserWindow({
         show: false,
         width: 800,
@@ -109,6 +102,7 @@ function createWindow() {
                 console.error(err.message);
             }
             console.log('Close the database connection.');
+            usbDetect.stopMonitoring();
             mainWindow = null;
         });
     });
@@ -404,7 +398,9 @@ ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
 ipcMain.on(channels.REPORT, (event, request) => {
     const { date, time } = request;
     getDailyReport(db, date, (totalFee, totalRenewAmount, totalBuy) => {
+        console.log('430', device);
         if (device) {
+            // if (device.device ? device : null) {
             receiptPrinter.dailyReport(
                 device,
                 printer,

@@ -140,30 +140,31 @@ const printReceipts = {
         const totalRenewFee = `Total Fee  : $${totalFee || 0}`;
         const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
         const totalBuyAmount = `Total Buy  : ${totalBuy || 0}`;
-        if (device) {
-            device.open(function (error) {
-                if (error) return console.log(error.message);
-                printer
-                    .font('a')
-                    .align('lt')
-                    .text('Mckee Pure Water')
-                    .text(`Daily Report`)
-                    .text(`${date} - ${time}`)
-                    .text(totalRenewFee)
-                    .text(totalRenew)
-                    .text(totalBuyAmount)
-                    .text('')
-                    .text('')
-                    .cut()
-                    .close();
-                callback();
-                // event.sender.send(channels.REPORT, {
-                //     totalFee,
-                //     totalRenewAmount,
-                //     totalBuy,
-                // });
-            });
-        }
+        // console.log('143', device);
+        // if (device) {
+        device.open(function (error) {
+            if (error) return console.log(error.message);
+            printer
+                .font('a')
+                .align('lt')
+                .text('Mckee Pure Water')
+                .text(`Daily Report`)
+                .text(`${date} - ${time}`)
+                .text(totalRenewFee)
+                .text(totalRenew)
+                .text(totalBuyAmount)
+                .text('')
+                .text('')
+                .cut()
+                .close();
+            callback();
+            // event.sender.send(channels.REPORT, {
+            //     totalFee,
+            //     totalRenewAmount,
+            //     totalBuy,
+            // });
+        });
+        // }
     },
 };
 
