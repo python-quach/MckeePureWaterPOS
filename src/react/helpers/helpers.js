@@ -77,3 +77,12 @@ export const normalizeInput = (value, previousValue) => {
 
     return previousValue;
 };
+
+export const upperCaseName = (value) => {
+    if (value.match(/^[a-zA-Z]+$/g)) return value.toUpperCase();
+};
+
+export const verifyFee = (value) => {
+    if (isNaN(parseInt(value))) return 0;
+    return parseInt(value);
+};

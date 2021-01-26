@@ -23,6 +23,8 @@ const AddScreen = (props) => {
         history,
         accountT,
         checkDuplicateAccount,
+        renewFee,
+        renewalAmount,
     } = props;
     const [open, setOpenPortal] = useState(true);
 
@@ -71,6 +73,8 @@ const AddScreen = (props) => {
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
                         <AddForm
+                            renewalAmount={renewalAmount}
+                            renewFee={renewFee}
                             date={currentDate}
                             time={getCurrentTime}
                             firstName={firstName}
@@ -114,6 +118,8 @@ const mapStateToProps = (state) => {
             todayTime: getCurrentTime(),
             account: '',
             record_id: lastRecord ? lastRecord + 1 : '',
+            renewalFee: 0,
+            renewalAmount: 0,
         },
 
         membership: state.membership,
@@ -126,6 +132,8 @@ const mapStateToProps = (state) => {
         firstName: selectFormData(state, 'firstName') || '',
         lastName: selectFormData(state, 'lastName') || '',
         accountT: selectFormData(state, 'account') || '',
+        renewFee: selectFormData(state, 'renewalFee') || 0,
+        renewalAmount: selectFormData(state, 'renewalAmount') || 0,
         addForm: state.form.add ? state.form.add.values : {},
         submitSucceeded: state.form.add ? state.form.add.submitSucceeded : {},
     };

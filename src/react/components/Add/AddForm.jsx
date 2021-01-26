@@ -7,11 +7,18 @@ import {
     normalizeAreaCode,
     normalizeInput,
     verifyAccount,
+    upperCaseName,
+    verifyFee,
 } from '../../helpers/helpers';
 import Date from '../Field/Date';
 import Time from '../Field/Time';
 import MemberSince from '../Field/MemberSince';
 import Account from '../Field/Account';
+import AreaCode from '../Field/AreaCode';
+import Phone from '../Field/Phone';
+import Name from '../Field/Name';
+import Fee from '../Field/Fee';
+import RenewGallon from '../Field/RenewGallon';
 
 const AddForm = (props) => {
     const {
@@ -25,7 +32,10 @@ const AddForm = (props) => {
         lastName,
         addNewMembership,
         history,
+        renewFee,
+        renewalAmount,
     } = props;
+
     const [fee, setFee] = useState(0);
     const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
@@ -34,7 +44,6 @@ const AddForm = (props) => {
     const addNew = (e) => {
         e.preventDefault();
         setAdded(true);
-
         checkDuplicateAccount(accountT, (data) => {
             if (!data) {
                 addNewMembership(
@@ -46,14 +55,14 @@ const AddForm = (props) => {
                         fullname: fullname,
                         memberSince: add.memberSince,
                         phone: add.phone,
-                        prevGallon: gallonAmount,
+                        prevGallon: renewalAmount,
                         buyGallon: 0,
-                        gallonLeft: gallonAmount,
-                        overGallon: gallonAmount,
-                        preOver: gallonAmount,
-                        renew: parseInt(gallonAmount),
-                        renewFee: parseInt(fee),
-                        lastRenewGallon: parseInt(gallonAmount),
+                        gallonLeft: renewalAmount,
+                        overGallon: renewalAmount,
+                        preOver: renewalAmount,
+                        renew: parseInt(renewalAmount),
+                        renewFee: parseInt(renewFee),
+                        lastRenewGallon: parseInt(renewalAmount),
                         invoiceDate: currentDate(),
                         invoiceTime: getCurrentTime(),
                         areaCode: add.areaCode,
@@ -105,100 +114,55 @@ const AddForm = (props) => {
             </Form.Group>
             <Form.Group>
                 <Field
-                    disabled={added}
-                    readOnly={added}
-                    id='areaCode'
-                    className='AreaCode'
-                    inverted={true}
                     name='areaCode'
-                    placeholder='xxx'
-                    component={Form.Input}
-                    label='Area Code'
+                    component={AreaCode}
+                    added={added}
                     normalize={normalizeAreaCode}
-                    width={1}
                 />
                 <Field
-                    readOnly={added}
-                    id='phone'
-                    className='PhoneNumber'
-                    inverted={true}
-                    disabled={added}
                     name='phone'
-                    placeholder='xxx-xxxx'
-                    width={2}
-                    component={Form.Input}
-                    label='Phone Number'
+                    component={Phone}
+                    added={added}
                     normalize={normalizeInput}
                 />
                 <Field
-                    readOnly={added}
-                    disabled={added}
-                    id='firstName'
                     name='firstName'
-                    inverted={true}
-                    className='PhoneNumber'
-                    placeholder='Enter Name'
-                    width={2}
-                    component={Form.Input}
+                    added={added}
+                    component={Name}
+                    id='firstName'
                     label='First Name'
-                    normalize={(value) => {
-                        if (value.match(/^[a-zA-Z]+$/g))
-                            return value.toUpperCase();
-                    }}
+                    normalize={upperCaseName}
                 />
                 <Field
-                    disabled={added}
-                    readOnly={added}
                     name='lastName'
+                    added={added}
+                    component={Name}
+                    id='lastName'
                     label='Last Name'
-                    inverted={true}
-                    className='PhoneNumber'
-                    placeholder='Enter Name'
-                    width={2}
-                    component={Form.Input}
-                    normalize={(value) => {
-                        if (value.match(/^[a-zA-Z]+$/g))
-                            return value.toUpperCase();
-                    }}
+                    normalize={upperCaseName}
                 />
                 <Form.Input type='hidden' width={7} />
-                <Form.Input
-                    readOnly={added}
-                    id='renew'
-                    label='Fee'
+                <Field
+                    added={added}
                     name='renewalFee'
-                    className='AreaCode'
-                    value={fee}
-                    onChange={(e, { value }) => {
-                        if (isNaN(parseInt(value))) {
-                            setFee(0);
-                        } else {
-                            setFee(parseInt(value));
-                        }
-                    }}
-                    inverted={true}
-                    width={1}
-                    disabled={added}
+                    component={Fee}
+                    normalize={verifyFee}
                 />
-                <Form.Input
-                    readOnly={added}
-                    label='Gallon'
+                <Field
                     name='renewalAmount'
-                    className='AreaCode'
-                    value={gallonAmount}
-                    disabled={!fee || added}
-                    inverted={true}
-                    onChange={(e, { value }) => {
+                    component={RenewGallon}
+                    added={added}
+                    renewFee={renewFee}
+                    normalize={(value) => {
                         if (isNaN(parseInt(value))) {
-                            setGallonAmount(0);
+                            return 0;
                         } else {
-                            setGallonAmount(parseInt(value));
+                            return parseInt(value);
                         }
                     }}
                     onKeyPress={(e) =>
                         e.key === 'Enter' || e.keyCode === 13 ? addNew(e) : null
                     }
-                    width={1}
                 />
                 <Form.Button
                     content='Add'
@@ -206,8 +170,8 @@ const AddForm = (props) => {
                     color='blue'
                     size='large'
                     disabled={
-                        !fee ||
-                        !gallonAmount ||
+                        !renewFee ||
+                        !renewalAmount ||
                         !add.areaCode ||
                         !add.phone ||
                         !add.lastName ||
