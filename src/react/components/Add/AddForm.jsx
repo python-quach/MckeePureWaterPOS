@@ -6,7 +6,12 @@ import {
     getCurrentTime,
     normalizeAreaCode,
     normalizeInput,
+    verifyAccount,
 } from '../../helpers/helpers';
+import Date from '../Field/Date';
+import Time from '../Field/Time';
+import MemberSince from '../Field/MemberSince';
+import Account from '../Field/Account';
 
 const AddForm = (props) => {
     const {
@@ -88,68 +93,14 @@ const AddForm = (props) => {
     return (
         <Form size='large'>
             <Form.Group>
-                <Field
-                    name='todayDate'
-                    className='TodayDate'
-                    inverted={true}
-                    icon='calendar'
-                    placeholder='mm/dd/yyyy'
-                    iconPosition='left'
-                    readOnly
-                    width={2}
-                    component={Form.Input}
-                    label='Today Date'
-                />
-                <Field
-                    name='todayTime'
-                    label='Current Time'
-                    component={Form.Input}
-                    className='TodayDate'
-                    inverted={true}
-                    placeholder='00:00:00 PM'
-                    icon='time'
-                    iconPosition='left'
-                    readOnly
-                    width={2}
-                />
+                <Field name='todayDate' component={Date} />
+                <Field name='todayTime' component={Time} />
                 <Form.Input type='hidden' width={8} />
+                <Field name='memberSince' component={MemberSince} />
                 <Field
-                    name='memberSince'
-                    label='Member Since'
-                    readOnly
-                    className='TodayDate'
-                    component={Form.Input}
-                    inverted={true}
-                    placeholder='mm/dd/yyy'
-                    icon='calendar'
-                    iconPosition='left'
-                    width={2}
-                />
-                <Field
-                    // readOnly
-                    id='account'
-                    label='Account'
                     name='account'
-                    className='BuyAccount'
-                    placeholder='xxxxxx'
-                    component={Form.Input}
-                    inverted={true}
-                    icon='hashtag'
-                    iconPosition='left'
-                    width={2}
-                />
-
-                <Field
-                    readOnly
-                    label='Invoice'
-                    name='record_id'
-                    component={Form.Input}
-                    className='TodayDate'
-                    placeholder='xxxxxxx'
-                    inverted={true}
-                    icon='hashtag'
-                    iconPosition='left'
-                    width={2}
+                    component={Account}
+                    normalize={verifyAccount}
                 />
             </Form.Group>
             <Form.Group>

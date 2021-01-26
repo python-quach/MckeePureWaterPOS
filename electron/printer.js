@@ -11,7 +11,7 @@ const printReceipts = {
         };
 
         const account = `[Account#: ${row.field22}]`;
-        const message = `Thank You                  ${account}`;
+        const message = `Thank You                ${account}`;
 
         device.open(function (error) {
             if (error) {
@@ -46,7 +46,7 @@ const printReceipts = {
         const fullname = `${row.field4} -- ${row.field7}`;
         const account = `[Account#: ${row.field22}]`;
         const totalGallon = `Gallon Left : ${row.field31}`;
-        const message = `Thank You                  ${account}`;
+        const message = `Thank You                ${account}`;
         const blank = '';
         if (args.preOver < 0) {
             device.open(function (error) {
@@ -101,7 +101,7 @@ const printReceipts = {
         const blank = '';
         const gallonLeft = `Gallon Left: ${row.field12}`;
         const account = `[Account#: ${row.field22}]`;
-        const message = `Thank You                  ${account}`;
+        const message = `Thank You                ${account}`;
 
         if (device) {
             device.open(function (error) {
