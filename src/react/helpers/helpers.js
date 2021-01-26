@@ -86,3 +86,11 @@ export const verifyFee = (value) => {
     if (isNaN(parseInt(value))) return 0;
     return parseInt(value);
 };
+
+export const verifyRenewGallon = (value) => {
+    if (isNaN(parseInt(value))) {
+        return 0;
+    } else {
+        return parseInt(value);
+    }
+};

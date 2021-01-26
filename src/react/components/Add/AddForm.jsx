@@ -9,6 +9,7 @@ import {
     verifyAccount,
     upperCaseName,
     verifyFee,
+    verifyRenewGallon,
 } from '../../helpers/helpers';
 import Date from '../Field/Date';
 import Time from '../Field/Time';
@@ -36,68 +37,95 @@ const AddForm = (props) => {
         renewalAmount,
     } = props;
 
-    const [fee, setFee] = useState(0);
-    const [gallonAmount, setGallonAmount] = useState(0);
     const [fullname, setFullName] = useState(null);
     const [added, setAdded] = useState(false);
+    const [disabledAddButton, setDisableAddButton] = useState(true);
+    const [member, setMember] = useState(null);
 
     const addNew = (e) => {
         e.preventDefault();
         setAdded(true);
         checkDuplicateAccount(accountT, (data) => {
             if (!data) {
-                addNewMembership(
-                    {
-                        record_id: record + 1,
-                        account: accountT,
-                        firstName: firstName,
-                        lastName: lastName,
-                        fullname: fullname,
-                        memberSince: add.memberSince,
-                        phone: add.phone,
-                        prevGallon: renewalAmount,
-                        buyGallon: 0,
-                        gallonLeft: renewalAmount,
-                        overGallon: renewalAmount,
-                        preOver: renewalAmount,
-                        renew: parseInt(renewalAmount),
-                        renewFee: parseInt(renewFee),
-                        lastRenewGallon: parseInt(renewalAmount),
-                        invoiceDate: currentDate(),
-                        invoiceTime: getCurrentTime(),
-                        areaCode: add.areaCode,
-                        threeDigit: add.phone.slice(0, 3),
-                        fourDigit: add.phone.slice(4, 8),
-                    },
-                    (response) => {
-                        console.log(response);
-                        find({ account: accountT }, (data) => {
-                            console.log(data);
-                            getAccount(data.membership[0].account, () => {
-                                props.clearMembership();
-                                history.push('/account');
-                            });
+                addNewMembership(member, (response) => {
+                    console.log(response);
+                    find({ account: accountT }, (data) => {
+                        getAccount(data.membership[0].account, () => {
+                            props.clearMembership();
+                            history.push('/account');
                         });
-                    }
-                );
+                    });
+                });
             } else {
                 props.clearMembership();
-                console.log(data);
             }
         });
     };
 
     useEffect(() => {
-        console.log({ add });
-    }, [add]);
+        setMember({
+            record_id: record + 1,
+            account: accountT,
+            firstName: firstName,
+            lastName: lastName,
+            fullname: fullname,
+            memberSince: add.memberSince,
+            phone: add.phone,
+            prevGallon: renewalAmount,
+            buyGallon: 0,
+            gallonLeft: renewalAmount,
+            overGallon: renewalAmount,
+            preOver: renewalAmount,
+            renew: parseInt(renewalAmount),
+            renewFee: parseInt(renewFee),
+            lastRenewGallon: parseInt(renewalAmount),
+            invoiceDate: currentDate(),
+            invoiceTime: getCurrentTime(),
+            areaCode: add.areaCode,
+            threeDigit: add.phone ? add.phone.slice(0, 3) : '',
+            fourDigit: add.phone ? add.phone.slice(4, 8) : '',
+        });
+    }, [
+        record,
+        accountT,
+        firstName,
+        lastName,
+        fullname,
+        add.memberSince,
+        add.phone,
+        renewalAmount,
+        add.areaCode,
+        renewFee,
+    ]);
 
     useEffect(() => {
-        console.log(props.add);
-        const { firstName, lastName } = props.add;
+        setDisableAddButton(
+            !renewFee ||
+                !renewalAmount ||
+                !add.areaCode ||
+                !add.phone ||
+                !add.lastName ||
+                !add.firstName ||
+                add.phone.length < 8 ||
+                add.areaCode.length < 3 ||
+                added
+        );
+    }, [
+        renewFee,
+        renewalAmount,
+        add.areaCode,
+        add.phone,
+        add.lastName,
+        add.firstName,
+        added,
+    ]);
+
+    useEffect(() => {
+        const { firstName, lastName } = add;
         if (firstName && lastName) {
             setFullName(firstName + ' ' + lastName);
         }
-    }, [props.add]);
+    }, [add]);
 
     return (
         <Form size='large'>
@@ -153,13 +181,7 @@ const AddForm = (props) => {
                     component={RenewGallon}
                     added={added}
                     renewFee={renewFee}
-                    normalize={(value) => {
-                        if (isNaN(parseInt(value))) {
-                            return 0;
-                        } else {
-                            return parseInt(value);
-                        }
-                    }}
+                    normalize={verifyRenewGallon}
                     onKeyPress={(e) =>
                         e.key === 'Enter' || e.keyCode === 13 ? addNew(e) : null
                     }
@@ -169,20 +191,8 @@ const AddForm = (props) => {
                     style={{ marginTop: '30px' }}
                     color='blue'
                     size='large'
-                    disabled={
-                        !renewFee ||
-                        !renewalAmount ||
-                        !add.areaCode ||
-                        !add.phone ||
-                        !add.lastName ||
-                        !add.firstName ||
-                        add.phone.length < 8 ||
-                        add.areaCode.length < 3 ||
-                        added
-                    }
-                    onClick={(e) => {
-                        addNew(e);
-                    }}
+                    disabled={disabledAddButton}
+                    onClick={(e) => addNew(e)}
                 />
             </Form.Group>
         </Form>
