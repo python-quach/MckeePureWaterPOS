@@ -119,6 +119,12 @@ export const changeName = (value) => (dispatch) => {
     dispatch(change('buy', 'fullname', value));
 };
 
+export const clearAddAccount = (value) => (dispatch) => {
+    console.log('reset add');
+    // dispatch(reset('add'));
+    dispatch(change('add', 'account', ''));
+};
+
 export const clearMembership = () => (dispatch) => {
     dispatch({ type: actionTypes.CLEAR_MEMBERSHIP });
 };
@@ -296,6 +302,16 @@ export const showBackUpDialog = (callback) => (dispatch) => {
     ipcRenderer.on(channels.SHOW_BACKUP_DIALOG, (event, response) => {
         ipcRenderer.removeAllListeners(channels.SHOW_BACKUP_DIALOG);
         console.log({ response });
+        callback(response);
+    });
+};
+
+export const testAddMembership = (member, callback) => (dispatch) => {
+    console.log('testAddMembership', member);
+    ipcRenderer.send(channels.ADD_NEW_MEMBER, member);
+    ipcRenderer.on(channels.ADD_NEW_MEMBER, (event, response) => {
+        ipcRenderer.removeAllListeners(channels.ADD_NEW_MEMBER);
+        console.log(response);
         callback(response);
     });
 };

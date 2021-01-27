@@ -24,48 +24,47 @@ import RenewGallon from '../Field/RenewGallon';
 const AddForm = (props) => {
     const {
         add,
-        find,
         getAccount,
-        checkDuplicateAccount,
-        accountT,
+        account,
         record,
         firstName,
         lastName,
-        addNewMembership,
         history,
         renewFee,
         renewalAmount,
+        clearAddAccount,
+        testAdd,
     } = props;
 
     const [fullname, setFullName] = useState(null);
-    const [added, setAdded] = useState(false);
     const [disabledAddButton, setDisableAddButton] = useState(true);
     const [member, setMember] = useState(null);
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const addNew = (e) => {
+    const addNewMember = (e) => {
         e.preventDefault();
-        setAdded(true);
-        checkDuplicateAccount(accountT, (data) => {
-            if (!data) {
-                addNewMembership(member, (response) => {
-                    console.log(response);
-                    find({ account: accountT }, (data) => {
-                        getAccount(data.membership[0].account, () => {
-                            props.clearMembership();
-                            history.push('/account');
-                        });
+
+        if (account) {
+            testAdd(member, (data) => {
+                if (data.error) {
+                    clearAddAccount();
+                    setError(true);
+                    setErrorMessage(data.error);
+                } else {
+                    getAccount(member.account, () => {
+                        props.clearMembership();
+                        history.push('/account');
                     });
-                });
-            } else {
-                props.clearMembership();
-            }
-        });
+                }
+            });
+        }
     };
 
     useEffect(() => {
         setMember({
             record_id: record + 1,
-            account: accountT,
+            account: account,
             firstName: firstName,
             lastName: lastName,
             fullname: fullname,
@@ -87,7 +86,7 @@ const AddForm = (props) => {
         });
     }, [
         record,
-        accountT,
+        account,
         firstName,
         lastName,
         fullname,
@@ -108,7 +107,7 @@ const AddForm = (props) => {
                 !add.firstName ||
                 add.phone.length < 8 ||
                 add.areaCode.length < 3 ||
-                added
+                !account
         );
     }, [
         renewFee,
@@ -117,7 +116,7 @@ const AddForm = (props) => {
         add.phone,
         add.lastName,
         add.firstName,
-        added,
+        account,
     ]);
 
     useEffect(() => {
@@ -138,24 +137,27 @@ const AddForm = (props) => {
                     name='account'
                     component={Account}
                     normalize={verifyAccount}
+                    error={error}
+                    errorMessage={errorMessage}
+                    onFocus={() => {
+                        setError(false);
+                        setErrorMessage('');
+                    }}
                 />
             </Form.Group>
             <Form.Group>
                 <Field
                     name='areaCode'
                     component={AreaCode}
-                    added={added}
                     normalize={normalizeAreaCode}
                 />
                 <Field
                     name='phone'
                     component={Phone}
-                    added={added}
                     normalize={normalizeInput}
                 />
                 <Field
                     name='firstName'
-                    added={added}
                     component={Name}
                     id='firstName'
                     label='First Name'
@@ -163,7 +165,6 @@ const AddForm = (props) => {
                 />
                 <Field
                     name='lastName'
-                    added={added}
                     component={Name}
                     id='lastName'
                     label='Last Name'
@@ -171,7 +172,6 @@ const AddForm = (props) => {
                 />
                 <Form.Input type='hidden' width={7} />
                 <Field
-                    added={added}
                     name='renewalFee'
                     component={Fee}
                     normalize={verifyFee}
@@ -179,11 +179,12 @@ const AddForm = (props) => {
                 <Field
                     name='renewalAmount'
                     component={RenewGallon}
-                    added={added}
                     renewFee={renewFee}
                     normalize={verifyRenewGallon}
                     onKeyPress={(e) =>
-                        e.key === 'Enter' || e.keyCode === 13 ? addNew(e) : null
+                        e.key === 'Enter' || e.keyCode === 13
+                            ? addNewMember(e)
+                            : null
                     }
                 />
                 <Form.Button
@@ -192,7 +193,7 @@ const AddForm = (props) => {
                     color='blue'
                     size='large'
                     disabled={disabledAddButton}
-                    onClick={(e) => addNew(e)}
+                    onClick={(e) => addNewMember(e)}
                 />
             </Form.Group>
         </Form>

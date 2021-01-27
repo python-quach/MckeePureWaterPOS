@@ -22,5 +22,6 @@ module.exports = {
         REPORT: 'REPORT',
         SHOW_BACKUP_DIALOG: 'SHOW_BACKUP_DIALOG',
         DUPLICATE_ACCOUNT: 'DUPLICATE_ACCOUNT',
+        TEST_MEMBERSHIP: 'TEST_MEMBERSHIP',
     },
 };

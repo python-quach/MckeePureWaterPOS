@@ -269,23 +269,23 @@ ipcMain.on(channels.BUY_WATER, (event, args) => {
 });
 
 // ADD NEW MEMBERSHIP TO DATABASE
-ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
-    createNewMembership(db, args, (row, lastID) => {
-        if (device) {
-            receiptPrinter.newMembership(device, printer, args, row, () => {
-                event.sender.send(channels.ADD_NEW_MEMBER, {
-                    ...row,
-                    lastRecord: lastID,
-                });
-            });
-        } else {
-            event.sender.send(channels.ADD_NEW_MEMBER, {
-                ...row,
-                lastRecord: lastID,
-            });
-        }
-    });
-});
+// ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
+//     createNewMembership(db, args, (row, lastID) => {
+//         if (device) {
+//             receiptPrinter.newMembership(device, printer, args, row, () => {
+//                 event.sender.send(channels.ADD_NEW_MEMBER, {
+//                     ...row,
+//                     lastRecord: lastID,
+//                 });
+//             });
+//         } else {
+//             event.sender.send(channels.ADD_NEW_MEMBER, {
+//                 ...row,
+//                 lastRecord: lastID,
+//             });
+//         }
+//     });
+// });
 
 // RENEW
 ipcMain.on(channels.RENEW_WATER, (event, args) => {
@@ -474,4 +474,42 @@ ipcMain.on(channels.SHOW_BACKUP_DIALOG, (event, request) => {
     } else {
         event.sender.send(channels.SHOW_BACKUP_DIALOG, { open: false });
     }
+});
+
+ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
+    // First we need to find if Account already in Database,
+    const { account } = args;
+    let sql = `SELECT * FROM mckee WHERE field22 = ?`;
+
+    db.get(sql, [account], (err, row) => {
+        if (!row) {
+            createNewMembership(db, args, (row, lastID) => {
+                if (device) {
+                    receiptPrinter.newMembership(
+                        device,
+                        printer,
+                        args,
+                        row,
+                        () => {
+                            event.sender.send(channels.ADD_NEW_MEMBER, {
+                                ...row,
+                                lastRecord: lastID,
+                                message: `${account} added to Database`,
+                            });
+                        }
+                    );
+                } else {
+                    event.sender.send(channels.ADD_NEW_MEMBER, {
+                        ...row,
+                        lastRecord: lastID,
+                        message: `${account} added to Database`,
+                    });
+                }
+            });
+        } else {
+            event.sender.send(channels.ADD_NEW_MEMBER, {
+                error: `${account} already existed, Please use another account`,
+            });
+        }
+    });
 });

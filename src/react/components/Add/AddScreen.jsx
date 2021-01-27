@@ -21,10 +21,11 @@ const AddScreen = (props) => {
         firstName,
         lastName,
         history,
-        accountT,
+        account,
         checkDuplicateAccount,
         renewFee,
         renewalAmount,
+        clearAddAccount,
     } = props;
     const [open, setOpenPortal] = useState(true);
 
@@ -73,6 +74,7 @@ const AddScreen = (props) => {
                 <Grid style={{ height: '100vh' }} verticalAlign='middle'>
                     <Grid.Column>
                         <AddForm
+                            clearAddAccount={clearAddAccount}
                             renewalAmount={renewalAmount}
                             renewFee={renewFee}
                             date={currentDate}
@@ -81,8 +83,8 @@ const AddScreen = (props) => {
                             lastName={lastName}
                             record={lastRecord}
                             getLastRecord={getLastRecord}
-                            account={lastAccount}
-                            accountT={accountT}
+                            // account={lastAccount}
+                            account={account}
                             add={addForm}
                             history={history}
                             find={props.find}
@@ -91,6 +93,7 @@ const AddScreen = (props) => {
                             clearMembership={props.clearMembership}
                             getAccount={props.getAccount}
                             addNewMembership={props.addNewMembership}
+                            testAdd={props.testAddMembership}
                         />
                         <Divider hidden />
                         <Button
@@ -123,7 +126,7 @@ const mapStateToProps = (state) => {
         },
 
         membership: state.membership,
-        account: state.account.account,
+        // account: state.account.account,
         detail: state.account,
         lastRecord: state.account.lastRecord,
         lastAccount: state.account.lastAccount,
@@ -131,7 +134,7 @@ const mapStateToProps = (state) => {
         phone: selectFormData(state, 'phone') || '',
         firstName: selectFormData(state, 'firstName') || '',
         lastName: selectFormData(state, 'lastName') || '',
-        accountT: selectFormData(state, 'account') || '',
+        account: selectFormData(state, 'account') || '',
         renewFee: selectFormData(state, 'renewalFee') || 0,
         renewalAmount: selectFormData(state, 'renewalAmount') || 0,
         addForm: state.form.add ? state.form.add.values : {},

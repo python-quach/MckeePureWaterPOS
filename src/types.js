@@ -18,3 +18,4 @@ export const CLOSE_APP = 'CLOSE_APP';
 export const REPORT = 'REPORT';
 export const SHOW_BACKUP_DIALOG = 'SHOW_BACKUP_DIALOG';
 export const DUPLICATE_ACCOUNT = 'DUPLICATE_ACCOUNT';
+export const TEST_MEMBERSHIP = 'TEST_MEMBERSHIP';

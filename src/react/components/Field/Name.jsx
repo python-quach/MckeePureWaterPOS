@@ -2,12 +2,10 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 
 const Name = (props) => {
-    const { added, label, id } = props;
+    const { label, id } = props;
     return (
         <Form.Input
             {...props.input}
-            readOnly={added}
-            disabled={added}
             id={id}
             inverted={true}
             className='PhoneNumber'
