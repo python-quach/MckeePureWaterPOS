@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 
 const AreaCode = (props) => {
+    // const { error } = props;
     return (
         <Form.Input
             {...props.input}
@@ -11,6 +12,8 @@ const AreaCode = (props) => {
             placeholder='xxx'
             label='Area Code'
             width={1}
+            // error={error ? '3 digit' : false}
+            // error={error ? true : false}
         />
     );
 };

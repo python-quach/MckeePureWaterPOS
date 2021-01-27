@@ -44,6 +44,9 @@ const AddForm = (props) => {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Redux Form Validation
+    const [areaCodeError, setAreaError] = useState(false);
+
     const addNewMember = (e) => {
         e.preventDefault();
         if (account) {
@@ -120,11 +123,18 @@ const AddForm = (props) => {
     ]);
 
     useEffect(() => {
-        // const { firstName, lastName } = add;
         if (firstName && lastName) {
             setFullName(firstName + ' ' + lastName);
         }
     }, [firstName, lastName]);
+
+    useEffect(() => {
+        if (areaCode.length === 3) {
+            setAreaError(false);
+        } else {
+            // setAreaError(true);
+        }
+    }, [areaCode]);
 
     return (
         <Form size='large'>
@@ -149,12 +159,19 @@ const AddForm = (props) => {
                 <Field
                     name='areaCode'
                     component={AreaCode}
+                    error={areaCodeError}
                     normalize={normalizeAreaCode}
                 />
                 <Field
                     name='phone'
                     component={Phone}
                     normalize={normalizeInput}
+                    onFocus={() => {
+                        console.log(areaCode.length);
+                        if (areaCode.length < 3) {
+                            setAreaError(true);
+                        }
+                    }}
                 />
                 <Field
                     name='firstName'

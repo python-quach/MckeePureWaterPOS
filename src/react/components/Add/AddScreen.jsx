@@ -12,26 +12,24 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import AddForm from './AddForm';
 import * as actions from '../../../actions';
 
-const AddScreen = (props) => {
-    const {
-        lastRecord,
-        addForm,
-        firstName,
-        lastName,
-        history,
-        account,
-        renewFee,
-        renewalAmount,
-        clearAddAccount,
-        memberSince,
-        phone,
-        areaCode,
-        getAccount,
-        clearMembership,
-        addMembership,
-    } = props;
-
+const AddScreen = ({
+    lastRecord,
+    firstName,
+    lastName,
+    history,
+    account,
+    renewFee,
+    renewalAmount,
+    clearAddAccount,
+    memberSince,
+    phone,
+    areaCode,
+    getAccount,
+    clearMembership,
+    addMembership,
+}) => {
     const [open, setOpenPortal] = useState(true);
+
     const handleClose = () => {
         setOpenPortal(false);
         history.push('/find');
@@ -61,7 +59,6 @@ const AddScreen = (props) => {
                             memberSince={memberSince}
                             areaCode={areaCode}
                             account={account}
-                            add={addForm}
                             history={history}
                             clearMembership={clearMembership}
                             getAccount={getAccount}
@@ -109,8 +106,6 @@ const mapStateToProps = (state) => {
         renewFee: selectFormData(state, 'renewalFee') || 0,
         renewalAmount: selectFormData(state, 'renewalAmount') || 0,
         memberSince: selectFormData(state, 'memberSince') || '',
-        addForm: state.form.add ? state.form.add.values : {},
-        submitSucceeded: state.form.add ? state.form.add.submitSucceeded : {},
     };
 };
 
