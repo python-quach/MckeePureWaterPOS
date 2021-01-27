@@ -23,17 +23,19 @@ import RenewGallon from '../Field/RenewGallon';
 
 const AddForm = (props) => {
     const {
-        add,
         getAccount,
         account,
         record,
         firstName,
         lastName,
+        memberSince,
+        phone,
+        areaCode,
         history,
         renewFee,
         renewalAmount,
         clearAddAccount,
-        testAdd,
+        addMembership,
     } = props;
 
     const [fullname, setFullName] = useState(null);
@@ -44,16 +46,14 @@ const AddForm = (props) => {
 
     const addNewMember = (e) => {
         e.preventDefault();
-
         if (account) {
-            testAdd(member, (data) => {
+            addMembership(member, (data) => {
                 if (data.error) {
                     clearAddAccount();
                     setError(true);
                     setErrorMessage(data.error);
                 } else {
                     getAccount(member.account, () => {
-                        props.clearMembership();
                         history.push('/account');
                     });
                 }
@@ -68,8 +68,8 @@ const AddForm = (props) => {
             firstName: firstName,
             lastName: lastName,
             fullname: fullname,
-            memberSince: add.memberSince,
-            phone: add.phone,
+            memberSince: memberSince,
+            phone: phone,
             prevGallon: renewalAmount,
             buyGallon: 0,
             gallonLeft: renewalAmount,
@@ -80,9 +80,9 @@ const AddForm = (props) => {
             lastRenewGallon: parseInt(renewalAmount),
             invoiceDate: currentDate(),
             invoiceTime: getCurrentTime(),
-            areaCode: add.areaCode,
-            threeDigit: add.phone ? add.phone.slice(0, 3) : '',
-            fourDigit: add.phone ? add.phone.slice(4, 8) : '',
+            areaCode: areaCode,
+            threeDigit: phone ? phone.slice(0, 3) : '',
+            fourDigit: phone ? phone.slice(4, 8) : '',
         });
     }, [
         record,
@@ -90,10 +90,10 @@ const AddForm = (props) => {
         firstName,
         lastName,
         fullname,
-        add.memberSince,
-        add.phone,
+        memberSince,
+        phone,
         renewalAmount,
-        add.areaCode,
+        areaCode,
         renewFee,
     ]);
 
@@ -101,30 +101,30 @@ const AddForm = (props) => {
         setDisableAddButton(
             !renewFee ||
                 !renewalAmount ||
-                !add.areaCode ||
-                !add.phone ||
-                !add.lastName ||
-                !add.firstName ||
-                add.phone.length < 8 ||
-                add.areaCode.length < 3 ||
+                !areaCode ||
+                !phone ||
+                !lastName ||
+                !firstName ||
+                phone.length < 8 ||
+                areaCode.length < 3 ||
                 !account
         );
     }, [
         renewFee,
         renewalAmount,
-        add.areaCode,
-        add.phone,
-        add.lastName,
-        add.firstName,
+        areaCode,
+        phone,
+        lastName,
+        firstName,
         account,
     ]);
 
     useEffect(() => {
-        const { firstName, lastName } = add;
+        // const { firstName, lastName } = add;
         if (firstName && lastName) {
             setFullName(firstName + ' ' + lastName);
         }
-    }, [add]);
+    }, [firstName, lastName]);
 
     return (
         <Form size='large'>

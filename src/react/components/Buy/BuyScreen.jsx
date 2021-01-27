@@ -293,12 +293,6 @@ const BuyScreen = (props) => {
     ]);
 
     useEffect(() => {
-        if (!account) {
-            history.push('/find');
-        }
-    });
-
-    useEffect(() => {
         if (edited) {
             document.getElementById('areaCode').focus();
         }

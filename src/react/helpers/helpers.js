@@ -82,15 +82,12 @@ export const upperCaseName = (value) => {
     if (value.match(/^[a-zA-Z]+$/g)) return value.toUpperCase();
 };
 
-export const verifyFee = (value) => {
+export const verifyFee = (value, previousValue) => {
     if (isNaN(parseInt(value))) return 0;
-    return parseInt(value);
+    return value.length <= 4 ? parseInt(value) : previousValue;
 };
 
-export const verifyRenewGallon = (value) => {
-    if (isNaN(parseInt(value))) {
-        return 0;
-    } else {
-        return parseInt(value);
-    }
+export const verifyRenewGallon = (value, previousValue) => {
+    if (isNaN(parseInt(value))) return 0;
+    return value.length <= 4 ? parseInt(value) : previousValue;
 };

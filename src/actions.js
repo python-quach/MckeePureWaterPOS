@@ -126,6 +126,7 @@ export const clearAddAccount = (value) => (dispatch) => {
 };
 
 export const clearMembership = () => (dispatch) => {
+    console.log('clearMembership');
     dispatch({ type: actionTypes.CLEAR_MEMBERSHIP });
 };
 
@@ -306,7 +307,7 @@ export const showBackUpDialog = (callback) => (dispatch) => {
     });
 };
 
-export const testAddMembership = (member, callback) => (dispatch) => {
+export const addMembership = (member, callback) => (dispatch) => {
     console.log('testAddMembership', member);
     ipcRenderer.send(channels.ADD_NEW_MEMBER, member);
     ipcRenderer.on(channels.ADD_NEW_MEMBER, (event, response) => {

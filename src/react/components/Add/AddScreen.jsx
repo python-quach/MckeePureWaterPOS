@@ -17,46 +17,35 @@ const AddScreen = (props) => {
         lastRecord,
         lastAccount,
         addForm,
-        getLastRecord,
         firstName,
         lastName,
         history,
         account,
-        checkDuplicateAccount,
         renewFee,
         renewalAmount,
         clearAddAccount,
+        memberSince,
+        phone,
+        areaCode,
     } = props;
-    const [open, setOpenPortal] = useState(true);
 
+    const [open, setOpenPortal] = useState(true);
     const handleClose = () => {
         setOpenPortal(false);
-        props.history.push('/find');
+        history.push('/find');
     };
 
     const handleBackButton = () => {
         if (props.membership.members) {
             setOpenPortal(false);
-            props.history.push('/member');
+            history.push('/member');
         } else {
             setOpenPortal(false);
-            props.history.push('find');
+            history.push('find');
         }
     };
 
     useEffect(() => {
-        // if (!lastRecord || !lastAccount) {
-        if (!lastRecord) {
-            props.history.push('/find');
-        }
-    });
-
-    useEffect(() => {
-        if (lastRecord && lastAccount) console.log({ lastRecord, lastAccount });
-    }, [lastRecord, lastAccount]);
-
-    useEffect(() => {
-        // document.getElementById('areaCode').focus();
         document.getElementById('account').focus();
     }, [lastAccount]);
 
@@ -77,23 +66,18 @@ const AddScreen = (props) => {
                             clearAddAccount={clearAddAccount}
                             renewalAmount={renewalAmount}
                             renewFee={renewFee}
-                            date={currentDate}
-                            time={getCurrentTime}
                             firstName={firstName}
                             lastName={lastName}
                             record={lastRecord}
-                            getLastRecord={getLastRecord}
-                            // account={lastAccount}
+                            phone={phone}
+                            memberSince={memberSince}
+                            areaCode={areaCode}
                             account={account}
                             add={addForm}
                             history={history}
-                            find={props.find}
-                            checkDuplicateAccount={checkDuplicateAccount}
-                            clearAccount={props.clearAccount}
                             clearMembership={props.clearMembership}
                             getAccount={props.getAccount}
-                            addNewMembership={props.addNewMembership}
-                            testAdd={props.testAddMembership}
+                            addMembership={props.addMembership}
                         />
                         <Divider hidden />
                         <Button
@@ -111,7 +95,7 @@ const AddScreen = (props) => {
 const mapStateToProps = (state) => {
     const selectFormData = formValueSelector('add');
     const {
-        account: { lastAccount, lastRecord },
+        account: { lastRecord },
     } = state;
 
     return {
@@ -126,7 +110,6 @@ const mapStateToProps = (state) => {
         },
 
         membership: state.membership,
-        // account: state.account.account,
         detail: state.account,
         lastRecord: state.account.lastRecord,
         lastAccount: state.account.lastAccount,
@@ -137,6 +120,7 @@ const mapStateToProps = (state) => {
         account: selectFormData(state, 'account') || '',
         renewFee: selectFormData(state, 'renewalFee') || 0,
         renewalAmount: selectFormData(state, 'renewalAmount') || 0,
+        memberSince: selectFormData(state, 'memberSince') || '',
         addForm: state.form.add ? state.form.add.values : {},
         submitSucceeded: state.form.add ? state.form.add.submitSucceeded : {},
     };
