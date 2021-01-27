@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     Divider,
@@ -15,7 +15,6 @@ import * as actions from '../../../actions';
 const AddScreen = (props) => {
     const {
         lastRecord,
-        lastAccount,
         addForm,
         firstName,
         lastName,
@@ -27,6 +26,9 @@ const AddScreen = (props) => {
         memberSince,
         phone,
         areaCode,
+        getAccount,
+        clearMembership,
+        addMembership,
     } = props;
 
     const [open, setOpenPortal] = useState(true);
@@ -34,20 +36,6 @@ const AddScreen = (props) => {
         setOpenPortal(false);
         history.push('/find');
     };
-
-    const handleBackButton = () => {
-        if (props.membership.members) {
-            setOpenPortal(false);
-            history.push('/member');
-        } else {
-            setOpenPortal(false);
-            history.push('find');
-        }
-    };
-
-    useEffect(() => {
-        document.getElementById('account').focus();
-    }, [lastAccount]);
 
     return (
         <TransitionablePortal onClose={handleClose} open={open}>
@@ -75,15 +63,15 @@ const AddScreen = (props) => {
                             account={account}
                             add={addForm}
                             history={history}
-                            clearMembership={props.clearMembership}
-                            getAccount={props.getAccount}
-                            addMembership={props.addMembership}
+                            clearMembership={clearMembership}
+                            getAccount={getAccount}
+                            addMembership={addMembership}
                         />
                         <Divider hidden />
                         <Button
                             content='Back'
                             floated='right'
-                            onClick={handleBackButton}
+                            onClick={handleClose}
                         />
                     </Grid.Column>
                 </Grid>
