@@ -38,14 +38,12 @@ const AddForm = (props) => {
         addMembership,
     } = props;
 
-    const [fullname, setFullName] = useState(null);
     const [disabledAddButton, setDisableAddButton] = useState(true);
     const [member, setMember] = useState(null);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     // Redux Form Validation
-    const [areaCodeError, setAreaError] = useState(false);
 
     const addNewMember = (e) => {
         e.preventDefault();
@@ -70,13 +68,12 @@ const AddForm = (props) => {
             account: account,
             firstName: firstName,
             lastName: lastName,
-            fullname: fullname,
+            fullname: firstName + ' ' + lastName,
             memberSince: memberSince,
             phone: phone,
             prevGallon: renewalAmount,
             buyGallon: 0,
             gallonLeft: renewalAmount,
-            overGallon: renewalAmount,
             preOver: renewalAmount,
             renew: parseInt(renewalAmount),
             renewFee: parseInt(renewFee),
@@ -92,7 +89,6 @@ const AddForm = (props) => {
         account,
         firstName,
         lastName,
-        fullname,
         memberSince,
         phone,
         renewalAmount,
@@ -122,20 +118,6 @@ const AddForm = (props) => {
         account,
     ]);
 
-    useEffect(() => {
-        if (firstName && lastName) {
-            setFullName(firstName + ' ' + lastName);
-        }
-    }, [firstName, lastName]);
-
-    useEffect(() => {
-        if (areaCode.length === 3) {
-            setAreaError(false);
-        } else {
-            // setAreaError(true);
-        }
-    }, [areaCode]);
-
     return (
         <Form size='large'>
             <Form.Group>
@@ -159,19 +141,12 @@ const AddForm = (props) => {
                 <Field
                     name='areaCode'
                     component={AreaCode}
-                    error={areaCodeError}
                     normalize={normalizeAreaCode}
                 />
                 <Field
                     name='phone'
                     component={Phone}
                     normalize={normalizeInput}
-                    onFocus={() => {
-                        console.log(areaCode.length);
-                        if (areaCode.length < 3) {
-                            setAreaError(true);
-                        }
-                    }}
                 />
                 <Field
                     name='firstName'
