@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Button,
     Divider,
     TransitionablePortal,
     Segment,
@@ -10,8 +9,8 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
-import BuyReceipt from '../Receipt/BuyReceipt';
-import RenewReceipt from '../Receipt/RenewReceipt';
+import ButtonMenu from './ButtonMenu';
+import Receipt from '../Receipt/Receipt';
 import InvoiceHistory from '../History/InvoiceHistory';
 import InvoiceTable from '../History/InvoiceTable';
 import * as actions from '../../../actions';
@@ -39,17 +38,10 @@ const BuyScreen = (props) => {
         updateMembership,
     } = props;
 
-    const [open, setOpenPortal] = useState(true);
-    const [openHistory, setOpenHistory] = useState(false);
     const { gallonRemain } = detail;
 
-    const handleClose = () => {
-        clearAccount();
-        clearMembership();
-        clearFindForm();
-        setOpenPortal(false);
-        history.push('/find');
-    };
+    const [open, setOpenPortal] = useState(true);
+    const [openHistory, setOpenHistory] = useState(false);
 
     // Pagination
     const [test, setTest] = useState(0);
@@ -72,10 +64,19 @@ const BuyScreen = (props) => {
     const [gallonOver, setGallonOver] = useState(gallonRemain);
     const [renewalFee, setRenewalFee] = useState(0);
     const [renewAmount, setRenewAmount] = useState(0);
+    const [totalBuyGallon, setTotalBuyGallon] = useState(0);
     const [disabledBuyButton, setDisabledBuyButton] = useState(true);
     const [disableBuyInput, setDisableBuyInput] = useState(true);
     const [disableRenewButton, setDisabledRenewButton] = useState(true);
     const [disableRenewInput, setDisabledRenewInput] = useState(true);
+
+    const handleClose = () => {
+        clearAccount();
+        clearMembership();
+        clearFindForm();
+        setOpenPortal(false);
+        history.push('/find');
+    };
 
     const resetRenewData = ({ gallonCurrent, gallonRemain }) => {
         setCurrentGallon(gallonCurrent);
@@ -224,8 +225,6 @@ const BuyScreen = (props) => {
         }
     };
 
-    const [totalBuyGallon, setTotalBuyGallon] = useState(0);
-
     const handleGetInvoices = () => {
         setLoading(true);
         getAccountInvoices(account, 10, 0, (data) => {
@@ -348,46 +347,21 @@ const BuyScreen = (props) => {
                             edited={edited}
                             changeName={changeName}
                         />
-                        {detail.renew !== null &&
-                        detail.renew > 0 &&
-                        detail.gallonBuy !== detail.renew ? (
-                            <RenewReceipt detail={detail} />
-                        ) : (
-                            <BuyReceipt detail={detail} />
-                        )}
-                        <Divider hidden />
-                        <Button
-                            content='Done'
-                            floated='right'
-                            onClick={handleBackButton}
+                        <Receipt
+                            renew={detail.renew}
+                            gallonBuy={detail.gallonBuy}
+                            detail={detail}
                         />
-                        {edited ? (
-                            <Button
-                                floated='right'
-                                content='Cancel Edit'
-                                color='blue'
-                                onClick={() => {
-                                    resetBuyForm();
-                                    setEdited(false);
-                                }}
-                            />
-                        ) : null}
-                        <Button
-                            loading={loadingEdited}
-                            floated='right'
-                            color={!edited ? 'vk' : 'google plus'}
-                            content={!edited ? 'Edit Customer' : 'Save'}
-                            onClick={() => {
-                                if (edited) {
-                                    setLoadingEdited(true);
-                                    updateMembership(formBuy, (response) => {
-                                        setEdited(false);
-                                        setLoadingEdited(false);
-                                    });
-                                } else {
-                                    setEdited(true);
-                                }
-                            }}
+                        <Divider hidden />
+                        <ButtonMenu
+                            edited={edited}
+                            handleBackButton={handleBackButton}
+                            resetBuyForm={resetBuyForm}
+                            setEdited={setEdited}
+                            loadingEdited={loadingEdited}
+                            setLoadingEdited={setLoadingEdited}
+                            updateMembership={updateMembership}
+                            formBuy={formBuy}
                         />
 
                         <InvoiceHistory
