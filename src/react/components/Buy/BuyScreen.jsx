@@ -20,6 +20,7 @@ const BuyScreen = (props) => {
         getAccountInvoices,
         account,
         detail,
+        gallonRemain,
         getLastRecord,
         getAccount,
         buy,
@@ -38,13 +39,12 @@ const BuyScreen = (props) => {
         updateMembership,
     } = props;
 
-    const { gallonRemain } = detail;
-
+    // Buy Screen Portal
     const [open, setOpenPortal] = useState(true);
     const [openHistory, setOpenHistory] = useState(false);
 
     // Pagination
-    const [test, setTest] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     const [activePage, setActivePage] = useState(1);
@@ -251,12 +251,12 @@ const BuyScreen = (props) => {
     }, [offset, account, limit, getAccountInvoices, open]);
 
     useEffect(() => {
-        if (!test) {
+        if (!totalPages) {
             totalInvoice(account, (count) => {
-                setTest(count.count);
+                setTotalPages(count.count);
             });
         }
-    }, [test, account, totalInvoice]);
+    }, [totalPages, account, totalInvoice]);
 
     useEffect(() => {
         if (gallonAfterBuy < 0) {
@@ -363,7 +363,6 @@ const BuyScreen = (props) => {
                             updateMembership={updateMembership}
                             formBuy={formBuy}
                         />
-
                         <InvoiceHistory
                             openHistory={openHistory}
                             setLimit={setLimit}
@@ -380,7 +379,7 @@ const BuyScreen = (props) => {
                                 setOpenHistory={setOpenHistory}
                                 onChange={onChange}
                                 activePage={activePage}
-                                test={test}
+                                totalPages={totalPages}
                             />
                         </InvoiceHistory>
                     </Grid.Column>
@@ -390,7 +389,7 @@ const BuyScreen = (props) => {
     );
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
     const {
         account,
         areaCode,
@@ -432,6 +431,7 @@ const mapStateToProps = (state, ownProps) => {
         membership: state.membership,
         account: state.account.account,
         detail: state.account,
+        gallonRemain: state.account.gallonRemain,
         formBuy: state.form.buy ? state.form.buy.values : {},
     };
 };

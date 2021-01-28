@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-    Segment,
-    Header,
-    Step,
-    Icon,
-    Button,
-    Pagination,
-} from 'semantic-ui-react';
-
+import { Segment, Button, Pagination } from 'semantic-ui-react';
 import Table from '../Invoice/InvoiceTable';
+import InvoiceHeader from './InvoiceHeader';
 
 const InvoiceTable = (props) => {
     const {
@@ -21,9 +14,10 @@ const InvoiceTable = (props) => {
         setOpenHistory,
         activePage,
         onChange,
-        test,
+        totalPages,
         account,
     } = props;
+
     return (
         <Segment
             style={{
@@ -32,28 +26,7 @@ const InvoiceTable = (props) => {
                 top: '20%',
                 zIndex: 1001,
             }}>
-            <Header>
-                <Step.Group size='mini'>
-                    <Step>
-                        <Icon name='info' />
-                        <Step.Content>
-                            <Step.Title>Invoice History</Step.Title>
-                        </Step.Content>
-                    </Step>
-                    <Step active>
-                        <Icon name='user' />
-                        <Step.Content>
-                            <Step.Title>{detail.fullname}</Step.Title>
-                        </Step.Content>
-                    </Step>
-                    <Step active>
-                        <Icon name='address card' />
-                        <Step.Content>
-                            <Step.Title>Account# {account}</Step.Title>
-                        </Step.Content>
-                    </Step>
-                </Step.Group>
-            </Header>
+            <InvoiceHeader fullname={detail.fullname} account={account} />
             <Table
                 invoices={invoices}
                 totalRenewalFee={totalRenewalFee}
@@ -72,7 +45,7 @@ const InvoiceTable = (props) => {
             <Pagination
                 activePage={activePage}
                 onPageChange={onChange}
-                totalPages={Math.ceil(test / 10)}
+                totalPages={Math.ceil(totalPages / 10)}
                 ellipsisItem={null}
             />
         </Segment>
