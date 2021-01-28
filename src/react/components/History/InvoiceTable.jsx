@@ -22,6 +22,7 @@ const InvoiceTable = (props) => {
         activePage,
         onChange,
         test,
+        account,
     } = props;
     return (
         <Segment

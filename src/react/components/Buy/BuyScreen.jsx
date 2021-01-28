@@ -5,10 +5,6 @@ import {
     TransitionablePortal,
     Segment,
     Grid,
-    Header,
-    Pagination,
-    Step,
-    Icon,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -16,8 +12,8 @@ import { getCurrentTime, currentDate } from '../../helpers/helpers';
 import BuyForm from './BuyForm';
 import BuyReceipt from '../Receipt/BuyReceipt';
 import RenewReceipt from '../Receipt/RenewReceipt';
-import InvoiceTable from '../Invoice/InvoiceTable';
 import InvoiceHistory from '../History/InvoiceHistory';
+import InvoiceTable from '../History/InvoiceTable';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {
@@ -399,153 +395,20 @@ const BuyScreen = (props) => {
                             setLimit={setLimit}
                             loading={loading}
                             handleGetInvoices={handleGetInvoices}>
-                            <Segment
-                                style={{
-                                    left: '10%',
-                                    position: 'fixed',
-                                    top: '20%',
-                                    zIndex: 1001,
-                                }}>
-                                <Header>
-                                    <Step.Group size='mini'>
-                                        <Step>
-                                            <Icon name='info' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    Invoice History
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                        <Step active>
-                                            <Icon name='user' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    {detail.fullname}
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                        <Step active>
-                                            <Icon name='address card' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    Account# {account}
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                    </Step.Group>
-                                </Header>
-                                <InvoiceTable
-                                    invoices={invoices}
-                                    totalRenewalFee={totalRenewalFee}
-                                    totalRenewalAmount={totalRenewalAmount}
-                                    totalBuyGallon={totalBuyGallon}
-                                    gallonRemain={gallonRemain}
-                                />
-                                <Button
-                                    floated='right'
-                                    color='red'
-                                    content='Close'
-                                    onClick={() => {
-                                        setOpenHistory(false);
-                                    }}></Button>
-
-                                <Pagination
-                                    activePage={activePage}
-                                    onPageChange={onChange}
-                                    totalPages={Math.ceil(test / 10)}
-                                    ellipsisItem={null}
-                                />
-                            </Segment>
+                            <InvoiceTable
+                                invoices={invoices}
+                                totalRenewalFee={totalRenewalFee}
+                                totalRenewalAmount={totalRenewalAmount}
+                                totalBuyGallon={totalBuyGallon}
+                                gallonRemain={gallonRemain}
+                                detail={detail}
+                                account={account}
+                                setOpenHistory={setOpenHistory}
+                                onChange={onChange}
+                                activePage={activePage}
+                                test={test}
+                            />
                         </InvoiceHistory>
-
-                        {/* <TransitionablePortal
-                            size='large'
-                            open={openHistory}
-                            closeOnDocumentClick={false}
-                            closeOnEscape={false}
-                            closeOnDimmerClick={false}
-                            closeOnPortalMouseLeave={false}
-                            trigger={
-                                !openHistory ? (
-                                    <Button
-                                        floated='right'
-                                        content={
-                                            openHistory
-                                                ? 'Close Invoices'
-                                                : 'Show Invoices'
-                                        }
-                                        negative={openHistory}
-                                        positive={!openHistory}
-                                        loading={loading}
-                                        onClick={() => {
-                                            if (!openHistory) {
-                                                handleGetInvoices();
-                                            } else {
-                                                setLimit(10);
-                                                setOffset(0);
-                                            }
-                                        }}
-                                    />
-                                ) : null
-                            }>
-                            <Segment
-                                style={{
-                                    left: '10%',
-                                    position: 'fixed',
-                                    top: '20%',
-                                    zIndex: 1001,
-                                }}>
-                                <Header>
-                                    <Step.Group size='mini'>
-                                        <Step>
-                                            <Icon name='info' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    Invoice History
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                        <Step active>
-                                            <Icon name='user' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    {detail.fullname}
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                        <Step active>
-                                            <Icon name='address card' />
-                                            <Step.Content>
-                                                <Step.Title>
-                                                    Account# {account}
-                                                </Step.Title>
-                                            </Step.Content>
-                                        </Step>
-                                    </Step.Group>
-                                </Header>
-                                <InvoiceTable
-                                    invoices={invoices}
-                                    totalRenewalFee={totalRenewalFee}
-                                    totalRenewalAmount={totalRenewalAmount}
-                                    totalBuyGallon={totalBuyGallon}
-                                    gallonRemain={gallonRemain}
-                                />
-                                <Button
-                                    floated='right'
-                                    color='red'
-                                    content='Close'
-                                    onClick={() => {
-                                        setOpenHistory(false);
-                                    }}></Button>
-
-                                <Pagination
-                                    activePage={activePage}
-                                    onPageChange={onChange}
-                                    totalPages={Math.ceil(test / 10)}
-                                    ellipsisItem={null}
-                                />
-                            </Segment>
-                        </TransitionablePortal> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
