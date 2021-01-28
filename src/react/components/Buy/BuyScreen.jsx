@@ -99,8 +99,8 @@ const BuyScreen = (props) => {
     const renewWaterGallon = (e) => {
         e.preventDefault();
         getLastRecord((lastRecord) => {
-            console.log(detail);
             const updateGallon = parseInt(gallonRemain) + parseInt(renewAmount);
+
             const renewData = {
                 record_id: parseInt(lastRecord.record_id) + 1,
                 account: detail.account,

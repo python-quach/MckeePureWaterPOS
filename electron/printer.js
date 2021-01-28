@@ -23,13 +23,11 @@ const printReceipts = {
                 .align('lt')
                 .text(data.blank)
                 .text(data.fullname)
-                // .text(`NEW MEMBERSHIP: ${data.newMembership}`)
                 .text(`NEW MEMBERSHIP`)
                 .text(data.renewFee)
                 .text(data.gallonLeft)
                 .text(data.time)
                 .text(data.blank)
-                // .text('Thank You')
                 .text(message)
                 .text('Mckee Pure Water')
                 .text('(408) 729-1319')
@@ -130,18 +128,14 @@ const printReceipts = {
         printer,
         totalFee,
         totalRenewAmount,
-        // row,
         totalBuy,
         date,
         time,
         callback
     ) {
-        // const { totalBuy } = row;
         const totalRenewFee = `Total Fee  : $${totalFee || 0}`;
         const totalRenew = `Total Renew: ${totalRenewAmount || 0}`;
         const totalBuyAmount = `Total Buy  : ${totalBuy || 0}`;
-        // console.log('143', device);
-        // if (device) {
         device.open(function (error) {
             if (error) return console.log(error.message);
             printer
@@ -158,13 +152,7 @@ const printReceipts = {
                 .cut()
                 .close();
             callback();
-            // event.sender.send(channels.REPORT, {
-            //     totalFee,
-            //     totalRenewAmount,
-            //     totalBuy,
-            // });
         });
-        // }
     },
 };
 
