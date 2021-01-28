@@ -217,6 +217,13 @@ const BuyForm = (props) => {
                     value={props.renewalFee}
                     inverted={true}
                     onChange={props.handleRenewalFee}
+                    onKeyPress={(e) =>
+                        (e.key === 'Enter' || e.keyCode === 13) &&
+                        props.renewalFee > 0 &&
+                        props.renewAmount > 0
+                            ? props.renewWaterGallon(e)
+                            : null
+                    }
                     width={1}
                 />
                 <Form.Input
@@ -227,7 +234,9 @@ const BuyForm = (props) => {
                     inverted={true}
                     onChange={props.handleRenewalAmount}
                     onKeyPress={(e) =>
-                        e.key === 'Enter' || e.keyCode === 13
+                        (e.key === 'Enter' || e.keyCode === 13) &&
+                        props.renewalFee > 0 &&
+                        props.renewAmount > 0
                             ? props.renewWaterGallon(e)
                             : null
                     }

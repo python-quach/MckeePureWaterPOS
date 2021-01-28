@@ -17,6 +17,7 @@ import BuyForm from './BuyForm';
 import BuyReceipt from '../Receipt/BuyReceipt';
 import RenewReceipt from '../Receipt/RenewReceipt';
 import InvoiceTable from '../Invoice/InvoiceTable';
+import InvoiceHistory from '../History/InvoiceHistory';
 import * as actions from '../../../actions';
 
 const BuyScreen = (props) => {
@@ -302,6 +303,12 @@ const BuyScreen = (props) => {
         changeName(formBuy.firstName + ' ' + formBuy.lastName);
     }, [changeName, formBuy.firstName, formBuy.lastName]);
 
+    useEffect(() => {
+        if (gallonRemain <= 0 && renewAmount <= 0 && renewalFee <= 0) {
+            document.getElementById('renew').focus();
+        }
+    }, [gallonRemain, renewAmount, renewalFee]);
+
     return (
         <TransitionablePortal
             open={open}
@@ -387,7 +394,71 @@ const BuyScreen = (props) => {
                             }}
                         />
 
-                        <TransitionablePortal
+                        <InvoiceHistory
+                            openHistory={openHistory}
+                            setLimit={setLimit}
+                            loading={loading}
+                            handleGetInvoices={handleGetInvoices}>
+                            <Segment
+                                style={{
+                                    left: '10%',
+                                    position: 'fixed',
+                                    top: '20%',
+                                    zIndex: 1001,
+                                }}>
+                                <Header>
+                                    <Step.Group size='mini'>
+                                        <Step>
+                                            <Icon name='info' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    Invoice History
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                        <Step active>
+                                            <Icon name='user' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    {detail.fullname}
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                        <Step active>
+                                            <Icon name='address card' />
+                                            <Step.Content>
+                                                <Step.Title>
+                                                    Account# {account}
+                                                </Step.Title>
+                                            </Step.Content>
+                                        </Step>
+                                    </Step.Group>
+                                </Header>
+                                <InvoiceTable
+                                    invoices={invoices}
+                                    totalRenewalFee={totalRenewalFee}
+                                    totalRenewalAmount={totalRenewalAmount}
+                                    totalBuyGallon={totalBuyGallon}
+                                    gallonRemain={gallonRemain}
+                                />
+                                <Button
+                                    floated='right'
+                                    color='red'
+                                    content='Close'
+                                    onClick={() => {
+                                        setOpenHistory(false);
+                                    }}></Button>
+
+                                <Pagination
+                                    activePage={activePage}
+                                    onPageChange={onChange}
+                                    totalPages={Math.ceil(test / 10)}
+                                    ellipsisItem={null}
+                                />
+                            </Segment>
+                        </InvoiceHistory>
+
+                        {/* <TransitionablePortal
                             size='large'
                             open={openHistory}
                             closeOnDocumentClick={false}
@@ -474,7 +545,7 @@ const BuyScreen = (props) => {
                                     ellipsisItem={null}
                                 />
                             </Segment>
-                        </TransitionablePortal>
+                        </TransitionablePortal> */}
                     </Grid.Column>
                 </Grid>
             </Segment>
