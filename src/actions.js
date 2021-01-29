@@ -73,7 +73,6 @@ export const getAccountInvoices = (account, limit, offset, callback) => (
     });
     ipcRenderer.on(channels.GET_MEMBER_INVOICES, (event, args) => {
         ipcRenderer.removeAllListeners(channels.GET_MEMBER_INVOICES);
-        // console.log({ args });
         dispatch({
             type: actionTypes.GET_MEMBER_INVOICES,
             payload: args,
@@ -121,7 +120,6 @@ export const changeName = (value) => (dispatch) => {
 
 export const clearAddAccount = (value) => (dispatch) => {
     console.log('reset add');
-    // dispatch(reset('add'));
     dispatch(change('add', 'account', ''));
 };
 
@@ -182,16 +180,11 @@ export const checkDuplicateAccount = (account, callback) => (dispatch) => {
         ipcRenderer.removeAllListeners(channels.DUPLICATE_ACCOUNT);
         console.log('response', response);
         if (response) {
-            // dispatch(change('add', 'acc', value));
             dispatch({ type: actionTypes.GET_ACCOUNT, payload: account + 1 });
-            // dispatch(change('add', 'account', account + 2));
             console.log(account + 1);
             callback(response);
-            // return false;
         } else {
             callback(response);
-
-            // return true;
         }
     });
 };
