@@ -11,6 +11,9 @@
         },
         {
             "path": "..\\electron-react-sqlite"
+        },
+        {
+            "path": "..\\PROJECTS"
         }
     ],
     "settings": {}
