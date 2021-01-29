@@ -14,7 +14,6 @@ const rootReducer = combineReducers({
     account: accountReducer,
 });
 
-// const store = createStore(rootReducer);
 const store = createStore(rootReducer, undefined, composedEnhancers);
 
 export default store;
