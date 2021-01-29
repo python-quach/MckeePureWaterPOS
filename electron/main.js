@@ -398,9 +398,7 @@ ipcMain.on(channels.GET_TOTAL_BUY_GALLON, (event, request) => {
 ipcMain.on(channels.REPORT, (event, request) => {
     const { date, time } = request;
     getDailyReport(db, date, (totalFee, totalRenewAmount, totalBuy) => {
-        console.log('430', device);
         if (device) {
-            // if (device.device ? device : null) {
             receiptPrinter.dailyReport(
                 device,
                 printer,
@@ -476,8 +474,8 @@ ipcMain.on(channels.SHOW_BACKUP_DIALOG, (event, request) => {
     }
 });
 
+// ADD NEW MEMBERSHIP
 ipcMain.on(channels.ADD_NEW_MEMBER, (event, args) => {
-    // First we need to find if Account already in Database,
     const { account } = args;
     let sql = `SELECT * FROM mckee WHERE field22 = ?`;
 
