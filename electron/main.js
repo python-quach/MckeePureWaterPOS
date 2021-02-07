@@ -81,7 +81,7 @@ function createWindow() {
         darkTheme: true,
         backgroundColor: '#060b22',
         frame: true,
-        fullscreen: true,
+        // fullscreen: true,
         maximizable: true,
         transparent: false,
         fullscreenable: true,
